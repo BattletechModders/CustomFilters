@@ -26,6 +26,7 @@ namespace CustomFilters
         public string Text = null;
         public string Tag = null;
         public string Icon = null;
+        public string Tooltip = null;
 
         [SerializeField]
         public FilterInfo Filter = null;

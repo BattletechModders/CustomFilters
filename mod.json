@@ -21,9 +21,11 @@
 				"Buttons" : [
 					{
 						"Text" : "all",
+						"Tooltip" : "Show all weapons"
 					},
 					{
 						"Icon" : "uixSvgIcon_weapon_Ballistic",
+						"Tooltip" : "Show Ballistic weapons",
 						"Filter" : {
 							"WeaponCategories" : [
 								"Ballistic"
@@ -32,6 +34,7 @@
 					},
 					{
 						"Icon" : "uixSvgIcon_weapon_Energy",
+						"Tooltip" : "Show Energy weapons",
 						"Filter" : {
 							"WeaponCategories" : [
 								"Energy"
@@ -40,6 +43,7 @@
 					},
 					{
 						"Icon" : "uixSvgIcon_weapon_Missile",
+						"Tooltip" : "Show Missile weapons",
 						"Filter" : {
 							"WeaponCategories" : [
 								"Missile"
@@ -48,6 +52,7 @@
 					},
 					{
 						"Icon" : "uixSvgIcon_weapon_Support",
+						"Tooltip" : "Show Support weapons",
 						"Filter" : {
 							"WeaponCategories" : [
 								"AntiPersonnel",
@@ -67,6 +72,7 @@
 				"Buttons" : [
 					{
 						"Text" : "all",
+						"Tooltip" : "Show all ammo"
 					},
 					{
 						"Tag" : "AB",

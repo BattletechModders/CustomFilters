@@ -5,12 +5,14 @@ using BattletechPerformanceFix;
 using BattleTech;
 using BattleTech.Data;
 using BattleTech.UI;
+using BattleTech.UI.Tooltips;
 using CustomComponents;
 using FluffyUnderware.DevTools.Extensions;
 using Harmony;
 using SVGImporter;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CustomFilters
 {
@@ -20,6 +22,8 @@ namespace CustomFilters
         {
             public GameObject go;
             public HBSDOTweenToggle toggle;
+
+            public HBSTooltip tooltip;
 
             public GameObject go_icon;
             public SVGImage icon;
@@ -150,6 +154,9 @@ namespace CustomFilters
 
             go = inv_helper.filterBtnAll.Value;
 
+            var grid = go.transform.parent.gameObject.GetComponent<GridLayoutGroup>();
+            grid.spacing = new Vector2(8,8);
+
             ShowChilds(go, "");
 
             inv_helper.filterRadioSet.Value.ClearRadioButtons();
@@ -165,7 +172,7 @@ namespace CustomFilters
 
                     info.go_icon = button.transform.Find("bttn-bal/bg_fill/bttn_icon").gameObject;
                     info.icon = info.go_icon.gameObject.GetComponent<SVGImage>();
-
+                    info.tooltip = button.GetComponentInChildren<HBSTooltip>();
 
                     info.go_text = button.transform.Find("bttn-bal/bg_fill/bttn_text").gameObject;
                     info.text = info.go_text.gameObject.GetComponent<TextMeshProUGUI>();
@@ -291,6 +298,22 @@ namespace CustomFilters
                 {
                     button.go_tag.SetActive(false);
                 }
+
+                if (!string.IsNullOrEmpty(bdef.Tooltip))
+                {
+                    var state = new HBSTooltipStateData();
+                    state.SetString(bdef.Tooltip);
+
+                    button.tooltip.SetDefaultStateData(state);
+
+                }
+                else
+                {
+                    var state = new HBSTooltipStateData();
+                    state.SetDisabled();
+                    button.tooltip.SetDefaultStateData(state);
+                }
+
                 button.go.SetActive(true);
             }
             inv_helper.filterRadioSet.Value.Reset();
