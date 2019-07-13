@@ -160,7 +160,7 @@ namespace CustomFilters
             ShowChilds(go, "");
 
             inv_helper.filterRadioSet.Value.ClearRadioButtons();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 14; i++)
             {
                 Control.LogDebug($"--- Create Button #{i}");
                 try
@@ -250,7 +250,7 @@ namespace CustomFilters
             if (settingsTab?.Buttons == null || settingsTab.Buttons.Length == 0)
                 return;
 
-            for (int i = 0; i < 10 && i < settingsTab.Buttons.Length; i++)
+            for (int i = 0; i < 14 && i < settingsTab.Buttons.Length; i++)
             {
                 Control.LogDebug($"- button {i}");
 
@@ -314,7 +314,7 @@ namespace CustomFilters
                     button.tooltip.SetDefaultStateData(state);
                 }
 
-                button.go.SetActive(true);
+                button.go.SetActive(!bdef.Debug || Control.Settings.ShowDebugButtons);
             }
             inv_helper.filterRadioSet.Value.Reset();
             FilterPressed(0);
@@ -362,6 +362,18 @@ namespace CustomFilters
                     Control.LogError("Error in filter", e);
                 }
             }
+
+            if (item.ComponentType == ComponentType.JumpJet)
+            {
+                if (item is JumpJetDef jj)
+                {
+                    if (mechlab.activeMechDef.Chassis.Tonnage < jj.MinTonnage)
+                        return false;
+                    if (mechlab.activeMechDef.Chassis.Tonnage > jj.MaxTonnage)
+                        return false;
+                }
+            }
+
 
             return true;
         }
