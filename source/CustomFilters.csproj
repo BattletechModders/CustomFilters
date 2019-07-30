@@ -93,6 +93,7 @@
     <Compile Include="Patches\MechLabInventoryWidget_RemoveFilters.cs" />
     <Compile Include="Patches\MechLabInventoryWidget_SetData.cs" />
     <Compile Include="Patches\MechLabPanel_InitWidgets.cs" />
+    <Compile Include="Patches\MechLabPanel_LoadMech.cs" />
     <Compile Include="UIHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

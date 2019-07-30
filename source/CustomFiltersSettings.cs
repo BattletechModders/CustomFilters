@@ -50,7 +50,8 @@ namespace CustomFilters
 
         public TabInfo[] Tabs = null;
         public bool ShowDebugButtons = false;
-
+        public bool ShowBlacklistedSkirmish = false;
+        public bool ShowBlacklistedSimGame = true;
         public bool BTPerfFix = false;
 
         public void Complete()

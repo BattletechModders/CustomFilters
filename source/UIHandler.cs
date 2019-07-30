@@ -322,6 +322,9 @@ namespace CustomFilters
 
         public static bool ApplyFilter(MechComponentDef item)
         {
+            if (mechlab?.activeMechDef == null)
+                return true;
+
             if (item == null)
             {
                 Control.LogError($"-- ITEM IS NULL!");
@@ -334,6 +337,15 @@ namespace CustomFilters
                 //Control.LogDebug($"-- default");
                 return false;
             }
+
+            bool black = !Control.Settings.ShowBlacklistedSkirmish && mechlab.sim == null ||
+                         !Control.Settings.ShowBlacklistedSimGame && mechlab.sim != null;
+
+            if (black && item.ComponentTags.Contains("BLACKLISTED"))
+            {
+                return false;
+            }
+
 
             if (!ApplyFilter(item, current_tab?.Filter))
             {
@@ -387,6 +399,8 @@ namespace CustomFilters
 
                 return true;
             }
+
+            
 
             if (filter.ComponentTypes != null && filter.ComponentTypes.Length > 0 &&
                 !filter.ComponentTypes.Contains(item.ComponentType))
@@ -480,6 +494,11 @@ namespace CustomFilters
             }
 
             return true;
+        }
+
+        public static void CallFilter()
+        {
+            widget.ApplyFiltering();
         }
     }
 }
