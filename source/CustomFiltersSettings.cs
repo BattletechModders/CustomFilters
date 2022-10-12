@@ -12,7 +12,7 @@ namespace CustomFilters
     public class FilterInfo
     {
         public ComponentType[] ComponentTypes;
-        public WeaponCategory[] WeaponCategories;
+        public string[] WeaponCategories;
         public string[] Categories;
         public string[] NotCategories;
 
@@ -59,7 +59,7 @@ namespace CustomFilters
             BTPerfFix = BattletechPerformanceFix.Main.settings.features.ContainsKey("MechlabFix") &&
                         BattletechPerformanceFix.Main.settings.features["MechlabFix"];
 
-            Control.LogDebug("Using MechLabFix: " + BTPerfFix.ToString());
+            Control.LogDebug("Using MechLabFix: " + BTPerfFix);
         }
     }
 }

@@ -223,13 +223,13 @@ namespace CustomFilters
                 return;
 
             current_button = current_tab.Buttons[num];
-            Control.LogDebug("Tab: ");
-            Control.LogDebug(JsonUtility.ToJson(current_tab, true));
-            Control.LogDebug(JsonUtility.ToJson(current_tab.Filter, true));
-
-            Control.LogDebug("Button: ");
-            Control.LogDebug(JsonUtility.ToJson(current_button, true));
-            Control.LogDebug(JsonUtility.ToJson(current_button.Filter, true));
+            // Control.LogDebug("Tab: ");
+            // Control.LogDebug(JsonUtility.ToJson(current_tab, true));
+            // Control.LogDebug(JsonUtility.ToJson(current_tab.Filter, true));
+            //
+            // Control.LogDebug("Button: ");
+            // Control.LogDebug(JsonUtility.ToJson(current_button, true));
+            // Control.LogDebug(JsonUtility.ToJson(current_button.Filter, true));
 
             if (Control.Settings.BTPerfFix)
                 MechlabFix.state?.FilterChanged();
@@ -260,7 +260,6 @@ namespace CustomFilters
                 {
                     Control.LogDebug($"-- set text");
                     button.text.text = bdef.Text;
-                    button.text.RefreshText();
                     button.go_text.SetActive(true);
                 }
                 else
@@ -278,7 +277,6 @@ namespace CustomFilters
                     {
                         Control.LogError($"Icon {bdef.Icon} not found, replacing with ???");
                         button.text.text = "???";
-                        button.text.RefreshText();
                         button.go_text.SetActive(true);
                     }
                 }
@@ -291,7 +289,6 @@ namespace CustomFilters
                 {
                     Control.LogDebug($"- set tag");
                     button.tag.text = bdef.Tag;
-                    button.tag.RefreshText();
                     button.go_tag.SetActive(true);
                 }
                 else
@@ -332,7 +329,7 @@ namespace CustomFilters
             }
             //Control.LogDebug($"- {item.Description.Id}");
 
-            if (item.Is<Flags>(out var f) && f.HideFromInventory)
+            if (item.Flags<CCFlags>().HideFromInv)
             {
                 //Control.LogDebug($"-- default");
                 return false;
@@ -409,91 +406,28 @@ namespace CustomFilters
                 return false;
             }
 
-            if (filter.WeaponCategories != null && filter.WeaponCategories.Length > 0)
+            if (filter.WeaponCategories != null && filter.WeaponCategories.Length != 0)
+            {
                 if (item.ComponentType == ComponentType.Weapon)
                 {
-                    if (!(item is WeaponDef weapon))
+                    WeaponDef weaponDef = item as WeaponDef;
+                    if (weaponDef == null)
                     {
-                        Control.LogError(
-                            $"{item.ComponentType} have weapon type but not contain WeaponDef");
+                        Control.LogError(string.Format("{0} have weapon type but not contain WeaponDef", item.ComponentType));
                         return false;
                     }
-
-                    if (!filter.WeaponCategories.Contains(weapon.Category))
+                    if (!filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
                     {
-                        //Control.LogDebug($"--- weapon, wrong weapon type");
-
                         return false;
                     }
                 }
-                else if (item.ComponentType == ComponentType.AmmunitionBox)
+                else if (item.ComponentType == ComponentType.AmmunitionBox && !(item is AmmunitionBoxDef))
                 {
-                    if (!(item is AmmunitionBoxDef ammo))
-                    {
-                        Control.LogError(
-                            $"{item.Description.Id} have AmmunitionBox type but not contain AmmunitionBoxDef");
-                        return false;
-                    }
-
-                    WeaponCategory wc;
-
-                    AmmoCategory category = ammo.Ammo.Category;
-                    if (category == AmmoCategory.AC2 || category == AmmoCategory.AC5 || category == AmmoCategory.AC10 ||
-                        category == AmmoCategory.AC20 || category == AmmoCategory.GAUSS)
-                    {
-                        wc = WeaponCategory.Ballistic;
-                    }
-                    else if (category == AmmoCategory.Flamer)
-                    {
-                        wc = WeaponCategory.Energy;
-                    }
-                    else if (category == AmmoCategory.LRM || category == AmmoCategory.SRM)
-                    {
-                        wc = WeaponCategory.Missile;
-                    }
-                    else if (category == AmmoCategory.MG)
-                    {
-                        wc = WeaponCategory.AntiPersonnel;
-                    }
-                    else if (category == AmmoCategory.AMS)
-                    {
-                        wc = WeaponCategory.AMS;
-                    }
-                    else
-                    {
-                        Control.LogError($"{item.Description.Id} have wrong ammo type {category}");
-                        return false;
-                    }
-
-                    if (!filter.WeaponCategories.Contains(wc))
-                    {
-                        //Control.LogDebug($"--- ammo, wrong weapon type");
-
-                        return false;
-                    }
-                }
-
-            if (filter.Categories != null && filter.Categories.Length > 0)
-            {
-                if (!filter.Categories.Any(item.IsCategory))
-                {
-                    //Control.LogDebug($"--- not found category");
-
+                    Control.LogError(item.Description.Id + " have AmmunitionBox type but not contain AmmunitionBoxDef");
                     return false;
                 }
             }
-
-            if (filter.NotCategories != null && filter.NotCategories.Length > 0)
-            {
-                if (filter.NotCategories.Any(item.IsCategory))
-                {
-                    //Control.LogDebug($"--- found forbidden category");
-
-                    return false;
-                }
-            }
-
-            return true;
+            return (filter.Categories == null || filter.Categories.Length == 0 || filter.Categories.Any(item.IsCategory)) && (filter.NotCategories == null || filter.NotCategories.Length == 0 || !filter.NotCategories.Any(item.IsCategory));
         }
 
         public static void CallFilter()
