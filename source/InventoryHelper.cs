@@ -16,6 +16,7 @@ namespace CustomFilters
 
         public Traverse<HBSDOTweenToggle> tabAllToggleObj;
         public Traverse<HBSDOTweenToggle> tabWeaponsToggleObj;
+        public Traverse<HBSDOTweenToggle> tabAmmoToggleObj;
         public Traverse<HBSDOTweenToggle> tabEquipmentToggleObj;
         public Traverse<HBSDOTweenToggle> tabMechPartToggleObj;
 
@@ -36,6 +37,7 @@ namespace CustomFilters
             main = new Traverse(widget);
 
             tabAllToggleObj = main.Field<HBSDOTweenToggle>("tabAllToggleObj");
+            tabAmmoToggleObj = main.Field<HBSDOTweenToggle>("tabAmmoToggleObj");
             tabWeaponsToggleObj = main.Field<HBSDOTweenToggle>("tabWeaponsToggleObj");
             tabEquipmentToggleObj = main.Field<HBSDOTweenToggle>("tabEquipmentToggleObj");
             tabMechPartToggleObj = main.Field<HBSDOTweenToggle>("tabMechPartToggleObj");
