@@ -119,6 +119,7 @@ namespace CustomFilters
 
             Control.LogDebug("-- hide old tabs");
             inv_helper.tabAllToggleObj.Value.gameObject.SetActive(false);
+            inv_helper.tabAmmoToggleObj.Value.gameObject.SetActive(false);
             inv_helper.tabEquipmentToggleObj.Value.gameObject.SetActive(false);
             inv_helper.tabMechPartToggleObj.Value.gameObject.SetActive(false);
             inv_helper.tabWeaponsToggleObj.Value.gameObject.SetActive(false);
