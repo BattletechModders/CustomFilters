@@ -12,7 +12,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(CustomFiltersModPath)' == ''">
     <!-- sources dir -->
-    <CustomFiltersModPath>$(SolutionDir)/..</CustomFiltersModPath>
+    <CustomFiltersModPath>$(SolutionDir)</CustomFiltersModPath>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -22,14 +22,17 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblySearchPaths>
       $(ReferencePath);
-      $(BattleTechGameDir)\BattleTech_Data\Managed\;
-      {HintPathFromItem}
+      {HintPathFromItem};
+      $(BattleTechGameDir)\BattleTech_Data\Managed\
     </AssemblySearchPaths>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
   <Target Name="CopyDLLtoModDir" AfterTargets="AfterBuild">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CustomFiltersModPath)" />
   </Target>
+  <ItemGroup>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.3.0" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>embedded</DebugType>
@@ -44,7 +47,7 @@
     <Reference Include="0Harmony">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp" Publicize="true">
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
@@ -107,5 +110,8 @@
     <PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="InventoryHelper.cs" />
   </ItemGroup>
 </Project>

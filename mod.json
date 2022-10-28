@@ -4,7 +4,7 @@
 	"Website": "https://github.com/Denadan/CustomFilters",
 
 	"Enabled": true,
-	"DependsOn": ["CustomComponents"],
+	"DependsOn": ["CustomComponents", "BattletechPerformanceFix"],
 	"DLL": "CustomFilters.dll",
 	"DLLEntryPoint": "CustomFilters.Control.Init",
 	
