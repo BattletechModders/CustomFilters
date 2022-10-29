@@ -12,7 +12,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(CustomFiltersModPath)' == ''">
     <!-- sources dir -->
-    <CustomFiltersModPath>$(SolutionDir)</CustomFiltersModPath>
+    <CustomFiltersModPath>$(MSBuildProjectDirectory)\..</CustomFiltersModPath>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>
