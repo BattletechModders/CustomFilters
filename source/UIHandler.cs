@@ -328,7 +328,6 @@ internal static class UIHandler
         if (!ApplyFilter(item, current_button?.Filter))
         {
             //Control.LogDebug($"-- button filter miss");
-
             return false;
         }
 
@@ -368,45 +367,63 @@ internal static class UIHandler
         if (filter == null)
         {
             //Control.LogDebug($"--- empty filter");
-
             return true;
         }
 
-
-
-        if (filter.ComponentTypes != null && filter.ComponentTypes.Length > 0 &&
-            !filter.ComponentTypes.Contains(item.ComponentType))
+        if (filter.ComponentTypes.HasAny() && !filter.ComponentTypes.Contains(item.ComponentType))
         {
             //Control.LogDebug($"--- not component type");
             return false;
         }
 
-        if (filter.WeaponCategories != null && filter.WeaponCategories.Length != 0)
+        if (item.ComponentType == ComponentType.Weapon)
         {
-            if (item.ComponentType == ComponentType.Weapon)
+            if (item is not WeaponDef weaponDef)
             {
-                WeaponDef weaponDef = item as WeaponDef;
-                if (weaponDef == null)
-                {
-                    Control.LogError(string.Format("{0} have weapon type but not contain WeaponDef", item.ComponentType));
-                    return false;
-                }
-                if (!filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
-                {
-                    return false;
-                }
+                Control.LogError($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(WeaponDef)}");
+                return false;
             }
-            else if (item.ComponentType == ComponentType.AmmunitionBox && !(item is AmmunitionBoxDef))
+
+            if (filter.WeaponCategories.HasAny() && !filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
             {
-                Control.LogError(item.Description.Id + " have AmmunitionBox type but not contain AmmunitionBoxDef");
+                return false;
+            }
+
+            if (filter.UILookAndColorIcons.HasAny() && !filter.UILookAndColorIcons.Contains(weaponDef.weaponCategoryValue.Icon))
+            {
                 return false;
             }
         }
-        return (filter.Categories == null || filter.Categories.Length == 0 || filter.Categories.Any(item.IsCategory)) && (filter.NotCategories == null || filter.NotCategories.Length == 0 || !filter.NotCategories.Any(item.IsCategory));
+
+        if (item.ComponentType == ComponentType.AmmunitionBox)
+        {
+            if (item is not AmmunitionBoxDef boxDef)
+            {
+                Control.LogError($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(AmmunitionBoxDef)}");
+                return false;
+            }
+
+            if (filter.AmmoCategories.HasAny() && !filter.AmmoCategories.Contains(boxDef.Ammo.AmmoCategoryValue.Name))
+            {
+                return false;
+            }
+
+            if (filter.UILookAndColorIcons.HasAny() && !filter.UILookAndColorIcons.Contains(boxDef.Ammo.AmmoCategoryValue.Icon))
+            {
+                return false;
+            }
+        }
+
+        return (!filter.Categories.HasAny() || filter.Categories.Any(item.IsCategory)) && (!filter.NotCategories.HasAny() || !filter.NotCategories.Any(item.IsCategory));
     }
 
     public static void CallFilter()
     {
         widget.ApplyFiltering();
+    }
+
+    private static bool HasAny<T>(this IReadOnlyCollection<T> array)
+    {
+        return array != null && array.Count > 0;
     }
 }

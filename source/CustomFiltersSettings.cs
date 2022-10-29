@@ -10,6 +10,8 @@ public class FilterInfo
 {
     public ComponentType[] ComponentTypes;
     public string[] WeaponCategories;
+    public string[] AmmoCategories;
+    public string[] UILookAndColorIcons;
     public string[] Categories;
     public string[] NotCategories;
 

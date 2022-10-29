@@ -15,29 +15,48 @@
 				"Caption" : "WEAPON",
 				"Filter" : {
 					"ComponentTypes" : [
-						"Weapon"
+						"Weapon",
+						"AmmunitionBox"
 					]
 				},
 				"Buttons" : [
 					{
 						"Text" : "all",
-						"Tooltip" : "Show all weapons"
-					},
-					{
-						"Icon" : "uixSvgIcon_weapon_Ballistic",
-						"Tooltip" : "Show Ballistic weapons",
-						"Filter" : {
-							"WeaponCategories" : [
-								"Ballistic"
-							]
-						}
+						"Tooltip" : "Show all weapons and ammunition"
 					},
 					{
 						"Icon" : "uixSvgIcon_weapon_Energy",
 						"Tooltip" : "Show Energy weapons",
 						"Filter" : {
-							"WeaponCategories" : [
-								"Energy"
+							"ComponentTypes" : [
+								"Weapon"
+							],
+							"UILookAndColorIcons" : [
+								"EnergyHardpointIcon"
+							]
+						}
+					},
+					{
+						"Icon" : "uixSvgIcon_weapon_Ballistic",
+						"Tooltip" : "Show Ballistic weapons",
+						"Filter" : {
+							"ComponentTypes" : [
+								"Weapon"
+							],
+							"UILookAndColorIcons" : [
+								"BallisticHardpointIcon"
+							]
+						}
+					},
+					{
+						"Tag" : "AB",
+						"Icon" : "uixSvgIcon_weapon_Ballistic",
+						"Filter" : {
+							"ComponentTypes" : [
+								"AmmunitionBox"
+							],
+							"UILookAndColorIcons" : [
+								"BallisticHardpointIcon"
 							]
 						}
 					},
@@ -45,50 +64,11 @@
 						"Icon" : "uixSvgIcon_weapon_Missile",
 						"Tooltip" : "Show Missile weapons",
 						"Filter" : {
-							"WeaponCategories" : [
-								"Missile"
-							]
-						}
-					},
-					{
-						"Icon" : "uixSvgIcon_weapon_Support",
-						"Tooltip" : "Show Support weapons",
-						"Filter" : {
-							"WeaponCategories" : [
-								"AntiPersonnel",
-								"AMS"
-							]
-						}
-					}
-				]
-			},
-			{
-				"Caption" : "AMMO",
-				"Filter" : {
-					"ComponentTypes" : [
-						"AmmunitionBox"
-					]
-				},
-				"Buttons" : [
-					{
-						"Text" : "all",
-						"Tooltip" : "Show all ammo"
-					},
-					{
-						"Tag" : "AB",
-						"Icon" : "uixSvgIcon_weapon_Ballistic",
-						"Filter" : {
-							"WeaponCategories" : [
-								"Ballistic"
-							]
-						}
-					},
-					{
-						"Tag" : "AB",
-						"Icon" : "uixSvgIcon_weapon_Energy",
-						"Filter" : {
-							"WeaponCategories" : [
-								"Energy"
+							"ComponentTypes" : [
+								"Weapon"
+							],
+							"UILookAndColorIcons" : [
+								"MissileHardpointIcon"
 							]
 						}
 					},
@@ -96,8 +76,23 @@
 						"Tag" : "AB",
 						"Icon" : "uixSvgIcon_weapon_Missile",
 						"Filter" : {
-							"WeaponCategories" : [
-								"Missile"
+							"ComponentTypes" : [
+								"AmmunitionBox"
+							],
+							"UILookAndColorIcons" : [
+								"MissileHardpointIcon"
+							]
+						}
+					},
+					{
+						"Icon" : "uixSvgIcon_weapon_Support",
+						"Tooltip" : "Show Support weapons",
+						"Filter" : {
+							"ComponentTypes" : [
+								"Weapon"
+							],
+							"UILookAndColorIcons" : [
+								"SmallHardpointIcon"
 							]
 						}
 					},
@@ -105,9 +100,11 @@
 						"Tag" : "AB",
 						"Icon" : "uixSvgIcon_weapon_Support",
 						"Filter" : {
-							"WeaponCategories" : [
-								"AntiPersonnel",
-								"AMS"
+							"ComponentTypes" : [
+								"AmmunitionBox"
+							],
+							"UILookAndColorIcons" : [
+								"SmallHardpointIcon"
 							]
 						}
 					}
