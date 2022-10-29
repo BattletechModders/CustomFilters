@@ -176,6 +176,7 @@
 						"Text" : "all"
 					},
 					{
+						"Tag" : "TB",
 						"Icon" : "uixSvgIcon_quantity",
 						"Filter" : {
 							"ComponentTypes" : [
