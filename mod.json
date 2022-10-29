@@ -16,7 +16,7 @@
 				"Filter" : {
 					"ComponentTypes" : [
 						"Weapon"
-					],
+					]
 				},
 				"Buttons" : [
 					{
@@ -67,7 +67,7 @@
 				"Filter" : {
 					"ComponentTypes" : [
 						"AmmunitionBox"
-					],
+					]
 				},
 				"Buttons" : [
 					{
@@ -114,19 +114,19 @@
 				]
 			},
 			{
-				"Caption" : "Engine/HS",
+				"Caption" : "INTERNALS",
 				"Filter" : {
 					"ComponentTypes" : [
 						"HeatSink"
-					],
+					]
 				},
 				"Buttons" : [
 					{
-						"Text" : "all",
+						"Text" : "all"
 					},
 					{
 						"Tag" : "cor",
-						"Icon" : "uixSvgIcon_equipment_HeatBank",
+						"Icon" : "uixSvgIcon_equipment_Heatsink",
 						"Filter" : {
 							"Categories" : [
 								"EngineCore"
@@ -134,18 +134,8 @@
 						}
 					},
 					{
-						"Tag" : "kit",
-						"Icon" : "uixSvgIcon_equipment_Heatsink",
-						"Filter" : {
-							"Categories" : [
-								"Cooling",
-								"EngineHeatBlock"
-							]
-						}
-					},
-					{
 						"Tag" : "eng",
-						"Icon" : "uixSvgIcon_equipment_ThermalExchanger",
+						"Icon" : "uixSvgIcon_equipment_Heatsink",
 						"Filter" : {
 							"Categories" : [
 								"EngineShield"
@@ -153,11 +143,31 @@
 						}
 					},
 					{
+						"Tag" : "ehs",
 						"Icon" : "uixSvgIcon_equipment_Heatsink",
 						"Filter" : {
+							"Categories" : [
+								"EngineHeatBlock"
+							]
+						}
+					},
+					{
+						"Tag" : "hs",
+						"Icon" : "uixSvgIcon_equipment_Heatsink",
+						"Filter" : {
+							"Categories" : [
+								"EngineHeatSink"
+							]
+						}
+					},
+					{
+						"Icon" : "uixSvgIcon_equipment_ThermalExchanger",
+						"Filter" : {
 							"NotCategories" : [
-								"EnginePart",
-								"Cooling"
+								"EngineCore",
+								"EngineShield",
+								"EngineHeatBlock",
+								"EngineHeatSink"
 							]
 						}
 					}
@@ -173,7 +183,7 @@
 				},
 				"Buttons" : [
 					{
-						"Text" : "all",
+						"Text" : "all"
 					},
 					{
 						"Icon" : "uixSvgIcon_action_jump",
@@ -240,6 +250,17 @@
 						}
 					},
 					{
+						"Icon" : "UixSvgIcon_specialEquip_Melee",
+						"Filter" : {
+							"ComponentTypes" : [
+								"Upgrade"
+							],
+							"Categories" : [
+								"HandHeld"
+							]
+						}
+					},
+					{
 
 						"Icon" : "uixSvgIcon_equipment_Generic",
 						"Filter" : {
@@ -262,13 +283,14 @@
 								"ArmShoulder",
 								"ArmUpperActuator",
 								"ArmLowerActuator",
-								"ArmHandActuator"
+								"ArmHandActuator",
+								"HandHeld"
 							]
 						}
 					}
 				]
 			}
-		],
+		]
 	},	
 		
 	"Manifest": [
