@@ -12,7 +12,7 @@
 		"LogLevel" : "Debug",
 		"Tabs" : [
 			{
-				"Caption" : "WEAPON",
+				"Caption" : "WEAPONS",
 				"Filter" : {
 					"ComponentTypes" : [
 						"Weapon",
@@ -111,7 +111,7 @@
 				]
 			},
 			{
-				"Caption" : "INTERNALS",
+				"Caption" : "ENGINE",
 				"Filter" : {
 					"ComponentTypes" : [
 						"HeatSink"
@@ -140,19 +140,11 @@
 						}
 					},
 					{
-						"Tag" : "ehs",
-						"Icon" : "uixSvgIcon_equipment_Heatsink",
-						"Filter" : {
-							"Categories" : [
-								"EngineHeatBlock"
-							]
-						}
-					},
-					{
 						"Tag" : "hs",
 						"Icon" : "uixSvgIcon_equipment_Heatsink",
 						"Filter" : {
 							"Categories" : [
+								"EngineHeatBlock",
 								"EngineHeatSink"
 							]
 						}
@@ -171,11 +163,12 @@
 				]
 			},
 			{
-				"Caption" : "EQUIP",
+				"Caption" : "EQUIPMENT",
 				"Filter" : {
 					"ComponentTypes" : [
 						"JumpJet",
-						"Upgrade"
+						"Upgrade",
+						"HeatSink"
 					]
 				},
 				"Buttons" : [
@@ -183,10 +176,27 @@
 						"Text" : "all"
 					},
 					{
-						"Icon" : "uixSvgIcon_action_jump",
+						"Icon" : "uixSvgIcon_quantity",
 						"Filter" : {
 							"ComponentTypes" : [
-								"JumpJet"
+								"Upgrade",
+								"HeatSink"
+							],
+							"Categories" : [
+								"Armor",
+								"Cooling",
+								"Structure"
+							]
+						}
+					},
+					{
+						"Icon" : "uixSvgIcon_ability_angelofdeath",
+						"Filter" : {
+							"ComponentTypes" : [
+								"Upgrade"
+							],
+							"Categories" : [
+								"Quirk"
 							]
 						}
 					},
@@ -206,43 +216,21 @@
 						}
 					},
 					{
-						"Icon" : "uixSvgIcon_quantity",
+						"Icon" : "uixSvgIcon_equipment_Gyro",
 						"Filter" : {
 							"ComponentTypes" : [
 								"Upgrade"
 							],
 							"Categories" : [
-								"Armor",
-								"Structure",
 								"Gyro"
 							]
 						}
 					},
 					{
-						"Icon" : "uixSvgIcon_equipment_ActuatorLeg",
+						"Icon" : "uixSvgIcon_action_jump",
 						"Filter" : {
 							"ComponentTypes" : [
-								"Upgrade"
-							],
-							"Categories" : [
-								"LegHip",
-								"LegUpperActuator",
-								"LegLowerActuator",
-								"LegFootActuator"
-							]
-						}
-					},
-					{
-						"Icon" : "uixSvgIcon_equipment_ActuatorArm",
-						"Filter" : {
-							"ComponentTypes" : [
-								"Upgrade"
-							],
-							"Categories" : [
-								"ArmShoulder",
-								"ArmUpperActuator",
-								"ArmLowerActuator",
-								"ArmHandActuator"
+								"JumpJet"
 							]
 						}
 					},
@@ -258,7 +246,36 @@
 						}
 					},
 					{
-
+						"Tag": "A",
+						"Icon" : "uixSvgIcon_equipment_ActuatorArm",
+						"Filter" : {
+							"ComponentTypes" : [
+								"Upgrade"
+							],
+							"Categories" : [
+								"ArmShoulder",
+								"ArmUpperActuator",
+								"ArmLowerActuator",
+								"ArmHandActuator"
+							]
+						}
+					},
+					{
+						"Tag": "L",
+						"Icon" : "uixSvgIcon_equipment_ActuatorLeg",
+						"Filter" : {
+							"ComponentTypes" : [
+								"Upgrade"
+							],
+							"Categories" : [
+								"LegHip",
+								"LegUpperActuator",
+								"LegLowerActuator",
+								"LegFootActuator"
+							]
+						}
+					},
+					{
 						"Icon" : "uixSvgIcon_equipment_Generic",
 						"Filter" : {
 							"ComponentTypes" : [
@@ -266,22 +283,24 @@
 							],
 							"NotCategories" : [
 								"Armor",
+								"Cooling",
 								"Structure",
-								"Gyro",
+								"Quirk",
 								"LifeSupportA",
 								"LifeSupportB",
 								"Cockpit",
 								"SensorsA",
 								"SensorsB",
-								"LegHip",
-								"LegUpperActuator",
-								"LegLowerActuator",
-								"LegFootActuator",
+								"Gyro",
+								"HandHeld",
 								"ArmShoulder",
 								"ArmUpperActuator",
 								"ArmLowerActuator",
 								"ArmHandActuator",
-								"HandHeld"
+								"LegHip",
+								"LegUpperActuator",
+								"LegLowerActuator",
+								"LegFootActuator"
 							]
 						}
 					}
