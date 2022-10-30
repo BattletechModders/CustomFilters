@@ -16,18 +16,17 @@ internal static class Control
 
     public static void Init(string directory, string settingsJSON)
     {
-        Logger = HBS.Logging.Logger.GetLogger("CustomFilters", LogLevel.Debug);
-
         try
         {
             Settings = new CustomFiltersSettings();
             JSONSerializationUtility.FromJSON(Settings, settingsJSON);
-            HBS.Logging.Logger.SetLoggerLevel(Logger.Name, Settings.LogLevel);
         }
         catch (Exception)
         {
             Settings = new CustomFiltersSettings();
         }
+
+        Logger = HBS.Logging.Logger.GetLogger("CustomFilters", Settings.LogLevel);
 
         try
         {
