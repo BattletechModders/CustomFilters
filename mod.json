@@ -145,7 +145,7 @@
 						"Filter" : {
 							"Categories" : [
 								"EngineHeatBlock",
-								"EngineHeatSink"
+								"HeatSink"
 							]
 						}
 					},
@@ -156,7 +156,7 @@
 								"EngineCore",
 								"EngineShield",
 								"EngineHeatBlock",
-								"EngineHeatSink"
+								"HeatSink"
 							]
 						}
 					}
