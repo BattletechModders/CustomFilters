@@ -310,15 +310,6 @@ internal static class UIHandler
             return false;
         }
 
-        bool black = !Control.Settings.ShowBlacklistedSkirmish && mechlab.sim == null ||
-                     !Control.Settings.ShowBlacklistedSimGame && mechlab.sim != null;
-
-        if (black && item.ComponentTags.Contains("BLACKLISTED"))
-        {
-            return false;
-        }
-
-
         if (!ApplyFilter(item, current_tab?.Filter))
         {
             //Control.LogDebug($"-- tab filter miss");

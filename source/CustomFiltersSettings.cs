@@ -49,6 +49,4 @@ public class CustomFiltersSettings
 
     public TabInfo[] Tabs = null;
     public bool ShowDebugButtons = false;
-    public bool ShowBlacklistedSkirmish = false;
-    public bool ShowBlacklistedSimGame = true;
 }
