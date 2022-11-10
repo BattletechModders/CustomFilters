@@ -8,39 +8,38 @@ namespace CustomFilters;
 [Serializable]
 public class FilterInfo
 {
-    public ComponentType[] ComponentTypes;
-    public string[] WeaponCategories;
-    public string[] AmmoCategories;
-    public string[] UILookAndColorIcons;
-    public string[] Categories;
-    public string[] NotCategories;
+    public ComponentType[] componentTypes;
+    public string[] weaponCategories;
+    public string[] ammoCategories;
+    public string[] uiLookAndColorIcons;
+    public string[] categories;
+    public string[] notCategories;
 
-    public string[] Tags;
-    public string[] NotTags;
+    public string[] tags;
+    public string[] notTags;
 }
 
 [Serializable]
 public class ButtonInfo
 {
-    public string Text = null;
-    public string Tag = null;
-    public string Icon = null;
-    public string Tooltip = null;
-    public bool Debug = false;
+    public string text = null;
+    public string tag = null;
+    public string icon = null;
+    public string tooltip = null;
+    public bool debug = false;
 
     [SerializeField]
-    public FilterInfo Filter = null;
+    public FilterInfo filter = null;
 }
-[Serializable]
 
+[Serializable]
 public class TabInfo
 {
-    public string Caption;
-    public FilterInfo Filter;
+    public string caption;
+    public FilterInfo filter;
 
     [SerializeField]
-    public ButtonInfo[] Buttons;
-
+    public ButtonInfo[] buttons;
 }
 
 public class CustomFiltersSettings
@@ -49,4 +48,5 @@ public class CustomFiltersSettings
 
     public TabInfo[] Tabs = null;
     public bool ShowDebugButtons = false;
+    public bool DumpSettings = true;
 }

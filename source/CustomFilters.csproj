@@ -17,17 +17,16 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net472</TargetFramework>
-    <FileAlignment>512</FileAlignment>
     <LangVersion>preview</LangVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblySearchPaths>
       $(ReferencePath);
       {HintPathFromItem};
       $(BattleTechGameDir)\BattleTech_Data\Managed\
     </AssemblySearchPaths>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
-  <Target Name="CopyDLLtoModDir" AfterTargets="AfterBuild">
+  <Target Name="CopyFilesToGame" AfterTargets="CopyFilesToOutputDirectory">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CustomFiltersModPath)" />
   </Target>
   <ItemGroup>
@@ -110,8 +109,5 @@
     <PackageReference Include="GitVersion.MsBuild" Version="5.10.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="InventoryHelper.cs" />
   </ItemGroup>
 </Project>
