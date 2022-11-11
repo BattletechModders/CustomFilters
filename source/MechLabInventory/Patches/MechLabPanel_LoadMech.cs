@@ -16,7 +16,7 @@ internal static class MechLabPanel_LoadMech
         }
         catch (Exception e)
         {
-            Logging.LogError(e);
+            Logging.Error?.Log(e);
         }
     }
 }

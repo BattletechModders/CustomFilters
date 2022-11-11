@@ -16,7 +16,7 @@ internal static class MechLabPanel_InitWidgets
     {
         try
         {
-            Logging.LogDebug("MechLab.InitWidgets - Prefix");
+            Logging.Debug?.Log("MechLab.InitWidgets - Prefix");
             UIHandler.PreInit(__instance);
 
             // TODO fix race condition (clash with custom components)
@@ -29,7 +29,7 @@ internal static class MechLabPanel_InitWidgets
         }
         catch (Exception e)
         {
-            Logging.LogError(e);
+            Logging.Error?.Log(e);
         }
     }
 
@@ -38,12 +38,12 @@ internal static class MechLabPanel_InitWidgets
     {
         try
         {
-            Logging.LogDebug("MechLab.InitWidgets - Postfix");
+            Logging.Debug?.Log("MechLab.InitWidgets - Postfix");
             UIHandler.Init();
         }
         catch (Exception e)
         {
-            Logging.LogError(e);
+            Logging.Error?.Log(e);
         }
     }
 }

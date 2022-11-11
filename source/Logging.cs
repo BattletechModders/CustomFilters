@@ -4,38 +4,60 @@ using HBS.Logging;
 
 namespace CustomFilters;
 
+// see Better(Level)Logger from ME for concept
 internal static class Logging
 {
     // ReSharper disable once InconsistentNaming
-    private static readonly ILog _logger = Logger.GetLogger("CustomFilters");
+    private static ILog _logger;
     public static void Init(LogLevel logLevel)
     {
-        Logger.SetLoggerLevel(_logger.Name, logLevel);
+        _logger = Logger.GetLogger("CustomFilters", logLevel);
+
+        if (logLevel <= LogLevel.Error)
+        {
+            Error = new(LogLevel.Error);
+        }
+        if (logLevel <= LogLevel.Warning)
+        {
+            Warn = new(LogLevel.Warning);
+        }
+        if (logLevel <= LogLevel.Log)
+        {
+            Info = new(LogLevel.Log);
+        }
+        if (logLevel <= LogLevel.Debug)
+        {
+            Debug = new(LogLevel.Debug);
+        }
     }
 
-    [Conditional("CCDEBUG")]
-    public static void LogDebug(string message)
-    {
-        _logger.LogDebug(message);
-    }
+    internal static LevelLogger Error { get; private set; }
+    internal static LevelLogger Warn { get; private set; }
+    internal static LevelLogger Info { get; private set; }
+    internal static LevelLogger Debug { get; private set; }
 
-    public static void LogError(string message)
+    internal class LevelLogger
     {
-        _logger.LogError(message);
-    }
+        private readonly LogLevel _level;
 
-    public static void LogError(string message, Exception e)
-    {
-        _logger.LogError(message, e);
-    }
+        internal LevelLogger(LogLevel level)
+        {
+            _level = level;
+        }
 
-    public static void LogError(Exception e)
-    {
-        _logger.LogError(e);
-    }
+        internal void Log(object message)
+        {
+            _logger.LogAtLevel(_level, message);
+        }
 
-    public static void Log(string message)
-    {
-        _logger.Log(message);
+        internal void Log(object message, Exception e)
+        {
+            _logger.LogAtLevel(_level, message, e);
+        }
+
+        internal void Log(Exception e)
+        {
+            _logger.LogAtLevel(_level, null, e);
+        }
     }
 }

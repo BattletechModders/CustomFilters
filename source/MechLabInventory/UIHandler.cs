@@ -55,7 +55,7 @@ internal static class UIHandler
     {
         if (tabs == null)
         {
-            Logging.LogDebug("No tabs found - create new");
+            Logging.Debug?.Log("No tabs found - create new");
             tabs = new();
             buttons = new();
 
@@ -64,7 +64,7 @@ internal static class UIHandler
         }
         else if (mechLab != mechLabPanel)
         {
-            Logging.LogDebug("other mechlab widget, droping");
+            Logging.Debug?.Log("other mechlab widget, droping");
             foreach (var toggle in tabs)
             {
                 if (toggle != null)
@@ -83,13 +83,13 @@ internal static class UIHandler
         }
         else
         {
-            Logging.LogDebug("already modified");
+            Logging.Debug?.Log("already modified");
         }
     }
 
     private static void InitTabs()
     {
-        Logging.LogDebug("-- hide old tabs");
+        Logging.Debug?.Log("-- hide old tabs");
         Widget.tabAllToggleObj.gameObject.SetActive(false);
         Widget.tabAmmoToggleObj.gameObject.SetActive(false);
         Widget.tabEquipmentToggleObj.gameObject.SetActive(false);
@@ -104,7 +104,7 @@ internal static class UIHandler
 
         foreach (var settingsTab in Control.Tabs)
         {
-            Logging.LogDebug($"--- create tab [{settingsTab.Caption}]");
+            Logging.Debug?.Log($"--- create tab [{settingsTab.Caption}]");
 
             var tab = Object.Instantiate(Widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
             tab.transform.position = go.transform.position;
@@ -122,7 +122,7 @@ internal static class UIHandler
             _tabRadioSet.RadioButtons.Add(radio);
         }
 
-        Logging.LogDebug($"-- create small buttons");
+        Logging.Debug?.Log($"-- create small buttons");
 
         go = Widget.filterBtnAll;
 
@@ -134,7 +134,7 @@ internal static class UIHandler
         Widget.filterRadioSet.ClearRadioButtons();
         for (var i = 0; i < 14; i++)
         {
-            Logging.LogDebug($"--- Create Button #{i}");
+            Logging.Debug?.Log($"--- Create Button #{i}");
             try
             {
                 var info = new CustomButtonInfo(go, i, FilterPressed);
@@ -143,7 +143,7 @@ internal static class UIHandler
             }
             catch (Exception e)
             {
-                Logging.LogError(e.Message + " " + e.StackTrace);
+                Logging.Error?.Log(e.Message + " " + e.StackTrace);
             }
         }
 
@@ -153,7 +153,7 @@ internal static class UIHandler
 
     private static void ShowChilds(GameObject go, string prefix)
     {
-        Logging.LogDebug(prefix + " " + go.name);
+        Logging.Debug?.Log(prefix + " " + go.name);
         foreach (Transform child in go.transform)
         {
             ShowChilds(child.gameObject, prefix + "-");
@@ -162,7 +162,7 @@ internal static class UIHandler
 
     private static void FilterPressed(int num)
     {
-        Logging.LogDebug($"PRESSED [{num}]");
+        Logging.Debug?.Log($"PRESSED [{num}]");
 
         if (_currentTab?.Buttons == null || _currentTab.Buttons.Length <= num)
             return;
@@ -174,7 +174,7 @@ internal static class UIHandler
 
     private static void TabPressed(TabInfo settingsTab)
     {
-        Logging.LogDebug($"PRESSED [{settingsTab.Caption}]");
+        Logging.Debug?.Log($"PRESSED [{settingsTab.Caption}]");
         foreach (var buttonInfo in buttons)
         {
             buttonInfo.Go.SetActive(false);
@@ -187,13 +187,13 @@ internal static class UIHandler
 
         for (var i = 0; i < 14 && i < settingsTab.Buttons.Length; i++)
         {
-            Logging.LogDebug($"- button {i}");
+            Logging.Debug?.Log($"- button {i}");
 
             var buttonInfo = settingsTab.Buttons[i];
             var button = buttons[i];
             if (!string.IsNullOrEmpty(buttonInfo.Text))
             {
-                Logging.LogDebug($"-- set text");
+                Logging.Debug?.Log($"-- set text");
                 button.Text.text = buttonInfo.Text;
                 button.GoText.SetActive(true);
             }
@@ -205,12 +205,12 @@ internal static class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Icon))
             {
-                Logging.LogDebug($"-- set icon");
+                Logging.Debug?.Log($"-- set icon");
                 button.Icon.vectorGraphics = IconCache.GetAsset(buttonInfo.Icon);
                 button.GoIcon.SetActive(true);
                 if (button.Icon.vectorGraphics == null)
                 {
-                    Logging.LogError($"Icon {buttonInfo.Icon} not found, replacing with ???");
+                    Logging.Error?.Log($"Icon {buttonInfo.Icon} not found, replacing with ???");
                     button.Text.text = "???";
                     button.GoText.SetActive(true);
                 }
@@ -222,7 +222,7 @@ internal static class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Tag))
             {
-                Logging.LogDebug($"- set tag");
+                Logging.Debug?.Log($"- set tag");
                 button.Tag.text = buttonInfo.Tag;
                 button.GoTag.SetActive(true);
             }
@@ -260,7 +260,7 @@ internal static class UIHandler
 
         if (item == null)
         {
-            Logging.LogError($"-- ITEM IS NULL!");
+            Logging.Error?.Log($"-- ITEM IS NULL!");
             return false;
         }
         //Control.LogDebug($"- {item.Description.Id}");
@@ -321,7 +321,7 @@ internal static class UIHandler
         {
             if (item is not WeaponDef weaponDef)
             {
-                Logging.LogError($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(WeaponDef)}");
+                Logging.Error?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(WeaponDef)}");
                 return false;
             }
 
@@ -340,7 +340,7 @@ internal static class UIHandler
         {
             if (item is not AmmunitionBoxDef boxDef)
             {
-                Logging.LogError($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(AmmunitionBoxDef)}");
+                Logging.Error?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(AmmunitionBoxDef)}");
                 return false;
             }
 

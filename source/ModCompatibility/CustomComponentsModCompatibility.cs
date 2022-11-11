@@ -24,7 +24,7 @@ internal static class CustomComponentsModCompatibility
                 }
                 catch (Exception e)
                 {
-                    Logging.LogError("Error in filter", e);
+                    Logging.Error?.Log("Error in filter", e);
                 }
             }
             return true;

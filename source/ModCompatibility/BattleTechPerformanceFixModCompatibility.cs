@@ -10,7 +10,7 @@ internal static class BattleTechPerformanceFixModCompatibility
     {
         MechLabFixPublic.FilterFunc = list =>
         {
-            Logging.LogDebug("FilterUsingHBSCode");
+            Logging.Debug?.Log("FilterUsingHBSCode");
             return list.Where(i => UIHandler.ApplyFilter(i.componentDef)).ToList();
         };
 

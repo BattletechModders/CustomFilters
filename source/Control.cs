@@ -30,10 +30,10 @@ internal static class Control
         }
 
         Logging.Init(Settings.LogLevel);
-        Logging.LogDebug("Starting");
+        Logging.Debug?.Log("Starting");
         if (settingsEx != null)
         {
-            Logging.LogError("Could not read settings", settingsEx);
+            Logging.Error?.Log("Could not read settings", settingsEx);
         }
 
         try
@@ -44,7 +44,7 @@ internal static class Control
         }
         catch (Exception e)
         {
-            Logging.LogError($"Could not read tabs config from {Settings.TabsConfigFile}", e);
+            Logging.Error?.Log($"Could not read tabs config from {Settings.TabsConfigFile}", e);
             throw;
         }
 
@@ -55,11 +55,11 @@ internal static class Control
         }
         catch (Exception e)
         {
-            Logging.LogError(e);
+            Logging.Error?.Log(e);
             throw;
         }
 
-        Logging.Log("Loaded");
+        Logging.Info?.Log("Loaded");
     }
 
     public static void FinishedLoading(List<string> loadOrder)
@@ -78,7 +78,7 @@ internal static class Control
         }
         catch (Exception e)
         {
-            Logging.LogError(e);
+            Logging.Error?.Log(e);
             throw;
         }
     }
