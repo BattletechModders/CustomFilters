@@ -17,21 +17,22 @@ namespace CustomFilters.MechLabInventory;
 internal static class UIHandler
 {
     // compatibility
-    internal static Func<MechComponentDef, bool> CustomComponentsFlagsFilter;
-    internal static Func<MechLabPanel, MechComponentDef, bool> CustomComponentsIMechLabFilter;
-    internal static Func<FilterInfo, MechComponentDef, bool> CustomComponentsCategoryFilter;
-    internal static Action BattleTechPerformanceFixFilterChanged;
+    internal static Func<MechComponentDef, bool>? CustomComponentsFlagsFilter;
+    internal static Func<MechLabPanel, MechComponentDef, bool>? CustomComponentsIMechLabFilter;
+    internal static Func<FilterInfo, MechComponentDef, bool>? CustomComponentsCategoryFilter;
+    internal static Action? BattleTechPerformanceFixFilterChanged;
 
-    private static List<HBSDOTweenToggle> tabs;
-    private static List<CustomButtonInfo> buttons;
-    private static MechLabPanel mechLab;
-    private static HBSRadioSet _tabRadioSet;
+    private static bool initialized;
+    private static readonly List<HBSDOTweenToggle> Tabs = new();
+    private static readonly List<CustomButtonInfo> Buttons = new();
+    private static MechLabPanel mechLab = null!;
+    private static HBSRadioSet _tabRadioSet = null!;
 
     public static MechLabInventoryWidget Widget => mechLab.inventoryWidget;
     private static SVGCache IconCache => mechLab.dataManager.SVGCache;
 
-    private static TabInfo _currentTab;
-    private static ButtonInfo _currentButton;
+    private static TabInfo _currentTab = null!;
+    private static ButtonInfo _currentButton = null!;
 
     public static void Init()
     {
@@ -45,38 +46,36 @@ internal static class UIHandler
         Widget.filterBtnWeaponBallistic.SetActive(false);
         Widget.filterBtnWeaponSmall.SetActive(false);
 
-        _tabRadioSet.defaultButton = tabs.FirstOrDefault();
+        _tabRadioSet.defaultButton = Tabs.FirstOrDefault();
         _tabRadioSet.Reset();
 
-        TabPressed(Control.Tabs.FirstOrDefault());
+        TabPressed(Control.Tabs.First());
     }
 
     public static void PreInit(MechLabPanel mechLabPanel)
     {
-        if (tabs == null)
+        if (!initialized)
         {
+            initialized = true;
             Logging.Debug?.Log("No tabs found - create new");
-            tabs = new();
-            buttons = new();
-
             mechLab = mechLabPanel;
             InitTabs();
         }
         else if (mechLab != mechLabPanel)
         {
             Logging.Debug?.Log("other mechlab widget, droping");
-            foreach (var toggle in tabs)
+            foreach (var toggle in Tabs)
             {
                 if (toggle != null)
                     toggle.gameObject.Destroy();
             }
-            tabs.Clear();
-            foreach (var b in buttons)
+            Tabs.Clear();
+            foreach (var b in Buttons)
             {
                 if (b.Go != null)
                     b.Go.Destroy();
             }
-            buttons.Clear();
+            Buttons.Clear();
 
             mechLab = mechLabPanel;
             InitTabs();
@@ -115,7 +114,7 @@ internal static class UIHandler
             radio.OnClicked.AddListener(() => TabPressed(settingsTab));
 
             tab.SetActive(true);
-            tabs.Add(radio);
+            Tabs.Add(radio);
             var text = tab.GetComponentInChildren<TextMeshProUGUI>(true);
             if (text != null)
                 text.SetText(settingsTab.Caption);
@@ -138,7 +137,7 @@ internal static class UIHandler
             try
             {
                 var info = new CustomButtonInfo(go, i, FilterPressed);
-                buttons.Add(info);
+                Buttons.Add(info);
                 Widget.filterRadioSet.AddButtonToRadioSet(info.Toggle);
             }
             catch (Exception e)
@@ -147,7 +146,7 @@ internal static class UIHandler
             }
         }
 
-        Widget.filterRadioSet.defaultButton = buttons.FirstOrDefault()?.Toggle;
+        Widget.filterRadioSet.defaultButton = Buttons.FirstOrDefault()?.Toggle;
         Widget.filterRadioSet.Reset();
     }
 
@@ -164,7 +163,7 @@ internal static class UIHandler
     {
         Logging.Debug?.Log($"PRESSED [{num}]");
 
-        if (_currentTab?.Buttons == null || _currentTab.Buttons.Length <= num)
+        if (_currentTab.Buttons == null || _currentTab.Buttons.Length <= num)
             return;
 
         _currentButton = _currentTab.Buttons[num];
@@ -175,14 +174,14 @@ internal static class UIHandler
     private static void TabPressed(TabInfo settingsTab)
     {
         Logging.Debug?.Log($"PRESSED [{settingsTab.Caption}]");
-        foreach (var buttonInfo in buttons)
+        foreach (var buttonInfo in Buttons)
         {
             buttonInfo.Go.SetActive(false);
         }
 
         _currentTab = settingsTab;
 
-        if (settingsTab?.Buttons == null || settingsTab.Buttons.Length == 0)
+        if (settingsTab.Buttons == null || settingsTab.Buttons.Length == 0)
             return;
 
         for (var i = 0; i < 14 && i < settingsTab.Buttons.Length; i++)
@@ -190,7 +189,7 @@ internal static class UIHandler
             Logging.Debug?.Log($"- button {i}");
 
             var buttonInfo = settingsTab.Buttons[i];
-            var button = buttons[i];
+            var button = Buttons[i];
             if (!string.IsNullOrEmpty(buttonInfo.Text))
             {
                 Logging.Debug?.Log($"-- set text");
@@ -252,7 +251,7 @@ internal static class UIHandler
         FilterPressed(0);
     }
 
-    public static bool ApplyFilter(MechComponentDef item)
+    public static bool ApplyFilter(MechComponentDef? item)
     {
         // ReSharper disable once Unity.NoNullPropagation
         if (mechLab?.activeMechDef == null)
@@ -302,18 +301,23 @@ internal static class UIHandler
         return true;
     }
 
-    private static bool ApplyFilter(MechComponentDef item, FilterInfo filter)
+    private static bool ApplyFilter(MechComponentDef? item, FilterInfo? filter)
     {
+        if (item == null)
+        {
+            Logging.Error?.Log($"-- ITEM IS NULL!");
+            return false;
+        }
 
         if (filter == null)
         {
-            //Control.LogDebug($"--- empty filter");
+            Logging.Warn?.Log($"--- empty filter");
             return true;
         }
 
-        if (filter.ComponentTypes.HasAny() && !filter.ComponentTypes.Contains(item.ComponentType))
+        if (filter.ComponentTypes is { Length: > 0 } && !filter.ComponentTypes.Contains(item.ComponentType))
         {
-            //Control.LogDebug($"--- not component type");
+            Logging.Warn?.Log($"--- not component type");
             return false;
         }
 
@@ -325,12 +329,12 @@ internal static class UIHandler
                 return false;
             }
 
-            if (filter.WeaponCategories.HasAny() && !filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
+            if (filter.WeaponCategories is { Length: > 0 } && !filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
             {
                 return false;
             }
 
-            if (filter.UILookAndColorIcons.HasAny() && !filter.UILookAndColorIcons.Contains(weaponDef.weaponCategoryValue.Icon))
+            if (filter.UILookAndColorIcons is { Length: > 0 } && !filter.UILookAndColorIcons.Contains(weaponDef.weaponCategoryValue.Icon))
             {
                 return false;
             }
@@ -344,12 +348,12 @@ internal static class UIHandler
                 return false;
             }
 
-            if (filter.AmmoCategories.HasAny() && !filter.AmmoCategories.Contains(boxDef.Ammo.AmmoCategoryValue.Name))
+            if (filter.AmmoCategories is { Length: > 0 } && !filter.AmmoCategories.Contains(boxDef.Ammo.AmmoCategoryValue.Name))
             {
                 return false;
             }
 
-            if (filter.UILookAndColorIcons.HasAny() && !filter.UILookAndColorIcons.Contains(boxDef.Ammo.AmmoCategoryValue.Icon))
+            if (filter.UILookAndColorIcons is { Length: > 0 } && !filter.UILookAndColorIcons.Contains(boxDef.Ammo.AmmoCategoryValue.Icon))
             {
                 return false;
             }
@@ -365,10 +369,5 @@ internal static class UIHandler
     public static void CallFilter()
     {
         Widget.ApplyFiltering();
-    }
-
-    internal static bool HasAny<T>(this IReadOnlyCollection<T> array)
-    {
-        return array != null && array.Count > 0;
     }
 }

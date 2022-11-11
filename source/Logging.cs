@@ -8,7 +8,7 @@ namespace CustomFilters;
 internal static class Logging
 {
     // ReSharper disable once InconsistentNaming
-    private static ILog _logger;
+    private static ILog _logger = null!;
     public static void Init(LogLevel logLevel)
     {
         _logger = Logger.GetLogger("CustomFilters", logLevel);
@@ -31,10 +31,10 @@ internal static class Logging
         }
     }
 
-    internal static LevelLogger Error { get; private set; }
-    internal static LevelLogger Warn { get; private set; }
-    internal static LevelLogger Info { get; private set; }
-    internal static LevelLogger Debug { get; private set; }
+    internal static LevelLogger? Error { get; private set; }
+    internal static LevelLogger? Warn { get; private set; }
+    internal static LevelLogger? Info { get; private set; }
+    internal static LevelLogger? Debug { get; private set; }
 
     internal class LevelLogger
     {

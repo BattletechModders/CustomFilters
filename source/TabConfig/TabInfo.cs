@@ -5,9 +5,9 @@ namespace CustomFilters.TabConfig;
 public class TabInfo
 {
     [JsonProperty]
-    public string Caption;
+    public string? Caption;
     [JsonProperty]
-    public FilterInfo Filter;
+    public FilterInfo? Filter;
     [JsonProperty]
-    public ButtonInfo[] Buttons;
+    public ButtonInfo[]? Buttons;
 }

@@ -6,15 +6,15 @@ namespace CustomFilters.TabConfig;
 public class FilterInfo
 {
     [JsonProperty]
-    public ComponentType[] ComponentTypes;
+    public ComponentType[]? ComponentTypes;
     [JsonProperty]
-    public string[] WeaponCategories;
+    public string[]? WeaponCategories;
     [JsonProperty]
-    public string[] AmmoCategories;
+    public string[]? AmmoCategories;
     [JsonProperty]
-    public string[] UILookAndColorIcons;
+    public string[]? UILookAndColorIcons;
     [JsonProperty]
-    public string[] Categories;
+    public string[]? Categories;
     [JsonProperty]
-    public string[] NotCategories;
+    public string[]? NotCategories;
 }

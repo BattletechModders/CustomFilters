@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using CustomFilters.ModCompatibility;
 using CustomFilters.TabConfig;
@@ -12,12 +13,12 @@ namespace CustomFilters;
 
 internal static class Control
 {
-    public static Settings Settings;
-    public static TabInfo[] Tabs;
+    public static Settings Settings = null!;
+    public static TabInfo[] Tabs = null!;
 
     public static void Init(string directory, string settingsJson)
     {
-        Exception settingsEx = null;
+        Exception? settingsEx = null;
         try
         {
             Settings = new();
@@ -41,6 +42,11 @@ internal static class Control
             var tabsConfigPath = Path.Combine(directory, Settings.TabsConfigFile);
             var tabsConfigJsonString = File.ReadAllText(tabsConfigPath);
             Tabs = JsonConvert.DeserializeObject<TabInfo[]>(tabsConfigJsonString);
+
+            if (Tabs?.FirstOrDefault()?.Buttons?.FirstOrDefault() == null)
+            {
+                throw new NullReferenceException("no tabs or no buttons in first tab");
+            }
         }
         catch (Exception e)
         {

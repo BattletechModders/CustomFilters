@@ -5,15 +5,15 @@ namespace CustomFilters.TabConfig;
 public class ButtonInfo
 {
     [JsonProperty]
-    public string Text;
+    public string? Text;
     [JsonProperty]
-    public string Tag;
+    public string? Tag;
     [JsonProperty]
-    public string Icon;
+    public string? Icon;
     [JsonProperty]
-    public string Tooltip;
+    public string? Tooltip;
     [JsonProperty]
     public bool Debug;
     [JsonProperty]
-    public FilterInfo Filter;
+    public FilterInfo? Filter;
 }

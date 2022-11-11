@@ -1,4 +1,5 @@
-﻿using BattleTech.UI;
+﻿#nullable disable
+using BattleTech.UI;
 using Harmony;
 
 namespace CustomFilters.MechLabInventory.Patches;

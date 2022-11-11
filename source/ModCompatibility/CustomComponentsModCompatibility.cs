@@ -31,7 +31,7 @@ internal static class CustomComponentsModCompatibility
         };
 
         UIHandler.CustomComponentsCategoryFilter = (filter, item) =>
-            (!filter.Categories.HasAny() || filter.Categories.Any(item.IsCategory))
-            && (!filter.NotCategories.HasAny() || !filter.NotCategories.Any(item.IsCategory));
+            (filter.Categories is not { Length: > 0 } || filter.Categories.Any(item.IsCategory))
+            && (filter.NotCategories is not { Length: > 0 } || !filter.NotCategories.Any(item.IsCategory));
     }
 }
