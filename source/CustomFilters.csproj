@@ -101,9 +101,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\mod.json">
-      <Link>mod.json</Link>
-    </None>
+    <None Include="..\*.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GitVersion.MsBuild" Version="5.10.3">

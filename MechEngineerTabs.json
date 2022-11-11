@@ -1,0 +1,298 @@
+[
+	{
+		"Caption" : "WEAPONS",
+		"Filter" : {
+			"ComponentTypes" : [
+				"Weapon",
+				"AmmunitionBox"
+			]
+		},
+		"Buttons" : [
+			{
+				"Text" : "all",
+				"Tooltip" : "Show all weapons and ammunition"
+			},
+			{
+				"Icon" : "uixSvgIcon_weapon_Energy",
+				"Tooltip" : "Show Energy weapons",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Weapon"
+					],
+					"UILookAndColorIcons" : [
+						"EnergyHardpointIcon"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_weapon_Ballistic",
+				"Tooltip" : "Show Ballistic weapons",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Weapon"
+					],
+					"UILookAndColorIcons" : [
+						"BallisticHardpointIcon"
+					]
+				}
+			},
+			{
+				"Tag" : "AB",
+				"Icon" : "uixSvgIcon_weapon_Ballistic",
+				"Filter" : {
+					"ComponentTypes" : [
+						"AmmunitionBox"
+					],
+					"UILookAndColorIcons" : [
+						"BallisticHardpointIcon"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_weapon_Missile",
+				"Tooltip" : "Show Missile weapons",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Weapon"
+					],
+					"UILookAndColorIcons" : [
+						"MissileHardpointIcon"
+					]
+				}
+			},
+			{
+				"Tag" : "AB",
+				"Icon" : "uixSvgIcon_weapon_Missile",
+				"Filter" : {
+					"ComponentTypes" : [
+						"AmmunitionBox"
+					],
+					"UILookAndColorIcons" : [
+						"MissileHardpointIcon"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_weapon_Support",
+				"Tooltip" : "Show Support weapons",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Weapon"
+					],
+					"UILookAndColorIcons" : [
+						"SmallHardpointIcon"
+					]
+				}
+			},
+			{
+				"Tag" : "AB",
+				"Icon" : "uixSvgIcon_weapon_Support",
+				"Filter" : {
+					"ComponentTypes" : [
+						"AmmunitionBox"
+					],
+					"UILookAndColorIcons" : [
+						"SmallHardpointIcon"
+					]
+				}
+			}
+		]
+	},
+	{
+		"Caption" : "ENGINE",
+		"Filter" : {
+			"ComponentTypes" : [
+				"HeatSink"
+			]
+		},
+		"Buttons" : [
+			{
+				"Text" : "all"
+			},
+			{
+				"Tag" : "cor",
+				"Icon" : "uixSvgIcon_equipment_Heatsink",
+				"Filter" : {
+					"Categories" : [
+						"EngineCore"
+					]
+				}
+			},
+			{
+				"Tag" : "eng",
+				"Icon" : "uixSvgIcon_equipment_Heatsink",
+				"Filter" : {
+					"Categories" : [
+						"EngineShield"
+					]
+				}
+			},
+			{
+				"Tag" : "hs",
+				"Icon" : "uixSvgIcon_equipment_Heatsink",
+				"Filter" : {
+					"Categories" : [
+						"EngineHeatBlock",
+						"HeatSink"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_equipment_ThermalExchanger",
+				"Filter" : {
+					"NotCategories" : [
+						"EngineCore",
+						"EngineShield",
+						"EngineHeatBlock",
+						"HeatSink"
+					]
+				}
+			}
+		]
+	},
+	{
+		"Caption" : "EQUIPMENT",
+		"Filter" : {
+			"ComponentTypes" : [
+				"JumpJet",
+				"Upgrade",
+				"HeatSink"
+			]
+		},
+		"Buttons" : [
+			{
+				"Text" : "all"
+			},
+			{
+				"Tag" : "TB",
+				"Icon" : "uixSvgIcon_quantity",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade",
+						"HeatSink"
+					],
+					"Categories" : [
+						"Armor",
+						"Cooling",
+						"Structure"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_ability_angelofdeath",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade"
+					],
+					"Categories" : [
+						"Quirk"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_equipment_Cockpit",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade"
+					],
+					"Categories" : [
+						"LifeSupportA",
+						"LifeSupportB",
+						"Cockpit",
+						"SensorsA",
+						"SensorsB"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_equipment_Gyro",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade"
+					],
+					"Categories" : [
+						"Gyro"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_action_jump",
+				"Filter" : {
+					"ComponentTypes" : [
+						"JumpJet"
+					]
+				}
+			},
+			{
+				"Icon" : "UixSvgIcon_specialEquip_Melee",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade"
+					],
+					"Categories" : [
+						"HandHeld"
+					]
+				}
+			},
+			{
+				"Tag": "A",
+				"Icon" : "uixSvgIcon_equipment_ActuatorArm",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade"
+					],
+					"Categories" : [
+						"ArmShoulder",
+						"ArmUpperActuator",
+						"ArmLowerActuator",
+						"ArmHandActuator"
+					]
+				}
+			},
+			{
+				"Tag": "L",
+				"Icon" : "uixSvgIcon_equipment_ActuatorLeg",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade"
+					],
+					"Categories" : [
+						"LegHip",
+						"LegUpperActuator",
+						"LegLowerActuator",
+						"LegFootActuator"
+					]
+				}
+			},
+			{
+				"Icon" : "uixSvgIcon_equipment_Generic",
+				"Filter" : {
+					"ComponentTypes" : [
+						"Upgrade"
+					],
+					"NotCategories" : [
+						"Armor",
+						"Cooling",
+						"Structure",
+						"Quirk",
+						"LifeSupportA",
+						"LifeSupportB",
+						"Cockpit",
+						"SensorsA",
+						"SensorsB",
+						"Gyro",
+						"HandHeld",
+						"ArmShoulder",
+						"ArmUpperActuator",
+						"ArmLowerActuator",
+						"ArmHandActuator",
+						"LegHip",
+						"LegUpperActuator",
+						"LegLowerActuator",
+						"LegFootActuator"
+					]
+				}
+			}
+		]
+	}
+]

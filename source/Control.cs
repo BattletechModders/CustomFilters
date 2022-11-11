@@ -1,54 +1,85 @@
 ﻿using Harmony;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
-using System.Linq;
-using BattletechPerformanceFix.MechLabFix;
-using CustomFilters.MechLabInventory;
+using CustomFilters.ModCompatibility;
+using CustomFilters.TabConfig;
 using HBS.Util;
+using Newtonsoft.Json;
 
 namespace CustomFilters;
 
 internal static class Control
 {
-    public static CustomFiltersSettings Settings;
+    public static Settings Settings;
+    public static TabInfo[] Tabs;
 
     public static void Init(string directory, string settingsJson)
     {
+        Exception settingsEx = null;
         try
         {
             Settings = new();
             JSONSerializationUtility.FromJSON(Settings, settingsJson);
         }
-        catch (Exception)
+        catch (Exception e)
         {
             Settings = new();
+            settingsEx = e;
         }
 
         Logging.Init(Settings.LogLevel);
-        Logging.LogDebug("Starting CustomerFilters");
+        Logging.LogDebug("Starting");
+        if (settingsEx != null)
+        {
+            Logging.LogError("Could not read settings", settingsEx);
+        }
+
+        try
+        {
+            var tabsConfigPath = Path.Combine(directory, Settings.TabsConfigFile);
+            var tabsConfigJsonString = File.ReadAllText(tabsConfigPath);
+            Tabs = JsonConvert.DeserializeObject<TabInfo[]>(tabsConfigJsonString);
+        }
+        catch (Exception e)
+        {
+            Logging.LogError($"Could not read tabs config from {Settings.TabsConfigFile}", e);
+            throw;
+        }
 
         try
         {
             var harmony = HarmonyInstance.Create("io.github.denadan.CustomFilters");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+        catch (Exception e)
+        {
+            Logging.LogError(e);
+            throw;
+        }
 
-            CustomComponents.Registry.RegisterSimpleCustomComponents(Assembly.GetExecutingAssembly());
+        Logging.Log("Loaded");
+    }
 
-            MechLabFixPublic.FilterFunc = list =>
+    public static void FinishedLoading(List<string> loadOrder)
+    {
+        try
+        {
+            if (loadOrder.Contains("CustomComponents"))
             {
-                Logging.LogDebug("FilterUsingHBSCode");
-                return list.Where(i => UIHandler.ApplyFilter(i.componentDef)).ToList();
-            };
+                CustomComponentsModCompatibility.Setup();
+            }
 
-            Logging.LogDebug("done");
-            if (Settings.DumpSettings)
+            if (loadOrder.Contains("BattletechPerformanceFix"))
             {
-                Logging.LogDebug(JSONSerializationUtility.ToJSON(Settings));
+                BattleTechPerformanceFixModCompatibility.Setup();
             }
         }
         catch (Exception e)
         {
             Logging.LogError(e);
+            throw;
         }
     }
 }

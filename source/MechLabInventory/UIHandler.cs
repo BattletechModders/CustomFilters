@@ -5,10 +5,8 @@ using BattleTech;
 using BattleTech.Data;
 using BattleTech.UI;
 using BattleTech.UI.Tooltips;
-using BattletechPerformanceFix.MechLabFix;
-using CustomComponents;
+using CustomFilters.TabConfig;
 using FluffyUnderware.DevTools.Extensions;
-using SVGImporter;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +16,12 @@ namespace CustomFilters.MechLabInventory;
 
 internal static class UIHandler
 {
+    // compatibility
+    internal static Func<MechComponentDef, bool> CustomComponentsFlagsFilter;
+    internal static Func<MechLabPanel, MechComponentDef, bool> CustomComponentsIMechLabFilter;
+    internal static Func<FilterInfo, MechComponentDef, bool> CustomComponentsCategoryFilter;
+    internal static Action BattleTechPerformanceFixFilterChanged;
+
     private static List<HBSDOTweenToggle> tabs;
     private static List<CustomButtonInfo> buttons;
     private static MechLabPanel mechLab;
@@ -44,7 +48,7 @@ internal static class UIHandler
         _tabRadioSet.defaultButton = tabs.FirstOrDefault();
         _tabRadioSet.Reset();
 
-        TabPressed(Control.Settings.Tabs.FirstOrDefault());
+        TabPressed(Control.Tabs.FirstOrDefault());
     }
 
     public static void PreInit(MechLabPanel mechLabPanel)
@@ -98,9 +102,9 @@ internal static class UIHandler
         _tabRadioSet.ClearRadioButtons();
 
 
-        foreach (var settingsTab in Control.Settings.Tabs)
+        foreach (var settingsTab in Control.Tabs)
         {
-            Logging.LogDebug($"--- create tab [{settingsTab.caption}]");
+            Logging.LogDebug($"--- create tab [{settingsTab.Caption}]");
 
             var tab = Object.Instantiate(Widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
             tab.transform.position = go.transform.position;
@@ -114,7 +118,7 @@ internal static class UIHandler
             tabs.Add(radio);
             var text = tab.GetComponentInChildren<TextMeshProUGUI>(true);
             if (text != null)
-                text.SetText(settingsTab.caption);
+                text.SetText(settingsTab.Caption);
             _tabRadioSet.RadioButtons.Add(radio);
         }
 
@@ -160,17 +164,17 @@ internal static class UIHandler
     {
         Logging.LogDebug($"PRESSED [{num}]");
 
-        if (_currentTab?.buttons == null || _currentTab.buttons.Length <= num)
+        if (_currentTab?.Buttons == null || _currentTab.Buttons.Length <= num)
             return;
 
-        _currentButton = _currentTab.buttons[num];
+        _currentButton = _currentTab.Buttons[num];
 
-        MechLabFixPublic.FilterChanged();
+        BattleTechPerformanceFixFilterChanged?.Invoke();
     }
 
     private static void TabPressed(TabInfo settingsTab)
     {
-        Logging.LogDebug($"PRESSED [{settingsTab.caption}]");
+        Logging.LogDebug($"PRESSED [{settingsTab.Caption}]");
         foreach (var buttonInfo in buttons)
         {
             buttonInfo.Go.SetActive(false);
@@ -178,19 +182,19 @@ internal static class UIHandler
 
         _currentTab = settingsTab;
 
-        if (settingsTab?.buttons == null || settingsTab.buttons.Length == 0)
+        if (settingsTab?.Buttons == null || settingsTab.Buttons.Length == 0)
             return;
 
-        for (var i = 0; i < 14 && i < settingsTab.buttons.Length; i++)
+        for (var i = 0; i < 14 && i < settingsTab.Buttons.Length; i++)
         {
             Logging.LogDebug($"- button {i}");
 
-            var buttonInfo = settingsTab.buttons[i];
+            var buttonInfo = settingsTab.Buttons[i];
             var button = buttons[i];
-            if (!string.IsNullOrEmpty(buttonInfo.text))
+            if (!string.IsNullOrEmpty(buttonInfo.Text))
             {
                 Logging.LogDebug($"-- set text");
-                button.Text.text = buttonInfo.text;
+                button.Text.text = buttonInfo.Text;
                 button.GoText.SetActive(true);
             }
             else
@@ -199,14 +203,14 @@ internal static class UIHandler
             }
 
 
-            if (!string.IsNullOrEmpty(buttonInfo.icon))
+            if (!string.IsNullOrEmpty(buttonInfo.Icon))
             {
                 Logging.LogDebug($"-- set icon");
-                button.Icon.vectorGraphics = IconCache.GetAsset(buttonInfo.icon);
+                button.Icon.vectorGraphics = IconCache.GetAsset(buttonInfo.Icon);
                 button.GoIcon.SetActive(true);
                 if (button.Icon.vectorGraphics == null)
                 {
-                    Logging.LogError($"Icon {buttonInfo.icon} not found, replacing with ???");
+                    Logging.LogError($"Icon {buttonInfo.Icon} not found, replacing with ???");
                     button.Text.text = "???";
                     button.GoText.SetActive(true);
                 }
@@ -216,10 +220,10 @@ internal static class UIHandler
                 button.GoIcon.SetActive(false);
             }
 
-            if (!string.IsNullOrEmpty(buttonInfo.tag))
+            if (!string.IsNullOrEmpty(buttonInfo.Tag))
             {
                 Logging.LogDebug($"- set tag");
-                button.Tag.text = buttonInfo.tag;
+                button.Tag.text = buttonInfo.Tag;
                 button.GoTag.SetActive(true);
             }
             else
@@ -227,10 +231,10 @@ internal static class UIHandler
                 button.GoTag.SetActive(false);
             }
 
-            if (!string.IsNullOrEmpty(buttonInfo.tooltip))
+            if (!string.IsNullOrEmpty(buttonInfo.Tooltip))
             {
                 var state = new HBSTooltipStateData();
-                state.SetString(buttonInfo.tooltip);
+                state.SetString(buttonInfo.Tooltip);
 
                 button.Tooltip.SetDefaultStateData(state);
 
@@ -242,7 +246,7 @@ internal static class UIHandler
                 button.Tooltip.SetDefaultStateData(state);
             }
 
-            button.Go.SetActive(!buttonInfo.debug || Control.Settings.ShowDebugButtons);
+            button.Go.SetActive(!buttonInfo.Debug || Control.Settings.ShowDebugButtons);
         }
         Widget.filterRadioSet.Reset();
         FilterPressed(0);
@@ -261,37 +265,26 @@ internal static class UIHandler
         }
         //Control.LogDebug($"- {item.Description.Id}");
 
-        if (item.Flags<CCFlags>().HideFromInv)
+        if (CustomComponentsFlagsFilter != null && !CustomComponentsFlagsFilter(item))
         {
-            //Control.LogDebug($"-- default");
             return false;
         }
 
-        if (!ApplyFilter(item, _currentTab?.filter))
+        if (!ApplyFilter(item, _currentTab?.Filter))
         {
             //Control.LogDebug($"-- tab filter miss");
             return false;
         }
 
-        if (!ApplyFilter(item, _currentButton?.filter))
+        if (!ApplyFilter(item, _currentButton?.Filter))
         {
             //Control.LogDebug($"-- button filter miss");
             return false;
         }
 
-        foreach (var filter in item.GetComponents<IMechLabFilter>())
+        if (CustomComponentsIMechLabFilter != null && !CustomComponentsIMechLabFilter(mechLab, item))
         {
-            try
-            {
-                if (!filter.CheckFilter(mechLab))
-                {
-                    return false;
-                }
-            }
-            catch (Exception e)
-            {
-                Logging.LogError("Error in filter", e);
-            }
+            return false;
         }
 
         if (item.ComponentType == ComponentType.JumpJet)
@@ -318,7 +311,7 @@ internal static class UIHandler
             return true;
         }
 
-        if (filter.componentTypes.HasAny() && !filter.componentTypes.Contains(item.ComponentType))
+        if (filter.ComponentTypes.HasAny() && !filter.ComponentTypes.Contains(item.ComponentType))
         {
             //Control.LogDebug($"--- not component type");
             return false;
@@ -332,12 +325,12 @@ internal static class UIHandler
                 return false;
             }
 
-            if (filter.weaponCategories.HasAny() && !filter.weaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
+            if (filter.WeaponCategories.HasAny() && !filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
             {
                 return false;
             }
 
-            if (filter.uiLookAndColorIcons.HasAny() && !filter.uiLookAndColorIcons.Contains(weaponDef.weaponCategoryValue.Icon))
+            if (filter.UILookAndColorIcons.HasAny() && !filter.UILookAndColorIcons.Contains(weaponDef.weaponCategoryValue.Icon))
             {
                 return false;
             }
@@ -351,18 +344,22 @@ internal static class UIHandler
                 return false;
             }
 
-            if (filter.ammoCategories.HasAny() && !filter.ammoCategories.Contains(boxDef.Ammo.AmmoCategoryValue.Name))
+            if (filter.AmmoCategories.HasAny() && !filter.AmmoCategories.Contains(boxDef.Ammo.AmmoCategoryValue.Name))
             {
                 return false;
             }
 
-            if (filter.uiLookAndColorIcons.HasAny() && !filter.uiLookAndColorIcons.Contains(boxDef.Ammo.AmmoCategoryValue.Icon))
+            if (filter.UILookAndColorIcons.HasAny() && !filter.UILookAndColorIcons.Contains(boxDef.Ammo.AmmoCategoryValue.Icon))
             {
                 return false;
             }
         }
 
-        return (!filter.categories.HasAny() || filter.categories.Any(item.IsCategory)) && (!filter.notCategories.HasAny() || !filter.notCategories.Any(item.IsCategory));
+        if (CustomComponentsCategoryFilter != null && !CustomComponentsCategoryFilter(filter, item))
+        {
+            return false;
+        }
+        return true;
     }
 
     public static void CallFilter()
@@ -370,7 +367,7 @@ internal static class UIHandler
         Widget.ApplyFiltering();
     }
 
-    private static bool HasAny<T>(this IReadOnlyCollection<T> array)
+    internal static bool HasAny<T>(this IReadOnlyCollection<T> array)
     {
         return array != null && array.Count > 0;
     }
