@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CustomComponents;
-using CustomFilters.MechLabInventory;
+using CustomFilters.MechLabFiltering;
 
 namespace CustomFilters.ModCompatibility;
 

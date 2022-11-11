@@ -4,7 +4,7 @@ using System;
 using BattleTech.UI;
 using Harmony;
 
-namespace CustomFilters.MechLabInventory.Patches;
+namespace CustomFilters.MechLabFiltering.Patches;
 
 [HarmonyPatch(typeof(MechLabPanel), nameof(MechLabPanel.LoadMech))]
 internal static class MechLabPanel_LoadMech

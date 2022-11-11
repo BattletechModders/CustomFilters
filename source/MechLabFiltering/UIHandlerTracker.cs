@@ -2,7 +2,7 @@
 using System.Linq;
 using BattleTech.UI;
 
-namespace CustomFilters.MechLabInventory;
+namespace CustomFilters.MechLabFiltering;
 
 internal static class UIHandlerTracker
 {

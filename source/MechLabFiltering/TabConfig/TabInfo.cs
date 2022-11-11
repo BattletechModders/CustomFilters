@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace CustomFilters.TabConfig;
+namespace CustomFilters.MechLabFiltering.TabConfig;
 
 public class TabInfo
 {

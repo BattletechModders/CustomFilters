@@ -7,7 +7,7 @@ using BattleTech.UI;
 using Harmony;
 using SVGImporter;
 
-namespace CustomFilters.MechLabInventory.Patches;
+namespace CustomFilters.MechLabFiltering.Patches;
 
 [HarmonyPatch(typeof(MechLabPanel), nameof(MechLabPanel.InitWidgets))]
 internal static class MechLabPanel_InitWidgets

@@ -5,14 +5,15 @@ using BattleTech;
 using BattleTech.Data;
 using BattleTech.UI;
 using BattleTech.UI.Tooltips;
-using CustomFilters.TabConfig;
+using CustomFilters.MechLabFiltering.TabConfig;
+using CustomFilters.MechLabScrolling;
 using FluffyUnderware.DevTools.Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace CustomFilters.MechLabInventory;
+namespace CustomFilters.MechLabFiltering;
 
 internal class UIHandler
 {
@@ -20,7 +21,6 @@ internal class UIHandler
     internal static Func<MechComponentDef, bool>? CustomComponentsFlagsFilter;
     internal static Func<MechLabPanel, MechComponentDef, bool>? CustomComponentsIMechLabFilter;
     internal static Func<FilterInfo, MechComponentDef, bool>? CustomComponentsCategoryFilter;
-    internal static Action? BattleTechPerformanceFixFilterChanged;
 
     private readonly List<HBSDOTweenToggle> _tabs = new();
     private readonly List<CustomButtonInfo> _buttons = new();
@@ -158,7 +158,10 @@ internal class UIHandler
 
         _currentButton = _currentTab.Buttons[num];
 
-        BattleTechPerformanceFixFilterChanged?.Invoke();
+        if (MechLabFixStateTracker.GetInstance(_widget, out var state))
+        {
+            state.FilterChanged();
+        }
     }
 
     private void TabPressed(TabInfo settingsTab)
@@ -301,13 +304,13 @@ internal class UIHandler
 
         if (filter == null)
         {
-            Logging.Warn?.Log("--- empty filter");
+            // Logging.Trace?.Log("--- empty filter");
             return true;
         }
 
         if (filter.ComponentTypes is { Length: > 0 } && !filter.ComponentTypes.Contains(item.ComponentType))
         {
-            Logging.Warn?.Log("--- not component type");
+            // Logging.Trace?.Log("--- not component type");
             return false;
         }
 
@@ -315,7 +318,7 @@ internal class UIHandler
         {
             if (item is not WeaponDef weaponDef)
             {
-                Logging.Error?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(WeaponDef)}");
+                Logging.Warning?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(WeaponDef)}");
                 return false;
             }
 
@@ -334,7 +337,7 @@ internal class UIHandler
         {
             if (item is not AmmunitionBoxDef boxDef)
             {
-                Logging.Error?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(AmmunitionBoxDef)}");
+                Logging.Warning?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(AmmunitionBoxDef)}");
                 return false;
             }
 

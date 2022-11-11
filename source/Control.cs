@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CustomFilters.MechLabFiltering.TabConfig;
 using CustomFilters.ModCompatibility;
-using CustomFilters.TabConfig;
 using HBS.Util;
 using Newtonsoft.Json;
 
@@ -30,7 +30,7 @@ internal static class Control
             settingsEx = e;
         }
 
-        Logging.Init(Settings.LogLevel);
+        Logging.Setup(Settings.TraceEnabled);
         Logging.Debug?.Log("Starting");
         if (settingsEx != null)
         {
@@ -75,11 +75,6 @@ internal static class Control
             if (loadOrder.Contains("CustomComponents"))
             {
                 CustomComponentsModCompatibility.Setup();
-            }
-
-            if (loadOrder.Contains("BattletechPerformanceFix"))
-            {
-                BattleTechPerformanceFixModCompatibility.Setup();
             }
         }
         catch (Exception e)

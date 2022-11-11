@@ -9,6 +9,7 @@
 
 	"Settings" : {
 		"LogLevel" : "Debug",
+		"TraceEnabled" : true,
 		"disabled_TabsConfigFile" : "VanillaTabs.json",
 		"TabsConfigFile" : "MechEngineerTabs.json",
 		"DumpSettings": false

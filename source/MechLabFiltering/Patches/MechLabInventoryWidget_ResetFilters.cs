@@ -3,7 +3,7 @@
 using BattleTech.UI;
 using Harmony;
 
-namespace CustomFilters.MechLabInventory.Patches;
+namespace CustomFilters.MechLabFiltering.Patches;
 
 [HarmonyPatch(typeof(MechLabInventoryWidget), nameof(MechLabInventoryWidget.ResetFilters))]
 internal static class MechLabInventoryWidget_ResetFilters

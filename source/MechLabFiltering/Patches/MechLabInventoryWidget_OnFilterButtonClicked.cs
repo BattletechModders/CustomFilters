@@ -3,10 +3,10 @@
 using BattleTech.UI;
 using Harmony;
 
-namespace CustomFilters.MechLabInventory.Patches;
+namespace CustomFilters.MechLabFiltering.Patches;
 
-[HarmonyPatch(typeof(MechLabInventoryWidget), nameof(MechLabInventoryWidget.SetFiltersWeapons))]
-internal static class MechLabInventoryWidget_SetFilterWeapons
+[HarmonyPatch(typeof(MechLabInventoryWidget), nameof(MechLabInventoryWidget.OnFilterButtonClicked))]
+internal static class MechLabInventoryWidget_OnFilterButtonClicked
 {
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)

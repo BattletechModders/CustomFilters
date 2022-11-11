@@ -1,63 +1,102 @@
 ﻿using System;
-using System.Diagnostics;
+using Harmony;
 using HBS.Logging;
 
 namespace CustomFilters;
 
-// see Better(Level)Logger from ME for concept
 internal static class Logging
 {
-    // ReSharper disable once InconsistentNaming
-    private static ILog _logger = null!;
-    public static void Init(LogLevel logLevel)
-    {
-        _logger = Logger.GetLogger("CustomFilters", logLevel);
+    internal static LevelLogger? Error;
+    internal static LevelLogger? Warning;
+    internal static LevelLogger? Info;
+    internal static LevelLogger? Debug;
+    internal static LevelLogger? Trace;
 
-        if (logLevel <= LogLevel.Error)
+    private static readonly ILog LOG = Logger.GetLogger(nameof(CustomFilters), LogLevel.Debug);
+
+    static Logging()
+    {
+        RefreshLogLevel();
+    }
+
+    private static bool _traceEnabled = true;
+    internal static void Setup(bool traceEnabled)
+    {
+        _traceEnabled = traceEnabled;
+        RefreshLogLevel();
+        TrackLoggerLevelChanges();
+    }
+
+    private static void TrackLoggerLevelChanges()
+    {
+        HarmonyInstance
+            .Create(typeof(Logging).FullName)
+            .Patch(
+                original: typeof(Logger).GetMethod(nameof(Logger.SetLoggerLevel)),
+                postfix: new(typeof(Logging), nameof(Logger_SetLoggerLevel_Postfix))
+            );
+    }
+    private static void Logger_SetLoggerLevel_Postfix(string name)
+    {
+        try
         {
-            Error = new(LogLevel.Error);
+            if (name == LOG.Name)
+            {
+                RefreshLogLevel();
+            }
         }
-        if (logLevel <= LogLevel.Warning)
+        catch (Exception e)
         {
-            Warn = new(LogLevel.Warning);
-        }
-        if (logLevel <= LogLevel.Log)
-        {
-            Info = new(LogLevel.Log);
-        }
-        if (logLevel <= LogLevel.Debug)
-        {
-            Debug = new(LogLevel.Debug);
+            Error?.Log(e);
         }
     }
 
-    internal static LevelLogger? Error { get; private set; }
-    internal static LevelLogger? Warn { get; private set; }
-    internal static LevelLogger? Info { get; private set; }
-    internal static LevelLogger? Debug { get; private set; }
+    private static void RefreshLogLevel()
+    {
+        Logger.GetLoggerLevel(LOG.Name, out var level);
+        SyncLevelLogger(level > LogLevel.Error, LogLevel.Error, ref Error);
+        SyncLevelLogger(level > LogLevel.Warning, LogLevel.Warning, ref Warning);
+        SyncLevelLogger(level > LogLevel.Log, LogLevel.Log, ref Info);
+        SyncLevelLogger(level > LogLevel.Debug, LogLevel.Debug, ref Debug);
+        SyncLevelLogger(level > LogLevel.Debug || !_traceEnabled, LogLevel.Debug, ref Trace);
+    }
+
+    private static void SyncLevelLogger(bool disabled, LogLevel logLevel, ref LevelLogger? field)
+    {
+        if (disabled)
+        {
+            field = null;
+        }
+        else if (field == null)
+        {
+            field = new(LOG, logLevel);
+        }
+    }
 
     internal class LevelLogger
     {
-        private readonly LogLevel _level;
+        private readonly ILog log;
+        private readonly LogLevel level;
 
-        internal LevelLogger(LogLevel level)
+        public LevelLogger(ILog log, LogLevel level)
         {
-            _level = level;
+            this.log = log;
+            this.level = level;
         }
 
-        internal void Log(object message)
+        public void Log(object message)
         {
-            _logger.LogAtLevel(_level, message);
+            log.LogAtLevel(level, message);
         }
 
-        internal void Log(object message, Exception e)
+        public void Log(object message, Exception e)
         {
-            _logger.LogAtLevel(_level, message, e);
+            log.LogAtLevel(level, message, e);
         }
 
-        internal void Log(Exception e)
+        public void Log(Func<string> callback)
         {
-            _logger.LogAtLevel(_level, null, e);
+            log.LogAtLevel(level, callback());
         }
     }
 }

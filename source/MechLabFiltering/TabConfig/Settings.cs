@@ -1,12 +1,11 @@
-﻿using HBS.Logging;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace CustomFilters.TabConfig;
+namespace CustomFilters.MechLabFiltering.TabConfig;
 
 public class Settings
 {
     [JsonProperty]
-    public LogLevel LogLevel = LogLevel.Debug;
+    public bool TraceEnabled = true;
     [JsonProperty]
     public bool ShowDebugButtons;
     [JsonProperty]

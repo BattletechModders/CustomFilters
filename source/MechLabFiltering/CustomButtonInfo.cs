@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace CustomFilters.MechLabInventory;
+namespace CustomFilters.MechLabFiltering;
 
 internal class CustomButtonInfo
 {
