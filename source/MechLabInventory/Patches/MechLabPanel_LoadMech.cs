@@ -1,4 +1,5 @@
 ﻿#nullable disable
+// ReSharper disable InconsistentNaming
 using System;
 using BattleTech.UI;
 using Harmony;
@@ -9,11 +10,14 @@ namespace CustomFilters.MechLabInventory.Patches;
 internal static class MechLabPanel_LoadMech
 {
     [HarmonyPostfix]
-    public static void Postfix()
+    public static void Postfix(MechLabPanel __instance)
     {
         try
         {
-            UIHandler.CallFilter();
+            if (UIHandlerTracker.GetInstance(__instance.inventoryWidget, out var handler))
+            {
+                handler.ApplyFiltering();
+            }
         }
         catch (Exception e)
         {

@@ -1,4 +1,5 @@
 ﻿#nullable disable
+// ReSharper disable InconsistentNaming
 using System;
 using System.Linq;
 using BattleTech;
@@ -8,7 +9,6 @@ using SVGImporter;
 
 namespace CustomFilters.MechLabInventory.Patches;
 
-// ReSharper disable InconsistentNaming
 [HarmonyPatch(typeof(MechLabPanel), nameof(MechLabPanel.InitWidgets))]
 internal static class MechLabPanel_InitWidgets
 {
@@ -18,7 +18,7 @@ internal static class MechLabPanel_InitWidgets
         try
         {
             Logging.Debug?.Log("MechLab.InitWidgets - Prefix");
-            UIHandler.PreInit(__instance);
+            UIHandlerTracker.SetInstance(__instance);
 
             // TODO fix race condition (clash with custom components)
             var loadRequest = __instance.dataManager.CreateLoadRequest();
@@ -35,12 +35,15 @@ internal static class MechLabPanel_InitWidgets
     }
 
     [HarmonyPostfix]
-    public static void Postfix()
+    public static void Postfix(MechLabPanel __instance)
     {
         try
         {
             Logging.Debug?.Log("MechLab.InitWidgets - Postfix");
-            UIHandler.Init();
+            if (UIHandlerTracker.GetInstance(__instance, out var handler))
+            {
+                handler.ResetFilters();
+            }
         }
         catch (Exception e)
         {

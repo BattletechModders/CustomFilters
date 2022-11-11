@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace CustomFilters.MechLabInventory;
 
-internal static class UIHandler
+internal class UIHandler
 {
     // compatibility
     internal static Func<MechComponentDef, bool>? CustomComponentsFlagsFilter;
@@ -22,90 +22,44 @@ internal static class UIHandler
     internal static Func<FilterInfo, MechComponentDef, bool>? CustomComponentsCategoryFilter;
     internal static Action? BattleTechPerformanceFixFilterChanged;
 
-    private static bool initialized;
-    private static readonly List<HBSDOTweenToggle> Tabs = new();
-    private static readonly List<CustomButtonInfo> Buttons = new();
-    private static MechLabPanel mechLab = null!;
-    private static HBSRadioSet _tabRadioSet = null!;
+    private readonly List<HBSDOTweenToggle> _tabs = new();
+    private readonly List<CustomButtonInfo> _buttons = new();
+    private readonly MechLabPanel _mechLab;
+    private readonly MechLabInventoryWidget _widget;
+    private readonly HBSRadioSet _tabRadioSet;
+    private readonly SVGCache _iconCache;
 
-    public static MechLabInventoryWidget Widget => mechLab.inventoryWidget;
-    private static SVGCache IconCache => mechLab.dataManager.SVGCache;
+    private TabInfo _currentTab;
+    private ButtonInfo _currentButton;
 
-    private static TabInfo _currentTab = null!;
-    private static ButtonInfo _currentButton = null!;
-
-    public static void Init()
+    internal UIHandler(MechLabPanel mechLab)
     {
-        Widget.filterBtnAll.SetActive(false);
-        Widget.filterBtnEquipmentHeatsink.SetActive(false);
-        Widget.filterBtnEquipmentJumpjet.SetActive(false);
-        Widget.filterBtnEquipmentUpgrade.SetActive(false);
+        _mechLab = mechLab;
+        _widget = mechLab.inventoryWidget;
+        _iconCache = _mechLab.dataManager.SVGCache;
 
-        Widget.filterBtnWeaponEnergy.SetActive(false);
-        Widget.filterBtnWeaponMissile.SetActive(false);
-        Widget.filterBtnWeaponBallistic.SetActive(false);
-        Widget.filterBtnWeaponSmall.SetActive(false);
+        _currentTab = Control.Tabs.First();
+        _currentButton = _currentTab.Buttons!.First();
 
-        _tabRadioSet.defaultButton = Tabs.FirstOrDefault();
-        _tabRadioSet.Reset();
+        Logging.Debug?.Log("No tabs found - create new");
 
-        TabPressed(Control.Tabs.First());
-    }
-
-    public static void PreInit(MechLabPanel mechLabPanel)
-    {
-        if (!initialized)
-        {
-            initialized = true;
-            Logging.Debug?.Log("No tabs found - create new");
-            mechLab = mechLabPanel;
-            InitTabs();
-        }
-        else if (mechLab != mechLabPanel)
-        {
-            Logging.Debug?.Log("other mechlab widget, droping");
-            foreach (var toggle in Tabs)
-            {
-                if (toggle != null)
-                    toggle.gameObject.Destroy();
-            }
-            Tabs.Clear();
-            foreach (var b in Buttons)
-            {
-                if (b.Go != null)
-                    b.Go.Destroy();
-            }
-            Buttons.Clear();
-
-            mechLab = mechLabPanel;
-            InitTabs();
-        }
-        else
-        {
-            Logging.Debug?.Log("already modified");
-        }
-    }
-
-    private static void InitTabs()
-    {
         Logging.Debug?.Log("-- hide old tabs");
-        Widget.tabAllToggleObj.gameObject.SetActive(false);
-        Widget.tabAmmoToggleObj.gameObject.SetActive(false);
-        Widget.tabEquipmentToggleObj.gameObject.SetActive(false);
-        Widget.tabMechPartToggleObj.gameObject.SetActive(false);
-        Widget.tabWeaponsToggleObj.gameObject.SetActive(false);
+        _widget.tabAllToggleObj.gameObject.SetActive(false);
+        _widget.tabAmmoToggleObj.gameObject.SetActive(false);
+        _widget.tabEquipmentToggleObj.gameObject.SetActive(false);
+        _widget.tabMechPartToggleObj.gameObject.SetActive(false);
+        _widget.tabWeaponsToggleObj.gameObject.SetActive(false);
 
         // ReSharper disable once Unity.InefficientPropertyAccess
-        var go = Widget.tabWeaponsToggleObj.gameObject;
+        var go = _widget.tabWeaponsToggleObj.gameObject;
         _tabRadioSet = go.transform.parent.GetComponent<HBSRadioSet>();
         _tabRadioSet.ClearRadioButtons();
-
 
         foreach (var settingsTab in Control.Tabs)
         {
             Logging.Debug?.Log($"--- create tab [{settingsTab.Caption}]");
 
-            var tab = Object.Instantiate(Widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
+            var tab = Object.Instantiate(_widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
             tab.transform.position = go.transform.position;
             tab.transform.localScale = Vector3.one;
             var radio = tab.GetComponent<HBSDOTweenToggle>();
@@ -114,31 +68,31 @@ internal static class UIHandler
             radio.OnClicked.AddListener(() => TabPressed(settingsTab));
 
             tab.SetActive(true);
-            Tabs.Add(radio);
+            _tabs.Add(radio);
             var text = tab.GetComponentInChildren<TextMeshProUGUI>(true);
             if (text != null)
                 text.SetText(settingsTab.Caption);
             _tabRadioSet.RadioButtons.Add(radio);
         }
 
-        Logging.Debug?.Log($"-- create small buttons");
+        Logging.Debug?.Log("-- create small buttons");
 
-        go = Widget.filterBtnAll;
+        go = _widget.filterBtnAll;
 
         var grid = go.transform.parent.gameObject.GetComponent<GridLayoutGroup>();
         grid.spacing = new(8,8);
 
-        ShowChilds(go, "");
+        ShowChildren(go, "");
 
-        Widget.filterRadioSet.ClearRadioButtons();
+        _widget.filterRadioSet.ClearRadioButtons();
         for (var i = 0; i < 14; i++)
         {
             Logging.Debug?.Log($"--- Create Button #{i}");
             try
             {
                 var info = new CustomButtonInfo(go, i, FilterPressed);
-                Buttons.Add(info);
-                Widget.filterRadioSet.AddButtonToRadioSet(info.Toggle);
+                _buttons.Add(info);
+                _widget.filterRadioSet.AddButtonToRadioSet(info.Toggle);
             }
             catch (Exception e)
             {
@@ -146,20 +100,56 @@ internal static class UIHandler
             }
         }
 
-        Widget.filterRadioSet.defaultButton = Buttons.FirstOrDefault()?.Toggle;
-        Widget.filterRadioSet.Reset();
+        _widget.filterRadioSet.defaultButton = _buttons.FirstOrDefault()?.Toggle;
+        _widget.filterRadioSet.Reset();
     }
 
-    private static void ShowChilds(GameObject go, string prefix)
+    public void ResetFilters()
+    {
+        _widget.filterBtnAll.SetActive(false);
+        _widget.filterBtnEquipmentHeatsink.SetActive(false);
+        _widget.filterBtnEquipmentJumpjet.SetActive(false);
+        _widget.filterBtnEquipmentUpgrade.SetActive(false);
+
+        _widget.filterBtnWeaponEnergy.SetActive(false);
+        _widget.filterBtnWeaponMissile.SetActive(false);
+        _widget.filterBtnWeaponBallistic.SetActive(false);
+        _widget.filterBtnWeaponSmall.SetActive(false);
+
+        _tabRadioSet.defaultButton = _tabs.FirstOrDefault();
+        _tabRadioSet.Reset();
+
+        TabPressed(Control.Tabs.First());
+    }
+
+    // this should never be called unless pooled objects get removed at some point
+    internal void Destroy()
+    {
+        Logging.Debug?.Log("destroying modifications");
+        foreach (var toggle in _tabs)
+        {
+            if (toggle != null)
+                toggle.gameObject.Destroy();
+        }
+        _tabs.Clear();
+        foreach (var b in _buttons)
+        {
+            if (b.Go != null)
+                b.Go.Destroy();
+        }
+        _buttons.Clear();
+    }
+
+    private static void ShowChildren(GameObject go, string prefix)
     {
         Logging.Debug?.Log(prefix + " " + go.name);
         foreach (Transform child in go.transform)
         {
-            ShowChilds(child.gameObject, prefix + "-");
+            ShowChildren(child.gameObject, prefix + "-");
         }
     }
 
-    private static void FilterPressed(int num)
+    private void FilterPressed(int num)
     {
         Logging.Debug?.Log($"PRESSED [{num}]");
 
@@ -171,10 +161,10 @@ internal static class UIHandler
         BattleTechPerformanceFixFilterChanged?.Invoke();
     }
 
-    private static void TabPressed(TabInfo settingsTab)
+    private void TabPressed(TabInfo settingsTab)
     {
         Logging.Debug?.Log($"PRESSED [{settingsTab.Caption}]");
-        foreach (var buttonInfo in Buttons)
+        foreach (var buttonInfo in _buttons)
         {
             buttonInfo.Go.SetActive(false);
         }
@@ -189,10 +179,10 @@ internal static class UIHandler
             Logging.Debug?.Log($"- button {i}");
 
             var buttonInfo = settingsTab.Buttons[i];
-            var button = Buttons[i];
+            var button = _buttons[i];
             if (!string.IsNullOrEmpty(buttonInfo.Text))
             {
-                Logging.Debug?.Log($"-- set text");
+                Logging.Debug?.Log("-- set text");
                 button.Text.text = buttonInfo.Text;
                 button.GoText.SetActive(true);
             }
@@ -204,8 +194,8 @@ internal static class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Icon))
             {
-                Logging.Debug?.Log($"-- set icon");
-                button.Icon.vectorGraphics = IconCache.GetAsset(buttonInfo.Icon);
+                Logging.Debug?.Log("-- set icon");
+                button.Icon.vectorGraphics = _iconCache.GetAsset(buttonInfo.Icon);
                 button.GoIcon.SetActive(true);
                 if (button.Icon.vectorGraphics == null)
                 {
@@ -221,7 +211,7 @@ internal static class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Tag))
             {
-                Logging.Debug?.Log($"- set tag");
+                Logging.Debug?.Log("- set tag");
                 button.Tag.text = buttonInfo.Tag;
                 button.GoTag.SetActive(true);
             }
@@ -247,19 +237,19 @@ internal static class UIHandler
 
             button.Go.SetActive(!buttonInfo.Debug || Control.Settings.ShowDebugButtons);
         }
-        Widget.filterRadioSet.Reset();
+        _widget.filterRadioSet.Reset();
         FilterPressed(0);
     }
 
-    public static bool ApplyFilter(MechComponentDef? item)
+    internal bool ApplyFilter(MechComponentDef? item)
     {
         // ReSharper disable once Unity.NoNullPropagation
-        if (mechLab?.activeMechDef == null)
+        if (_mechLab.activeMechDef == null)
             return true;
 
         if (item == null)
         {
-            Logging.Error?.Log($"-- ITEM IS NULL!");
+            Logging.Error?.Log("-- ITEM IS NULL!");
             return false;
         }
         //Control.LogDebug($"- {item.Description.Id}");
@@ -269,19 +259,19 @@ internal static class UIHandler
             return false;
         }
 
-        if (!ApplyFilter(item, _currentTab?.Filter))
+        if (!ApplyFilter(item, _currentTab.Filter))
         {
             //Control.LogDebug($"-- tab filter miss");
             return false;
         }
 
-        if (!ApplyFilter(item, _currentButton?.Filter))
+        if (!ApplyFilter(item, _currentButton.Filter))
         {
             //Control.LogDebug($"-- button filter miss");
             return false;
         }
 
-        if (CustomComponentsIMechLabFilter != null && !CustomComponentsIMechLabFilter(mechLab, item))
+        if (CustomComponentsIMechLabFilter != null && !CustomComponentsIMechLabFilter(_mechLab, item))
         {
             return false;
         }
@@ -290,9 +280,9 @@ internal static class UIHandler
         {
             if (item is JumpJetDef jj)
             {
-                if (mechLab.activeMechDef.Chassis.Tonnage < jj.MinTonnage)
+                if (_mechLab.activeMechDef.Chassis.Tonnage < jj.MinTonnage)
                     return false;
-                if (mechLab.activeMechDef.Chassis.Tonnage > jj.MaxTonnage)
+                if (_mechLab.activeMechDef.Chassis.Tonnage > jj.MaxTonnage)
                     return false;
             }
         }
@@ -301,23 +291,23 @@ internal static class UIHandler
         return true;
     }
 
-    private static bool ApplyFilter(MechComponentDef? item, FilterInfo? filter)
+    private bool ApplyFilter(MechComponentDef? item, FilterInfo? filter)
     {
         if (item == null)
         {
-            Logging.Error?.Log($"-- ITEM IS NULL!");
+            Logging.Error?.Log("-- ITEM IS NULL!");
             return false;
         }
 
         if (filter == null)
         {
-            Logging.Warn?.Log($"--- empty filter");
+            Logging.Warn?.Log("--- empty filter");
             return true;
         }
 
         if (filter.ComponentTypes is { Length: > 0 } && !filter.ComponentTypes.Contains(item.ComponentType))
         {
-            Logging.Warn?.Log($"--- not component type");
+            Logging.Warn?.Log("--- not component type");
             return false;
         }
 
@@ -366,8 +356,8 @@ internal static class UIHandler
         return true;
     }
 
-    public static void CallFilter()
+    internal void ApplyFiltering()
     {
-        Widget.ApplyFiltering();
+        _widget.ApplyFiltering();
     }
 }

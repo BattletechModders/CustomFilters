@@ -11,7 +11,8 @@ internal static class BattleTechPerformanceFixModCompatibility
         MechLabFixPublic.FilterFunc = list =>
         {
             Logging.Debug?.Log("FilterUsingHBSCode");
-            return list.Where(i => UIHandler.ApplyFilter(i.componentDef)).ToList();
+            var handler = UIHandlerTracker.Instance;
+            return list.Where(i => handler.ApplyFilter(i.componentDef)).ToList();
         };
 
         UIHandler.BattleTechPerformanceFixFilterChanged = MechLabFixPublic.FilterChanged;
