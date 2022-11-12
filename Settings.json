@@ -9,9 +9,34 @@
 	"MechBay" : {
 		"DefaultSortOrder" : [
 			"!ChassisTonnage",
-			"ChassisVariantName",
-			"MechName",
-			"ChassisCost"
+			"ChassisName",
+			"MechName"
 		]
+	},
+	"TagManager" : {
+		"disabled_SimGameItemsMinCount": 20,
+		"LostechStockWeaponVariantFix": true,
+		"SkirmishDefault" : {
+			"Components" : {
+				"ContainsAny" : [
+					"component_type_stock",
+					"component_type_variant",
+					"component_type_lostech"
+				]
+			}
+		},
+		"disabled_SkirmishOptionsShow": true,
+		"Components" : {
+			"Whitelist" : [
+				"component_type_stock",
+				"component_type_variant",
+				"component_type_lostech"
+			]
+		},
+		"Mechs" : {
+			"Whitelist" : [
+				"unit_release"
+			]
+		}
 	}
 }

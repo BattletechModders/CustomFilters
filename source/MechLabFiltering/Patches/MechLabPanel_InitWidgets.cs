@@ -22,7 +22,8 @@ internal static class MechLabPanel_InitWidgets
 
             // TODO fix race condition (clash with custom components)
             var loadRequest = __instance.dataManager.CreateLoadRequest();
-            foreach (var str in Control.Tabs.SelectMany(i => i.Buttons).Where(i => !string.IsNullOrEmpty(i.Icon)).Select(i => i.Icon))
+            var tabs = Control.MainSettings.MechLab.Tabs;
+            foreach (var str in tabs.SelectMany(i => i.Buttons).Where(i => !string.IsNullOrEmpty(i.Icon)).Select(i => i.Icon))
             {
                 loadRequest.AddLoadRequest<SVGAsset>(BattleTechResourceType.SVGAsset, str, null);
             }

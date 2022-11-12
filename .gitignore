@@ -5,6 +5,8 @@
 log.txt
 /*.dll
 modstate.json
+/Settings.help.json
+/Settings.last.json
 
 # User-specific files
 *.suo

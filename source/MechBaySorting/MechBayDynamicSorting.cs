@@ -127,12 +127,13 @@ internal static class MechBayDynamicSorting
     }
     private static readonly Dictionary<string, ValueExtractor> ValueExtractors = new()
     {
-        { "MechName", new(true, mech => mech.MechDef.Name) },
-        { "MechCBillValue", new(true, mech => CalculateCBillValue(mech.MechDef)) },
+        { "ChassisCost", new(false, mech => mech.ChassisDef.Description.Cost) },
+        { "ChassisId", new(false, mech => mech.ChassisDef.Description.Id) },
         { "ChassisName", new(false, mech => mech.ChassisDef.Description.Name) },
         { "ChassisTonnage", new(false, mech => mech.ChassisDef.Tonnage) },
         { "ChassisVariantName", new(false, mech => mech.ChassisDef.VariantName) },
-        { "ChassisCost", new(false, mech => mech.ChassisDef.Description.Cost) },
+        { "MechCBillValue", new(true, mech => CalculateCBillValue(mech.MechDef)) },
+        { "MechName", new(true, mech => mech.MechDef.Name) },
     };
     private static float CalculateCBillValue(MechDef mechDef)
     {
@@ -141,4 +142,6 @@ internal static class MechBayDynamicSorting
         MechStatisticsRules.CalculateCBillValue(mechDef, ref current, ref max);
         return current;
     }
+
+    internal static IReadOnlyCollection<string> Terms => ValueExtractors.Keys;
 }

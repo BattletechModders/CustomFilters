@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CustomFilters.TagManager;
+using Newtonsoft.Json;
 
 namespace CustomFilters.Settings;
 
@@ -10,4 +11,6 @@ internal class MainSettings
     internal MechBaySettings MechBay = new();
     [JsonProperty]
     internal MechLabSettings MechLab = new();
+    [JsonProperty]
+    internal TagManagerSettings TagManager = new();
 }

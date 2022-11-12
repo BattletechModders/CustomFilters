@@ -41,7 +41,7 @@ internal class UIHandler
         _widget = mechLab.inventoryWidget;
         _iconCache = _mechLab.dataManager.SVGCache;
 
-        _currentTab = Control.Tabs.First();
+        _currentTab = _settings.Tabs.First();
         _currentButton = _currentTab.Buttons!.First();
 
         Logging.Debug?.Log("No tabs found - create new");
@@ -58,7 +58,7 @@ internal class UIHandler
         _tabRadioSet = go.transform.parent.GetComponent<HBSRadioSet>();
         _tabRadioSet.ClearRadioButtons();
 
-        foreach (var settingsTab in Control.Tabs)
+        foreach (var settingsTab in _settings.Tabs)
         {
             Logging.Debug?.Log($"--- create tab [{settingsTab.Caption}]");
 
@@ -122,7 +122,7 @@ internal class UIHandler
         _tabRadioSet.defaultButton = _tabs.FirstOrDefault();
         _tabRadioSet.Reset();
 
-        TabPressed(Control.Tabs.First());
+        TabPressed(_settings.Tabs.First());
     }
 
     // this should never be called unless pooled objects get removed at some point

@@ -9,11 +9,15 @@ using Harmony;
 
 namespace CustomFilters.MechLabShopPooling;
 
-// fix for unused shop clones
 [HarmonyBefore(Mods.BattleTechPerformanceFix)]
 [HarmonyPatch(typeof(MechLabPanel), nameof(MechLabPanel.InitWidgets))]
 internal static class MechLabPanel_InitWidgets
 {
+    public static bool Prepare()
+    {
+        return Control.MainSettings.MechLab.ShopPoolingFixEnabled;
+    }
+
     [HarmonyTranspiler]
     public static IEnumerable<CodeInstruction> InitWidgets_Transpile(IEnumerable<CodeInstruction> instructions)
     {

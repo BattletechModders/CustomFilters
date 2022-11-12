@@ -65,6 +65,9 @@
     <Reference Include="System.Xml.Linq">
       <Private>False</Private>
     </Reference>
+    <Reference Include="InControl">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <Private>False</Private>
     </Reference>

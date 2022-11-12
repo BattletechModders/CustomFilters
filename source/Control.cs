@@ -9,26 +9,27 @@ using CustomFilters.MechLabFiltering.TabConfig;
 using CustomFilters.ModCompatibility;
 using CustomFilters.Settings;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace CustomFilters;
 
 internal static class Control
 {
     public static MainSettings MainSettings = new();
-    public static TabInfo[] Tabs = null!;
 
     public static void Init(string directory)
     {
         try
         {
-            MainSettings = LoadSettings<MainSettings>(directory, "Settings.json");
+            MainSettings = LoadSettings(Path.Combine(directory, "Settings.json"), MainSettings, true);
 
             Logging.Setup(MainSettings.Logging);
             Logging.Debug?.Log("Starting");
 
             { // tabs
-                Tabs = LoadSettings<TabInfo[]>(directory, MainSettings.MechLab.TabsConfigFile);
-                if (Tabs?.FirstOrDefault()?.Buttons?.FirstOrDefault() == null)
+                MainSettings.MechLab.Tabs
+                    = LoadSettings<TabInfo[]>(Path.Combine(directory, MainSettings.MechLab.TabsConfigFile));
+                if (MainSettings.MechLab.Tabs?.FirstOrDefault()?.Buttons?.FirstOrDefault() == null)
                 {
                     throw new NullReferenceException("no tabs or no buttons in first tab");
                 }
@@ -48,12 +49,42 @@ internal static class Control
         }
     }
 
-    private static T LoadSettings<T>(string directory, string filename)
+    private static T LoadSettings<T>(string configPath, T? defaultSettings = null, bool saveLast = false) where T: class
     {
-        var configPath = Path.Combine(directory, filename);
-        Logging.Info?.Log($"Reading {Path.GetFileName(configPath)}");
-        var jsonString = File.ReadAllText(configPath);
-        return JsonConvert.DeserializeObject<T>(jsonString);
+        if (defaultSettings != null)
+        {
+            SaveSettings(defaultSettings, configPath, ".help.json", true);
+        }
+
+        T settings;
+        // current
+        {
+            Logging.Info?.Log($"Reading {Path.GetFileName(configPath)}");
+            var jsonString = File.ReadAllText(configPath);
+            settings = JsonConvert.DeserializeObject<T>(jsonString);
+        }
+
+        if (saveLast)
+        {
+            SaveSettings(settings, configPath, ".last.json", false);
+        }
+
+        return settings;
+    }
+
+    private static void SaveSettings<T>(T settings, string originalPath, string newFileSuffix, bool saveDescriptions = true)
+    {
+        var newFilename = Path.GetFileNameWithoutExtension(originalPath) + newFileSuffix;
+        var newPath = Path.Combine(Path.GetDirectoryName(originalPath)!, newFilename);
+
+        using var sw = new StreamWriter(newPath);
+        using var jw = new JsonTextWriter(sw);
+        jw.Formatting = Formatting.Indented;
+        jw.IndentChar = ' ';
+        jw.Indentation = 4;
+        var serializer = new JsonSerializer();
+        serializer.Converters.Add(new StringEnumConverter());
+        serializer.Serialize(jw, settings);
     }
 
     public static void FinishedLoading(List<string> loadOrder)
