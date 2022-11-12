@@ -26,7 +26,7 @@ internal static class Logging
         {
             var log = (Logger.LogImpl)LOG;
             log.setDefaultLogLevel = false;
-            log.Level = LogLevel.Debug;
+            log.Level = logSettings.DefaultLogLevel;
         }
         RefreshLogLevel();
         TrackLoggerLevelChanges();

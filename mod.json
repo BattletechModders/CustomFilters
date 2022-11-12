@@ -5,5 +5,13 @@
 
 	"Enabled": true,
 	"DLL": "CustomFilters.dll",
-	"DLLEntryPoint": "CustomFilters.Control.Init"
+	"DLLEntryPoint": "CustomFilters.Control.Init",
+	
+	"Manifest": [
+		{
+			"Type": "AdvancedJSONMerge",
+			"Path": "advancedjsonmerge",
+			"ShouldMergeJSON": false
+		}
+	]
 }
