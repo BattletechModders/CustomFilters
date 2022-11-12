@@ -19,7 +19,6 @@ internal static class MechLabInventoryWidget_OnItemGrab
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
             {
                 mechLabFixState.OnItemGrab(ref item);
-                return false;
             }
         }
         catch (Exception e)

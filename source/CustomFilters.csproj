@@ -25,7 +25,7 @@
     </AssemblySearchPaths>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <DebugSymbols>false</DebugSymbols>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <Target Name="CopyFilesToGame" AfterTargets="CopyFilesToOutputDirectory">
