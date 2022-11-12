@@ -9,7 +9,7 @@ internal class MechLabSettings
     internal readonly string TabsConfigFileDescription =
         "Points to a file that contains a predefined set of inventory tabs to show in MechLab." +
         " See *Tab.json files for examples.";
-    [JsonProperty]
+    [JsonProperty(Required = Required.DisallowNull)]
     internal string TabsConfigFile = "VanillaTabs.json";
 
     // this is loaded by Control

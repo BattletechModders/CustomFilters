@@ -33,7 +33,7 @@ internal class TagManagerSettings
 
     [JsonProperty]
     internal const string SkirmishDefaultDescription = "The default settings used when no options panel is shown and the user enters the skirmish 'Mech bay directly.";
-    [JsonProperty]
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagsFilterSet SkirmishDefault = new()
     {
         Label = "Default",
@@ -64,7 +64,7 @@ internal class TagManagerSettings
 
     [JsonProperty]
     internal const string SkirmishPresetsDescription = "Presets allow to quickly select a custom filter-combination.";
-    [JsonProperty]
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagsFilterSet[]? SkirmishOptionsPresets =
     {
         new()
@@ -99,7 +99,7 @@ internal class TagManagerSettings
 
     [JsonProperty]
     internal const string SkirmishOptionsDefaultDescription = "Filters that are always active regardless of what the user selects in the options panel.";
-    [JsonProperty]
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagsFilterSet SkirmishOptionsDefault = new()
     {
         Components = new()
@@ -213,44 +213,73 @@ internal class TagManagerSettings
 
     internal class TagOptionsGroup
     {
-        public string Label = "<null>";
-        public TagOption[] Options = Array.Empty<TagOption>();
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal string Label = "<null>";
+
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal TagOption[] Options = Array.Empty<TagOption>();
     }
 
     internal class TagOption
     {
-        public string Label = "<null>";
-        public string[]? ContainsAny;
-        public string[]? NotContainsAny;
-        public bool OptionActive = false;
-        public bool OptionBreakLineBefore = false;
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal string Label = "<null>";
+
+        [JsonProperty]
+        internal string[]? ContainsAny;
+
+        [JsonProperty]
+        internal string[]? NotContainsAny;
+
+        [JsonProperty]
+        internal bool OptionActive = false;
+
+        [JsonProperty]
+        internal bool OptionBreakLineBefore = false;
     }
 
     internal class TagsFilterSet
     {
-        public string Label = "<null>";
-        public TagsFilter Components = new();
-        public TagsFilter Mechs = new();
-        public TagsFilter Pilots = new();
-        public TagsFilter Lances = new();
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal string Label = "<null>";
+
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal TagsFilter Components = new();
+
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal TagsFilter Mechs = new();
+
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal TagsFilter Pilots = new();
+
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal TagsFilter Lances = new();
     }
     internal class TagsFilter
     {
-        public string[]? ContainsAny;
-        public string[]? NotContainsAny;
-        [fastJSON.JsonIgnore]
+        [JsonProperty]
+        internal string[]? ContainsAny;
+
+        [JsonProperty]
+        internal string[]? NotContainsAny;
+
+        [JsonIgnore]
         internal string? OptionsSearch;
-        [fastJSON.JsonIgnore]
+
+        [JsonIgnore]
         internal TagOptionsGroup[]? OptionsGroups;
     }
 
-    [JsonProperty]
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagsTransformer Components = new();
-    [JsonProperty]
+
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagsTransformer Mechs = new();
-    [JsonProperty]
+
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagsTransformer Pilots = new();
-    [JsonProperty]
+
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagsTransformer Lances = new();
 
     internal class TagsTransformer

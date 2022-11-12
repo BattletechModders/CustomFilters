@@ -29,9 +29,21 @@ internal static class Control
             { // tabs
                 MainSettings.MechLab.Tabs
                     = LoadSettings<TabInfo[]>(Path.Combine(directory, MainSettings.MechLab.TabsConfigFile));
-                if (MainSettings.MechLab.Tabs?.FirstOrDefault()?.Buttons?.FirstOrDefault() == null)
+
+                if (MainSettings.MechLab.Tabs.FirstOrDefault()?.Buttons.FirstOrDefault() == null)
                 {
-                    throw new NullReferenceException("no tabs or no buttons in first tab");
+                    throw new NullReferenceException("no tabs, or no buttons in first tab");
+                }
+
+                for (var tabIndex = 0; tabIndex < MainSettings.MechLab.Tabs.Length; tabIndex++)
+                {
+                    var tabInfo = MainSettings.MechLab.Tabs[tabIndex];
+                    tabInfo.Index = tabIndex;
+                    for (var buttonIndex = 0; buttonIndex < tabInfo.Buttons.Length; buttonIndex++)
+                    {
+                        var buttonInfo = tabInfo.Buttons[buttonIndex];
+                        buttonInfo.Index = buttonIndex;
+                    }
                 }
             }
 

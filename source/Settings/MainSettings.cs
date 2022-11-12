@@ -5,12 +5,15 @@ namespace CustomFilters.Settings;
 
 internal class MainSettings
 {
-    [JsonProperty]
+    [JsonProperty(Required = Required.DisallowNull)]
     internal LogSettings Logging = new();
-    [JsonProperty]
+
+    [JsonProperty(Required = Required.DisallowNull)]
     internal MechBaySettings MechBay = new();
-    [JsonProperty]
+
+    [JsonProperty(Required = Required.DisallowNull)]
     internal MechLabSettings MechLab = new();
-    [JsonProperty]
+
+    [JsonProperty(Required = Required.DisallowNull)]
     internal TagManagerSettings TagManager = new();
 }

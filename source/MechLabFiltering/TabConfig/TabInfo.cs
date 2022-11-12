@@ -2,12 +2,26 @@ using Newtonsoft.Json;
 
 namespace CustomFilters.MechLabFiltering.TabConfig;
 
-public class TabInfo
+internal class TabInfo
 {
+    [JsonIgnore]
+    internal int Index = -1;
+
     [JsonProperty]
-    public string? Caption;
+    internal string? Caption = null;
+
     [JsonProperty]
-    public FilterInfo? Filter;
-    [JsonProperty]
-    public ButtonInfo[]? Buttons;
+    internal FilterInfo? Filter = null;
+
+    [JsonProperty(Required = Required.Always)]
+    internal ButtonInfo[] Buttons = null!;
+
+    public override string ToString()
+    {
+        if (Caption != null)
+        {
+            return Caption + "[" + Index + "]";
+        }
+        return Index.ToString();
+    }
 }

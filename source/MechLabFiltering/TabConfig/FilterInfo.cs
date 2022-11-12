@@ -3,18 +3,23 @@ using Newtonsoft.Json;
 
 namespace CustomFilters.MechLabFiltering.TabConfig;
 
-public class FilterInfo
+internal class FilterInfo
 {
     [JsonProperty]
-    public ComponentType[]? ComponentTypes;
+    internal ComponentType[]? ComponentTypes = null;
+
     [JsonProperty]
-    public string[]? WeaponCategories;
+    internal string[]? WeaponCategories = null;
+
     [JsonProperty]
-    public string[]? AmmoCategories;
+    internal string[]? AmmoCategories = null;
+
     [JsonProperty]
-    public string[]? UILookAndColorIcons;
+    internal string[]? UILookAndColorIcons = null;
+
     [JsonProperty]
-    public string[]? Categories;
+    internal string[]? Categories = null;
+
     [JsonProperty]
-    public string[]? NotCategories;
+    internal string[]? NotCategories = null;
 }

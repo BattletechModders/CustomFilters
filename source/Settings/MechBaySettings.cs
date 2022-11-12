@@ -9,7 +9,7 @@ internal class MechBaySettings
     internal readonly string DefaultSortOrderDescription =
         $"A list of sort order terms used for default sorting in the MechBay." +
         $" Available terms: {string.Join(", ", MechBayDynamicSorting.Terms)}.";
-    [JsonProperty]
+    [JsonProperty(Required = Required.DisallowNull)]
     internal string[] DefaultSortOrder =
     {
         "!ChassisTonnage",

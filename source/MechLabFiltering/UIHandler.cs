@@ -58,23 +58,24 @@ internal class UIHandler
         _tabRadioSet = go.transform.parent.GetComponent<HBSRadioSet>();
         _tabRadioSet.ClearRadioButtons();
 
-        foreach (var settingsTab in _settings.Tabs)
+        foreach (var tabInfo in _settings.Tabs)
         {
-            Logging.Debug?.Log($"--- create tab [{settingsTab.Caption}]");
+            Logging.Debug?.Log($"--- create tab [{tabInfo.Caption}]");
 
-            var tab = Object.Instantiate(_widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
-            tab.transform.position = go.transform.position;
-            tab.transform.localScale = Vector3.one;
-            var radio = tab.GetComponent<HBSDOTweenToggle>();
+            var tabGo = Object.Instantiate(_widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
+            tabGo.transform.position = go.transform.position;
+            tabGo.transform.localScale = Vector3.one;
+            var radio = tabGo.GetComponent<HBSDOTweenToggle>();
 
             radio.OnClicked.RemoveAllListeners();
-            radio.OnClicked.AddListener(() => TabPressed(settingsTab));
+            var info = tabInfo;
+            radio.OnClicked.AddListener(() => TabPressed(info));
 
-            tab.SetActive(true);
+            tabGo.SetActive(true);
             _tabs.Add(radio);
-            var text = tab.GetComponentInChildren<TextMeshProUGUI>(true);
+            var text = tabGo.GetComponentInChildren<TextMeshProUGUI>(true);
             if (text != null)
-                text.SetText(settingsTab.Caption);
+                text.SetText(tabInfo.Caption);
             _tabRadioSet.RadioButtons.Add(radio);
         }
 
@@ -156,7 +157,7 @@ internal class UIHandler
     {
         Logging.Debug?.Log($"PRESSED [{num}]");
 
-        if (_currentTab.Buttons == null || _currentTab.Buttons.Length <= num)
+        if (_currentTab.Buttons.Length <= num)
             return;
 
         _currentButton = _currentTab.Buttons[num];
@@ -167,63 +168,63 @@ internal class UIHandler
         }
     }
 
-    private void TabPressed(TabInfo settingsTab)
+    private void TabPressed(TabInfo tabInfo)
     {
-        Logging.Debug?.Log($"PRESSED [{settingsTab.Caption}]");
+        Logging.Debug?.Log($"PRESSED [{tabInfo.Caption}]");
         foreach (var buttonInfo in _buttons)
         {
             buttonInfo.Go.SetActive(false);
         }
 
-        _currentTab = settingsTab;
+        _currentTab = tabInfo;
 
-        if (settingsTab.Buttons == null || settingsTab.Buttons.Length == 0)
+        if (tabInfo.Buttons.Length == 0)
             return;
 
-        for (var i = 0; i < 14 && i < settingsTab.Buttons.Length; i++)
+        for (var i = 0; i < 14 && i < tabInfo.Buttons.Length; i++)
         {
             Logging.Debug?.Log($"- button {i}");
 
-            var buttonInfo = settingsTab.Buttons[i];
-            var button = _buttons[i];
+            var buttonInfo = tabInfo.Buttons[i];
+            var customButtonInfo = _buttons[i];
             if (!string.IsNullOrEmpty(buttonInfo.Text))
             {
                 Logging.Debug?.Log("-- set text");
-                button.Text.text = buttonInfo.Text;
-                button.GoText.SetActive(true);
+                customButtonInfo.Text.text = buttonInfo.Text;
+                customButtonInfo.GoText.SetActive(true);
             }
             else
             {
-                button.GoText.SetActive(false);
+                customButtonInfo.GoText.SetActive(false);
             }
 
 
             if (!string.IsNullOrEmpty(buttonInfo.Icon))
             {
                 Logging.Debug?.Log("-- set icon");
-                button.Icon.vectorGraphics = _iconCache.GetAsset(buttonInfo.Icon);
-                button.GoIcon.SetActive(true);
-                if (button.Icon.vectorGraphics == null)
+                customButtonInfo.Icon.vectorGraphics = _iconCache.GetAsset(buttonInfo.Icon);
+                customButtonInfo.GoIcon.SetActive(true);
+                if (customButtonInfo.Icon.vectorGraphics == null)
                 {
                     Logging.Error?.Log($"Icon {buttonInfo.Icon} not found, replacing with ???");
-                    button.Text.text = "???";
-                    button.GoText.SetActive(true);
+                    customButtonInfo.Text.text = "???";
+                    customButtonInfo.GoText.SetActive(true);
                 }
             }
             else
             {
-                button.GoIcon.SetActive(false);
+                customButtonInfo.GoIcon.SetActive(false);
             }
 
             if (!string.IsNullOrEmpty(buttonInfo.Tag))
             {
                 Logging.Debug?.Log("- set tag");
-                button.Tag.text = buttonInfo.Tag;
-                button.GoTag.SetActive(true);
+                customButtonInfo.Tag.text = buttonInfo.Tag;
+                customButtonInfo.GoTag.SetActive(true);
             }
             else
             {
-                button.GoTag.SetActive(false);
+                customButtonInfo.GoTag.SetActive(false);
             }
 
             if (!string.IsNullOrEmpty(buttonInfo.Tooltip))
@@ -231,17 +232,17 @@ internal class UIHandler
                 var state = new HBSTooltipStateData();
                 state.SetString(buttonInfo.Tooltip);
 
-                button.Tooltip.SetDefaultStateData(state);
+                customButtonInfo.Tooltip.SetDefaultStateData(state);
 
             }
             else
             {
                 var state = new HBSTooltipStateData();
                 state.SetDisabled();
-                button.Tooltip.SetDefaultStateData(state);
+                customButtonInfo.Tooltip.SetDefaultStateData(state);
             }
 
-            button.Go.SetActive(!buttonInfo.Debug || _settings.ShowDebugButtons);
+            customButtonInfo.Go.SetActive(!buttonInfo.Debug || _settings.ShowDebugButtons);
         }
         _widget.filterRadioSet.Reset();
         FilterPressed(0);
@@ -269,13 +270,13 @@ internal class UIHandler
 
         if (!ApplyFilter(item, _currentTab.Filter))
         {
-            Logging.Trace?.Log($"\tfiltered by current tab {_currentTab.Caption}");
+            Logging.Trace?.Log($"\tfiltered by current tab {_currentTab}");
             return false;
         }
 
         if (!ApplyFilter(item, _currentButton.Filter))
         {
-            Logging.Trace?.Log($"\tfiltered by current button {_currentButton.Text} in tab {_currentTab.Caption}");
+            Logging.Trace?.Log($"\tfiltered by current button {_currentButton} in tab {_currentTab}");
             return false;
         }
 
@@ -295,7 +296,7 @@ internal class UIHandler
             }
         }
 
-        Logging.Trace?.Log($"\taccepted by filters and button {_currentButton.Text} in tab {_currentTab.Caption}");
+        Logging.Trace?.Log($"\taccepted by filters and button {_currentButton} in tab {_currentTab}");
         return true;
     }
 
