@@ -290,6 +290,7 @@ internal class MechLabFixState
         if (quantity == 0 || lec.quantity == int.MinValue)
         {
             Logging.Error?.Log("Existing has invalid quantity");
+            return;
         }
 
         Logging.Debug?.Log("Existing quantity change {quantity}");
