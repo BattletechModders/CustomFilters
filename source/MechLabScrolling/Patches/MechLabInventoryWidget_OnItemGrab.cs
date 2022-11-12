@@ -11,7 +11,7 @@ namespace CustomFilters.MechLabScrolling.Patches;
 internal static class MechLabInventoryWidget_OnItemGrab
 {
     [HarmonyPrefix]
-    public static bool Prefix(MechLabInventoryWidget __instance, ref IMechLabDraggableItem item)
+    public static void Prefix(MechLabInventoryWidget __instance, ref IMechLabDraggableItem item)
     {
         Logging.Trace?.Log("[LimitItems] OnItemGrab_Pre");
         try
@@ -25,6 +25,5 @@ internal static class MechLabInventoryWidget_OnItemGrab
         {
             Logging.Error?.Log(e);
         }
-        return true;
     }
 }

@@ -295,11 +295,11 @@ internal class UIHandler
             }
         }
 
-        Logging.Trace?.Log($"\taccepted");
+        Logging.Trace?.Log($"\taccepted by filters and button {_currentButton.Text} in tab {_currentTab.Caption}");
         return true;
     }
 
-    private bool ApplyFilter(MechComponentDef? item, FilterInfo? filter)
+    private static bool ApplyFilter(MechComponentDef? item, FilterInfo? filter)
     {
         if (item == null)
         {
@@ -373,8 +373,23 @@ internal class UIHandler
         return true;
     }
 
-    internal void ApplyFiltering()
+    internal void RefreshJumpJetOptions(float tonnage)
     {
-        _widget.ApplyFiltering();
+        // tonnage > 0 -> part of LoadMech, the only mech based filtering during LoadMech
+        // tonnage == -1 -> part of ApplyFiltering
+        if (tonnage < 0)
+        {
+            return;
+        }
+
+        // RefreshJumpJetOptions + RefreshInventorySelectability are the mech based filters of the base game
+        // RefreshJumpJetOptions hides / filters out items
+        // RefreshInventorySelectability just adds an overlay ontop of items
+        // we only do filters for now
+        // since we have elaborate filters to go through, call them all
+        if (MechLabFixStateTracker.GetInstance(_widget, out var mechLabFixState))
+        {
+            mechLabFixState.FilterChanged();
+        }
     }
 }

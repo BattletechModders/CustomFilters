@@ -34,8 +34,9 @@ internal class MechLabFixState
     private readonly MechLabPanel _mechLab;
     private readonly MechLabInventoryWidget _widget;
 
-    private List<ListElementController_BASE_NotListView> filteredInventory = new();
     private List<ListElementController_BASE_NotListView> _rawInventory = new();
+    private bool _rawInventoryChanged = false;
+    private List<ListElementController_BASE_NotListView> filteredInventory = new();
     private int _rowCountBelowScreen;
     private int _rowMaxToStartLoading;
 
@@ -63,35 +64,31 @@ internal class MechLabFixState
 
         Logging.Debug?.Log($"Mechbay Patch initialized :simGame? {_mechLab.IsSimGame}");
 
-        List<ListElementController_BASE_NotListView> BuildRawInventory()
-        {
-            return _mechLab.storageInventory.Select<MechComponentRef, ListElementController_BASE_NotListView>(
-                componentRef =>
+        _rawInventory = _mechLab.storageInventory.Select<MechComponentRef, ListElementController_BASE_NotListView>(
+            componentRef =>
+            {
+                componentRef.DataManager = _mechLab.dataManager;
+                componentRef.RefreshComponentDef();
+                var count = !_mechLab.IsSimGame
+                    ? int.MinValue
+                    : _mechLab.sim.GetItemCount(componentRef.Def.Description, componentRef.Def.GetType(),
+                        _mechLab.sim.GetItemCountDamageType(componentRef));
+
+                if (componentRef.ComponentDefType == ComponentType.Weapon)
                 {
-                    componentRef.DataManager = _mechLab.dataManager;
-                    componentRef.RefreshComponentDef();
-                    var count = !_mechLab.IsSimGame
-                        ? int.MinValue
-                        : _mechLab.sim.GetItemCount(componentRef.Def.Description, componentRef.Def.GetType(),
-                            _mechLab.sim.GetItemCountDamageType(componentRef));
+                    var controller = new ListElementController_InventoryWeapon_NotListView();
+                    controller.InitAndFillInSpecificWidget(componentRef, null, _mechLab.dataManager, null, count);
+                    return controller;
+                }
+                else
+                {
+                    var controller = new ListElementController_InventoryGear_NotListView();
+                    controller.InitAndFillInSpecificWidget(componentRef, null, _mechLab.dataManager, null, count);
+                    return controller;
+                }
+            }).ToList();
+        _rawInventoryChanged = true;
 
-                    if (componentRef.ComponentDefType == ComponentType.Weapon)
-                    {
-                        var controller = new ListElementController_InventoryWeapon_NotListView();
-                        controller.InitAndFillInSpecificWidget(componentRef, null, _mechLab.dataManager, null, count);
-                        return controller;
-                    }
-                    else
-                    {
-                        var controller = new ListElementController_InventoryGear_NotListView();
-                        controller.InitAndFillInSpecificWidget(componentRef, null, _mechLab.dataManager, null, count);
-                        return controller;
-                    }
-                }).ToList();
-        }
-
-        /* Build a list of data only for all components. */
-        _rawInventory = Sort(BuildRawInventory());
         // End
         Logging.Debug?.Log($"[LimitItems] inventory cached in {sw.Elapsed.TotalMilliseconds} ms");
 
@@ -124,22 +121,18 @@ internal class MechLabFixState
         }
     }
 
-    /* Fast sort, which works off data, rather than visual elements.
-           Since only 7 visual elements are allocated, this is required.
-        */
-    private List<ListElementController_BASE_NotListView> Sort(List<ListElementController_BASE_NotListView> items)
+    private void Sort(List<ListElementController_BASE_NotListView> items)
     {
         Logging.Trace?.Log($"Sorting: {string.Join(",",items.Select(item => GetRef(item).ComponentDefID))}");
 
         var sw = Stopwatch.StartNew();
         var cs = _widget.currentSort;
-        Logging.Debug?.Log($"Sort using {cs.Method.DeclaringType.FullName}::{cs.Method}");
+        Logging.Debug?.Log($"Sort using {cs.Method.DeclaringType?.FullName}::{cs.Method}");
 
         var iieA = _gameObjects.ElementTmpA;
         var iieB = _gameObjects.ElementTmpB;
 
-        var tmp = items.ToList();
-        tmp.Sort((l, r) =>
+        items.Sort((l, r) =>
         {
             iieA.ComponentRef = GetRef(l);
             iieA.controller = l;
@@ -159,8 +152,6 @@ internal class MechLabFixState
 
         Logging.Info?.Log($"Sorted in {sw.ElapsedMilliseconds} ms");
         Logging.Trace?.Log($"Sorting: {string.Join(",",items.Select(item => GetRef(item).ComponentDefID))}");
-
-        return tmp;
     }
 
     private MechComponentRef GetRef(ListElementController_BASE_NotListView lec)
@@ -180,26 +171,31 @@ internal class MechLabFixState
     /* The user has changed a filter, and we rebuild the item cache. */
     internal void FilterChanged(bool resetIndex = true)
     {
-        try
+        if (resetIndex)
         {
-            if (resetIndex)
-            {
-                _widget.scrollbarArea.verticalNormalizedPosition = 1.0f;
-                _rowToStartLoading = 0;
-            }
-
-            UIHandlerTracker.GetInstance(_widget, out var handler);
-
-            filteredInventory = _rawInventory.Where(i => handler.ApplyFilter(i.componentDef)).ToList();
-            _rowCountBelowScreen = Mathf.Max(0, filteredInventory.Count - ItemsOnScreen);
-            _rowMaxToStartLoading = Mathf.Max(0, _rowCountBelowScreen - RowBufferCount);
-            _rowToStartLoading = Mathf.Clamp(_rowToStartLoading, 0, _rowMaxToStartLoading);
-            Refresh();
+            _widget.scrollbarArea.verticalNormalizedPosition = 1.0f;
+            _rowToStartLoading = 0;
         }
-        catch (Exception e)
+
+        UIHandlerTracker.GetInstance(_widget, out var handler);
+
+        if (_rawInventoryChanged)
         {
-            Logging.Error?.Log(e);
+            var sw = new Stopwatch();
+            sw.Start();
+
+            Sort(_rawInventory);
+            _rawInventoryChanged = false;
+
+            sw.Stop();
+            Logging.Debug?.Log($"[LimitItems] sorting raw inventory took {sw.ElapsedMilliseconds} ms");
         }
+
+        filteredInventory = _rawInventory.Where(i => handler.ApplyFilter(i.componentDef)).ToList();
+        _rowCountBelowScreen = Mathf.Max(0, filteredInventory.Count - ItemsOnScreen);
+        _rowMaxToStartLoading = Mathf.Max(0, _rowCountBelowScreen - RowBufferCount);
+        _rowToStartLoading = Mathf.Clamp(_rowToStartLoading, 0, _rowMaxToStartLoading);
+        Refresh();
     }
 
     private string LecToString(ListElementController_BASE_NotListView lec)
@@ -298,7 +294,12 @@ internal class MechLabFixState
 
         Logging.Debug?.Log("Existing quantity change {quantity}");
         lec.ModifyQuantity(-quantity);
-        if (lec.quantity < 1) _rawInventory.Remove(lec);
+        if (lec.quantity < 1)
+        {
+            _rawInventory.Remove(lec);
+            _rawInventoryChanged = true;
+        }
+
         FilterChanged(false);
         Refresh();
     }
@@ -351,45 +352,60 @@ internal class MechLabFixState
             }
 
             _rawInventory.Add(controller);
-            _rawInventory = Sort(_rawInventory);
-            FilterChanged(false);
+            _rawInventoryChanged = true;
         }
     }
 
     internal void ClearInventory()
     {
-        Logging.Debug?.Log($"inventoryCount={_widget.localInventory.Count}");
-        foreach (var iie in _widget.localInventory)
+        if (_widget.localInventory == null)
         {
-            // fix NRE within Pool()
-            iie.controller = new ListElementController_InventoryGear_NotListView();
-            iie.controller.dataManager = iie.dataManager = UnityGameInstance.BattleTechGame.DataManager;
-            iie.controller.ItemWidget = iie;
+            return;
         }
+
+        Logging.Debug?.Log($"inventoryCount={_widget.localInventory.Count}");
+        for (var i = _widget.localInventory.Count - 1; i >= 0; i--)
+        {
+            var iie = _widget.localInventory[i];
+            iie.gameObject.transform.SetParent(null, false);
+            if (iie.controller != null)
+            {
+                iie.controller = null;
+                iie.SetClickable(true);
+                iie.SetDraggable(true);
+                _widget.dataManager.PoolGameObject(ListElementController_BASE_NotListView.INVENTORY_ELEMENT_PREFAB_NotListView, iie.gameObject);
+            }
+            else
+            {
+                _widget.dataManager.PoolGameObject(MechLabInventoryWidget.INVENTORY_ITEM_PREFAB, iie.gameObject);
+            }
+        }
+        _widget.localInventory.Clear();
     }
 
-    internal bool MechCanEquipItem(InventoryItemElement_NotListView item)
-    {
-        // undo "fix NRE within Pool()" from earlier
-        if (item.controller != null && item.controller.componentDef == null) item.controller = null;
 
-        // TODO figure this one out
-        // no idea why this is here, just a NRE fix for vanilla?
-        return item.ComponentRef != null;
+    // TODO we ignore this for now as we filter out all items
+    // see RefreshJumpJetOptions on the filtering option
+    internal void RefreshInventorySelectability()
+    {
+        // TODO RefreshInventorySelectability sets an overlay
+        // SetOutOfStockOverlay based on MechCanEquipItem response
+        // uses MechCanUseAmmo and ValidateAdd and ValidateAddSimple
+        // CC2 would need to extend this for Hardpoints and Validation
+
+        // foreach (var iie in _widget.localInventory)
+        // {
+        //     iie.SetOutOfStockOverlay(!_mechLab.MechCanEquipItem(iie, false));
+        // }
     }
 
     internal void ApplySorting()
     {
-        // it's a mechlab screen, we do our own sort.
-        var _cs = _widget.currentSort;
-        var cst = _cs.Method;
-        Logging.Debug?.Log($"OnApplySorting using {cst.DeclaringType.FullName}::{cst}");
-        FilterChanged(false);
+        // we ignore this, because ApplySorting is always called after ApplyFiltering
     }
 
     internal void ApplyFiltering(bool refreshPositioning)
     {
-        Logging.Debug?.Log($"OnApplyFiltering (refresh-pos? {refreshPositioning})");
         FilterChanged(refreshPositioning);
     }
 }
