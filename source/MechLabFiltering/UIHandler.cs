@@ -286,7 +286,7 @@ internal class UIHandler
             return false;
         }
 
-        if (item.ComponentType == ComponentType.JumpJet&& item is JumpJetDef jj)
+        if (item.ComponentType == ComponentType.JumpJet && item is JumpJetDef jj)
         {
             var tonnage = _mechLab.activeMechDef.Chassis.Tonnage;
             if (tonnage < jj.MinTonnage || tonnage > jj.MaxTonnage)
@@ -370,7 +370,6 @@ internal class UIHandler
             return false;
         }
 
-        Logging.Trace?.Log($"\taccepted");
         return true;
     }
 
