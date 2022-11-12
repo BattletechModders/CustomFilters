@@ -5,6 +5,7 @@ using System.Linq;
 using BattleTech;
 using BattleTech.UI;
 using CustomFilters.MechBaySorting;
+using CustomFilters.Shared;
 using UnityEngine;
 using UnityEngine.UI;
 

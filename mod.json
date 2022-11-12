@@ -5,21 +5,5 @@
 
 	"Enabled": true,
 	"DLL": "CustomFilters.dll",
-	"DLLEntryPoint": "CustomFilters.Control.Init",
-
-	"Settings" : {
-		"LogLevel" : "Debug",
-		"TraceEnabled" : true,
-		"disabled_TabsConfigFile" : "VanillaTabs.json",
-		"TabsConfigFile" : "MechEngineerTabs.json",
-		"MechBayDefaultSortOrder" : [
-			"!ChassisTonnage",
-			"ChassisVariantName",
-			"MechName",
-			"ChassisCost"
-		]
-	},
-
-	"Manifest": [
-    ]
+	"DLLEntryPoint": "CustomFilters.Control.Init"
 }

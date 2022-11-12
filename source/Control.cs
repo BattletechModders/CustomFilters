@@ -7,63 +7,53 @@ using System.Reflection;
 using CustomFilters.MechBaySorting;
 using CustomFilters.MechLabFiltering.TabConfig;
 using CustomFilters.ModCompatibility;
-using HBS.Util;
+using CustomFilters.Settings;
 using Newtonsoft.Json;
 
 namespace CustomFilters;
 
 internal static class Control
 {
-    public static Settings Settings = null!;
+    public static MainSettings MainSettings = new();
     public static TabInfo[] Tabs = null!;
 
-    public static void Init(string directory, string settingsJson)
+    public static void Init(string directory)
     {
-        Exception? settingsEx = null;
         try
         {
-            Settings = new();
-            JSONSerializationUtility.FromJSON(Settings, settingsJson);
-        }
-        catch (Exception e)
-        {
-            Settings = new();
-            settingsEx = e;
-        }
+            MainSettings = LoadSettings<MainSettings>(directory, "Settings.json");
 
-        Logging.Setup(Settings.TraceEnabled);
-        Logging.Debug?.Log("Starting");
-        if (settingsEx != null)
-        {
-            Logging.Error?.Log("Could not read settings", settingsEx);
-        }
+            Logging.Setup(MainSettings.Logging);
+            Logging.Debug?.Log("Starting");
 
-        try
-        {
-            {
-                var tabsConfigPath = Path.Combine(directory, Settings.TabsConfigFile);
-                Logging.Info?.Log($"Reading tabs configuration from {Settings.TabsConfigFile}");
-                var tabsConfigJsonString = File.ReadAllText(tabsConfigPath);
-                Tabs = JsonConvert.DeserializeObject<TabInfo[]>(tabsConfigJsonString);
-
+            { // tabs
+                Tabs = LoadSettings<TabInfo[]>(directory, MainSettings.MechLab.TabsConfigFile);
                 if (Tabs?.FirstOrDefault()?.Buttons?.FirstOrDefault() == null)
                 {
                     throw new NullReferenceException("no tabs or no buttons in first tab");
                 }
             }
 
-            MechBayDynamicSorting.SetSortOrder(Settings.MechBayDefaultSortOrder);
+            MechBayDynamicSorting.SetSortOrder(MainSettings.MechBay.DefaultSortOrder);
 
             var harmony = HarmonyInstance.Create("io.github.denadan.CustomFilters");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            Logging.Info?.Log("Loaded");
         }
         catch (Exception e)
         {
             Logging.Error?.Log(e);
             throw;
         }
+    }
 
-        Logging.Info?.Log("Loaded");
+    private static T LoadSettings<T>(string directory, string filename)
+    {
+        var configPath = Path.Combine(directory, filename);
+        Logging.Info?.Log($"Reading {Path.GetFileName(configPath)}");
+        var jsonString = File.ReadAllText(configPath);
+        return JsonConvert.DeserializeObject<T>(jsonString);
     }
 
     public static void FinishedLoading(List<string> loadOrder)

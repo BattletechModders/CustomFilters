@@ -1,4 +1,5 @@
 ﻿using System;
+using CustomFilters.Settings;
 using Harmony;
 using HBS.Logging;
 
@@ -12,17 +13,21 @@ internal static class Logging
     internal static LevelLogger? Debug;
     internal static LevelLogger? Trace;
 
-    private static readonly ILog LOG = Logger.GetLogger(nameof(CustomFilters), LogLevel.Debug);
-
     static Logging()
     {
         RefreshLogLevel();
     }
 
     private static bool _traceEnabled = true;
-    internal static void Setup(bool traceEnabled)
+    private static readonly ILog LOG = Logger.GetLogger(nameof(CustomFilters), LogLevel.Debug);
+    internal static void Setup(LogSettings logSettings)
     {
-        _traceEnabled = traceEnabled;
+        _traceEnabled = logSettings.TraceEnabled;
+        {
+            var log = (Logger.LogImpl)LOG;
+            log.setDefaultLogLevel = false;
+            log.Level = LogLevel.Debug;
+        }
         RefreshLogLevel();
         TrackLoggerLevelChanges();
     }

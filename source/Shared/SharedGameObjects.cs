@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CustomFilters;
+namespace CustomFilters.Shared;
 
 internal static class SharedGameObjects
 {

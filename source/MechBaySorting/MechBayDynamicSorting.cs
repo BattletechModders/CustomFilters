@@ -96,7 +96,10 @@ internal static class MechBayDynamicSorting
             }
             else
             {
-                Logging.Warning?.Log($"Can't find sorter for term {term}, available terms: " + string.Join(", ", ValueExtractors.Keys));
+                throw new ArgumentException(
+                    $"Can't find sorter for term {term}, available terms: "
+                    + string.Join(", ", ValueExtractors.Keys)
+                );
             }
         }
     }

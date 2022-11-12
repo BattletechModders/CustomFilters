@@ -7,6 +7,7 @@ using BattleTech.UI;
 using BattleTech.UI.Tooltips;
 using CustomFilters.MechLabFiltering.TabConfig;
 using CustomFilters.MechLabScrolling;
+using CustomFilters.Settings;
 using FluffyUnderware.DevTools.Extensions;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,8 @@ internal class UIHandler
     internal static Func<MechComponentDef, bool>? CustomComponentsFlagsFilter;
     internal static Func<MechLabPanel, MechComponentDef, bool>? CustomComponentsIMechLabFilter;
     internal static Func<FilterInfo, MechComponentDef, bool>? CustomComponentsCategoryFilter;
+
+    private readonly MechLabSettings _settings = Control.MainSettings.MechLab;
 
     private readonly List<HBSDOTweenToggle> _tabs = new();
     private readonly List<CustomButtonInfo> _buttons = new();
@@ -238,7 +241,7 @@ internal class UIHandler
                 button.Tooltip.SetDefaultStateData(state);
             }
 
-            button.Go.SetActive(!buttonInfo.Debug || Control.Settings.ShowDebugButtons);
+            button.Go.SetActive(!buttonInfo.Debug || _settings.ShowDebugButtons);
         }
         _widget.filterRadioSet.Reset();
         FilterPressed(0);

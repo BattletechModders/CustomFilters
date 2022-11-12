@@ -1,6 +1,7 @@
 ﻿using BattleTech;
 using BattleTech.Data;
 using BattleTech.UI;
+using CustomFilters.Shared;
 using UnityEngine;
 
 namespace CustomFilters.MechLabScrolling;
