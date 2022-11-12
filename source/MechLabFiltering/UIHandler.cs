@@ -258,42 +258,44 @@ internal class UIHandler
             Logging.Error?.Log("-- ITEM IS NULL!");
             return false;
         }
-        //Control.LogDebug($"- {item.Description.Id}");
+
+        Logging.Trace?.Log($"ApplyFilter def item={item.Description.Id}");
 
         if (CustomComponentsFlagsFilter != null && !CustomComponentsFlagsFilter(item))
         {
+            Logging.Trace?.Log($"\tfiltered by CC flags");
             return false;
         }
 
         if (!ApplyFilter(item, _currentTab.Filter))
         {
-            //Control.LogDebug($"-- tab filter miss");
+            Logging.Trace?.Log($"\tfiltered by current tab {_currentTab.Caption}");
             return false;
         }
 
         if (!ApplyFilter(item, _currentButton.Filter))
         {
-            //Control.LogDebug($"-- button filter miss");
+            Logging.Trace?.Log($"\tfiltered by current button {_currentButton.Text} in tab {_currentTab.Caption}");
             return false;
         }
 
         if (CustomComponentsIMechLabFilter != null && !CustomComponentsIMechLabFilter(_mechLab, item))
         {
+            Logging.Trace?.Log($"\tfiltered by IMechLabFilter");
             return false;
         }
 
-        if (item.ComponentType == ComponentType.JumpJet)
+        if (item.ComponentType == ComponentType.JumpJet&& item is JumpJetDef jj)
         {
-            if (item is JumpJetDef jj)
+            var tonnage = _mechLab.activeMechDef.Chassis.Tonnage;
+            if (tonnage < jj.MinTonnage || tonnage > jj.MaxTonnage)
             {
-                if (_mechLab.activeMechDef.Chassis.Tonnage < jj.MinTonnage)
-                    return false;
-                if (_mechLab.activeMechDef.Chassis.Tonnage > jj.MaxTonnage)
-                    return false;
+                Logging.Trace?.Log($"\tfiltered by JumpJet tonnage");
+                return false;
             }
         }
 
-
+        Logging.Trace?.Log($"\taccepted");
         return true;
     }
 
@@ -311,9 +313,11 @@ internal class UIHandler
             return true;
         }
 
+        Logging.Trace?.Log($"ApplyFilter def+filter item={item.Description.Id}");
+
         if (filter.ComponentTypes is { Length: > 0 } && !filter.ComponentTypes.Contains(item.ComponentType))
         {
-            // Logging.Trace?.Log("--- not component type");
+            Logging.Trace?.Log($"\tfiltered by ComponentType");
             return false;
         }
 
@@ -327,11 +331,13 @@ internal class UIHandler
 
             if (filter.WeaponCategories is { Length: > 0 } && !filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
             {
+                Logging.Trace?.Log($"\tfiltered by WeaponCategory Name");
                 return false;
             }
 
             if (filter.UILookAndColorIcons is { Length: > 0 } && !filter.UILookAndColorIcons.Contains(weaponDef.weaponCategoryValue.Icon))
             {
+                Logging.Trace?.Log($"\tfiltered by WeaponCategory Icon");
                 return false;
             }
         }
@@ -346,19 +352,24 @@ internal class UIHandler
 
             if (filter.AmmoCategories is { Length: > 0 } && !filter.AmmoCategories.Contains(boxDef.Ammo.AmmoCategoryValue.Name))
             {
+                Logging.Trace?.Log($"\tfiltered by AmmoCategoryValue Name");
                 return false;
             }
 
             if (filter.UILookAndColorIcons is { Length: > 0 } && !filter.UILookAndColorIcons.Contains(boxDef.Ammo.AmmoCategoryValue.Icon))
             {
+                Logging.Trace?.Log($"\tfiltered by AmmoCategoryValue Icon");
                 return false;
             }
         }
 
         if (CustomComponentsCategoryFilter != null && !CustomComponentsCategoryFilter(filter, item))
         {
+            Logging.Trace?.Log($"\tfiltered by Category");
             return false;
         }
+
+        Logging.Trace?.Log($"\taccepted");
         return true;
     }
 
