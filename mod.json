@@ -12,7 +12,12 @@
 		"TraceEnabled" : true,
 		"disabled_TabsConfigFile" : "VanillaTabs.json",
 		"TabsConfigFile" : "MechEngineerTabs.json",
-		"DumpSettings": false
+		"MechBayDefaultSortOrder" : [
+			"!ChassisTonnage",
+			"ChassisVariantName",
+			"MechName",
+			"ChassisCost"
+		]
 	},
 
 	"Manifest": [

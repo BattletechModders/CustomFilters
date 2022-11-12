@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CustomFilters.MechBaySorting;
 using CustomFilters.MechLabFiltering.TabConfig;
 using CustomFilters.ModCompatibility;
 using HBS.Util;
@@ -39,23 +40,20 @@ internal static class Control
 
         try
         {
-            var tabsConfigPath = Path.Combine(directory, Settings.TabsConfigFile);
-            var tabsConfigJsonString = File.ReadAllText(tabsConfigPath);
-            Tabs = JsonConvert.DeserializeObject<TabInfo[]>(tabsConfigJsonString);
-
-            if (Tabs?.FirstOrDefault()?.Buttons?.FirstOrDefault() == null)
             {
-                throw new NullReferenceException("no tabs or no buttons in first tab");
-            }
-        }
-        catch (Exception e)
-        {
-            Logging.Error?.Log($"Could not read tabs config from {Settings.TabsConfigFile}", e);
-            throw;
-        }
+                var tabsConfigPath = Path.Combine(directory, Settings.TabsConfigFile);
+                Logging.Info?.Log($"Reading tabs configuration from {Settings.TabsConfigFile}");
+                var tabsConfigJsonString = File.ReadAllText(tabsConfigPath);
+                Tabs = JsonConvert.DeserializeObject<TabInfo[]>(tabsConfigJsonString);
 
-        try
-        {
+                if (Tabs?.FirstOrDefault()?.Buttons?.FirstOrDefault() == null)
+                {
+                    throw new NullReferenceException("no tabs or no buttons in first tab");
+                }
+            }
+
+            MechBayDynamicSorting.SetSortOrder(Settings.MechBayDefaultSortOrder);
+
             var harmony = HarmonyInstance.Create("io.github.denadan.CustomFilters");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }

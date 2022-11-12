@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using BattleTech;
 using BattleTech.UI;
+using CustomFilters.MechBaySorting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -221,7 +222,7 @@ internal class CustomMechBayMechStorageWidget
 
     internal void FilterAndSort(bool reset)
     {
-        _sortedAndFilteredInventory = _inventory
+        _sortedAndFilteredInventory =_inventory
             .Where(item =>
             {
                 if (_widget.useStockFilter && !_widget.filterEnabledStock && item.MechDef != null && !item.MechDef.MechTags.Contains(MechValidationRules.MechTag_Custom))
@@ -239,15 +240,9 @@ internal class CustomMechBayMechStorageWidget
                 }
                 return true;
             })
-            .OrderByDescending(item => item.ChassisDef.Tonnage)
-            .ThenBy(item => item.ChassisDef.VariantName)
-            .ThenBy(item => item.ChassisDef.Description.Name)
-            .ThenBy(item => item.ChassisDef.Description.Id)
-            .ThenBy(item => item.MechDef?.Name)
-            .ThenBy(item => item.MechDef?.Description.Name)
-            .ThenBy(item => item.MechDef?.Description.Id)
-            .ThenBy(item => item.ChassisDef?.Description.Cost)
             .ToList();
+
+        MechBayDynamicSorting.Sort(_sortedAndFilteredInventory);
 
         Logging.Trace?.Log($"_inventory.Count={_inventory.Count}");
         Logging.Trace?.Log($"_sortedAndFilteredInventory.Count={_sortedAndFilteredInventory.Count}");

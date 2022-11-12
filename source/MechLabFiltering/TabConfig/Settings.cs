@@ -10,4 +10,12 @@ public class Settings
     public bool ShowDebugButtons;
     [JsonProperty]
     public string TabsConfigFile = "MechEngineerTabs.json";
+    [JsonProperty]
+    public string[] MechBayDefaultSortOrder =
+    {
+        "!ChassisTonnage",
+        "ChassisVariantName",
+        "MechName",
+        "ChassisCost"
+    };
 }
