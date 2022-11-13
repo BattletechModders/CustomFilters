@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_InitInventory_MechDefs
     [HarmonyPrefix]
     public static bool Prefix(MechBayMechStorageWidget __instance, List<MechDef> mechDefs, bool resetFilters)
     {
-        Logging.Trace?.Log("MechBayMechStorageWidget.InitInventory<MechDef>");
+        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_InitInventory_MechDefs));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))

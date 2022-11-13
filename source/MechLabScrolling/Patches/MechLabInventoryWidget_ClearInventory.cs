@@ -13,7 +13,7 @@ internal static class MechLabInventoryWidget_ClearInventory
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)
     {
-        Logging.Trace?.Log("[LimitItems] ClearInventory_Pre");
+        Logging.Trace?.Log(nameof(MechLabInventoryWidget_ClearInventory));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))

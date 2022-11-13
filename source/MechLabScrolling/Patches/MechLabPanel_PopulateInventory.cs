@@ -13,7 +13,7 @@ internal static class MechLabPanel_PopulateInventory
     [HarmonyPrefix]
     public static bool Prefix(MechLabPanel __instance)
     {
-        Logging.Trace?.Log("[LimitItems] PopulateInventory Pre");
+        Logging.Trace?.Log(nameof(MechLabPanel_PopulateInventory));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))

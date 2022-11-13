@@ -15,9 +15,9 @@ internal static class MechLabPanel_InitWidgets
     [HarmonyPrefix]
     public static void Prefix(MechLabPanel __instance)
     {
+        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Prefix));
         try
         {
-            Logging.Debug?.Log("MechLab.InitWidgets - Prefix");
             UIHandlerTracker.SetInstance(__instance);
 
             // TODO fix race condition (clash with custom components)
@@ -38,9 +38,9 @@ internal static class MechLabPanel_InitWidgets
     [HarmonyPostfix]
     public static void Postfix(MechLabPanel __instance)
     {
+        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Postfix));
         try
         {
-            Logging.Debug?.Log("MechLab.InitWidgets - Postfix");
             if (UIHandlerTracker.GetInstance(__instance, out var handler))
             {
                 handler.ResetFilters();

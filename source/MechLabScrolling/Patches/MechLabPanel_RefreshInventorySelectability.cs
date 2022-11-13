@@ -12,6 +12,7 @@ internal static class MechLabPanel_RefreshInventorySelectability
     [HarmonyPrefix]
     public static bool Prefix(MechLabPanel __instance)
     {
+        Logging.Trace?.Log(nameof(MechLabPanel_RefreshInventorySelectability));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var state))

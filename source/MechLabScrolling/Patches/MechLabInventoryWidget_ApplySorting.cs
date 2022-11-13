@@ -14,7 +14,7 @@ internal static class MechLabInventoryWidget_ApplySorting
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)
     {
-        Logging.Trace?.Log("[LimitItems] ApplySorting_Pre");
+        Logging.Trace?.Log(nameof(MechLabInventoryWidget_ApplySorting));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))

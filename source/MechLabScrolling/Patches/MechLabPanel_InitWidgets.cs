@@ -14,7 +14,7 @@ internal static class MechLabPanel_InitWidgets
     [HarmonyPrefix]
     public static void Prefix(MechLabPanel __instance)
     {
-        Logging.Trace?.Log("[LimitItems] InitWidgets");
+        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets));
         try
         {
             MechLabFixStateTracker.SetInstance(__instance);

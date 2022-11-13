@@ -11,7 +11,7 @@ public static class MechBayMechStorageWidget_SetData
     [HarmonyPrefix]
     public static bool Prefix()
     {
-        Logging.Trace?.Log("MechBayMechStorageWidget.SetData");
+        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_SetData));
         return true;
     }
 }

@@ -19,7 +19,7 @@ internal static class MechLabPanel_InitWidgets
     }
 
     [HarmonyTranspiler]
-    public static IEnumerable<CodeInstruction> InitWidgets_Transpile(IEnumerable<CodeInstruction> instructions)
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var to = AccessTools.Method(typeof(MechLabPanel_InitWidgets), nameof(CreateUIModule));
 
@@ -37,7 +37,7 @@ internal static class MechLabPanel_InitWidgets
 
     public static SG_Shop_Screen CreateUIModule(UIManager uiManager, string prefabOverride = "", bool resort = true)
     {
-        Logging.Debug?.Log("[ShopFix] CreateUIModule");
+        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Transpiler) + "." + nameof(CreateUIModule));
         try
         {
             return uiManager.GetOrCreateUIModule<SG_Shop_Screen>(prefabOverride, resort);
@@ -52,7 +52,7 @@ internal static class MechLabPanel_InitWidgets
     [HarmonyPrefix]
     public static void Prefix(MechLabPanel __instance)
     {
-        Logging.Debug?.Log("[ShopFix] InitWidgets_Pre");
+        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets));
         try
         {
             if (__instance.Shop != null) __instance.Shop.Pool();

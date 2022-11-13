@@ -12,7 +12,7 @@ public static class MechBayMechStorageWidget_OnButtonClicked
     [HarmonyPrefix]
     public static void Prefix(MechBayMechStorageWidget __instance, ref IMechLabDraggableItem item)
     {
-        Logging.Trace?.Log("MechBayMechStorageWidget.OnButtonClicked");
+        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_OnButtonClicked));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))

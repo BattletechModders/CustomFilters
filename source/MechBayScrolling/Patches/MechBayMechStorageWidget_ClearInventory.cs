@@ -12,7 +12,7 @@ public static class MechBayMechStorageWidget_ClearInventory
     [HarmonyPrefix]
     public static bool Prefix(MechBayMechStorageWidget __instance)
     {
-        Logging.Trace?.Log("MechBayMechStorageWidget.ClearInventory");
+        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_ClearInventory));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))

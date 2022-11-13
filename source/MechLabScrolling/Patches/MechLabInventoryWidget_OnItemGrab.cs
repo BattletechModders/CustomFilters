@@ -13,7 +13,7 @@ internal static class MechLabInventoryWidget_OnItemGrab
     [HarmonyPrefix]
     public static void Prefix(MechLabInventoryWidget __instance, ref IMechLabDraggableItem item)
     {
-        Logging.Trace?.Log("[LimitItems] OnItemGrab_Pre");
+        Logging.Trace?.Log(nameof(MechLabInventoryWidget_OnItemGrab));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))

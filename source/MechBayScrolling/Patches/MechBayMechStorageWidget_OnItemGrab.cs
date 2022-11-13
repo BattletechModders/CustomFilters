@@ -12,7 +12,7 @@ public static class MechBayMechStorageWidget_OnItemGrab
     [HarmonyPrefix]
     public static void Prefix(MechBayMechStorageWidget __instance, IMechLabDraggableItem item)
     {
-        Logging.Trace?.Log("MechBayMechStorageWidget.OnItemGrab");
+        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_OnItemGrab));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))

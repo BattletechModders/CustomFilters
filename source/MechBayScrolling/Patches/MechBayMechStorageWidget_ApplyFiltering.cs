@@ -12,7 +12,7 @@ public static class MechBayMechStorageWidget_ApplyFiltering
     [HarmonyPrefix]
     public static bool Prefix(MechBayMechStorageWidget __instance)
     {
-        Logging.Trace?.Log("MechBayMechStorageWidget.ApplyFiltering");
+        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_ApplyFiltering));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))

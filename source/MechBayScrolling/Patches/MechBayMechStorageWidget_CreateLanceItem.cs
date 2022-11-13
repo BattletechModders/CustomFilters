@@ -13,7 +13,7 @@ public static class MechBayMechStorageWidget_CreateLanceItem
     [HarmonyPrefix]
     public static bool Prefix(MechBayMechStorageWidget __instance, MechDef def, ref LanceLoadoutMechItem __result)
     {
-        Logging.Trace?.Log("MechBayMechStorageWidget.CreateLanceItem");
+        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_CreateLanceItem));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))

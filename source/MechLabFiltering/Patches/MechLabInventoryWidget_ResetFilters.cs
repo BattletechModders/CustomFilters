@@ -1,5 +1,6 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
+using System;
 using BattleTech.UI;
 using Harmony;
 
@@ -11,10 +12,18 @@ internal static class MechLabInventoryWidget_ResetFilters
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)
     {
-        if (UIHandlerTracker.GetInstance(__instance, out var handler))
+        Logging.Trace?.Log(nameof(MechLabInventoryWidget_ResetFilters));
+        try
         {
-            handler.ResetFilters();
-            return false;
+            if (UIHandlerTracker.GetInstance(__instance, out var handler))
+            {
+                handler.ResetFilters();
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            Logging.Error?.Log(e);
         }
         return true;
     }
