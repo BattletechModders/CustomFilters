@@ -6,9 +6,6 @@ namespace CustomFilters.Settings;
 internal class MainSettings
 {
     [JsonProperty(Required = Required.DisallowNull)]
-    internal LogSettings Logging = new();
-
-    [JsonProperty(Required = Required.DisallowNull)]
     internal MechBaySettings MechBay = new();
 
     [JsonProperty(Required = Required.DisallowNull)]

@@ -23,7 +23,6 @@ internal static class Control
         {
             MainSettings = LoadSettings(Path.Combine(directory, "Settings.json"), MainSettings, true);
 
-            Logging.Setup(MainSettings.Logging);
             Logging.Debug?.Log("Starting");
 
             { // tabs
