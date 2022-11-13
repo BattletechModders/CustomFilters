@@ -28,11 +28,12 @@ internal class MechLabFixGameObjects
 
     internal void Refresh()
     {
+        Logging.Trace?.Log($"{nameof(MechLabFixGameObjects)}.{nameof(Refresh)} inventoryCount={_widget.localInventory.Count}");
+
         /* Allocate very few visual elements, as this is extremely slow for both allocation and deallocation.
                    It's the difference between a couple of milliseconds and several seconds for many unique items in inventory
                    This is the core of the fix, the rest is just to make it work within HBS's existing code.
                 */
-        Logging.Debug?.Log($"inventoryCount={_widget.localInventory.Count}");
         // this should ether be 0 or the itemLimit
         var start = _widget.localInventory.Count;
         var end = MechLabFixState.ItemLimit - 1;

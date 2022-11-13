@@ -90,7 +90,7 @@ internal class MechLabFixState
         _rawInventoryChanged = true;
 
         // End
-        Logging.Debug?.Log($"[LimitItems] inventory cached in {sw.Elapsed.TotalMilliseconds} ms");
+        Logging.Debug?.Log($"inventory cached in {sw.Elapsed.TotalMilliseconds} ms");
 
         FilterChanged();
     }
@@ -163,7 +163,7 @@ internal class MechLabFixState
             case ListElementController_InventoryGear_NotListView lecIg:
                 return lecIg.componentRef;
             default:
-                Logging.Error?.Log("[LimitItems] lec is not gear or weapon: " + lec.GetId());
+                Logging.Error?.Log("lec is not gear or weapon: " + lec.GetId());
                 throw new ArgumentOutOfRangeException(nameof(lec));
         }
     }
@@ -188,7 +188,7 @@ internal class MechLabFixState
             _rawInventoryChanged = false;
 
             sw.Stop();
-            Logging.Debug?.Log($"[LimitItems] sorting raw inventory took {sw.ElapsedMilliseconds} ms");
+            Logging.Debug?.Log($"sorting raw inventory took {sw.ElapsedMilliseconds} ms");
         }
 
         filteredInventory = _rawInventory.Where(i => handler.ApplyFilter(i.componentDef)).ToList();
@@ -205,17 +205,16 @@ internal class MechLabFixState
 
     private void Refresh()
     {
-        Logging.Trace?.Log($"[LimitItems] Refresh: {_rowToStartLoading} {filteredInventory.Count} {ItemLimit} {_widget.scrollbarArea.verticalNormalizedPosition}");
+        Logging.Trace?.Log($"{nameof(Refresh)} row={_rowToStartLoading} filteredInventory.Count={filteredInventory.Count} vnp={_widget.scrollbarArea.verticalNormalizedPosition}");
+        Logging.Trace?.Log($"{nameof(Refresh)} inventoryCount={_widget.localInventory.Count}");
 
         var toShow = filteredInventory.Skip(_rowToStartLoading).Take(ItemLimit).ToList();
         var icc = _widget.localInventory.ToList();
 
-        Logging.Trace?.Log($"[LimitItems] Refresh: localInventoryCount={_widget.localInventory.Count}");
-
         Logging.Trace?.Log(
             toShow
                 .Select(LecToString)
-                .Aggregate("[LimitItems] Showing: ", (prev, next) => $"{prev}\n{next}")
+                .Aggregate("Showing: ", (prev, next) => $"{prev}\n{next}")
         );
 
         var details = new List<string>();
@@ -231,8 +230,10 @@ internal class MechLabFixState
             iw.SetData(lec, _widget, lec.quantity);
             lec.SetupLook(iw);
             iw.gameObject.SetActive(true);
-            details.Insert(0,
-                $"enabled {iw.ComponentRef.ComponentDefID} {iw.GetComponent<RectTransform>().anchoredPosition}");
+            details.Insert(
+                0,
+                $"enabled {iw.ComponentRef.ComponentDefID} {iw.GetComponent<RectTransform>().anchoredPosition}"
+            );
         }
 
         foreach (var unused in icc)
@@ -259,7 +260,10 @@ internal class MechLabFixState
 
         _mechLab.RefreshInventorySelectability();
         Logging.Trace?.Log(
-            $"[LimitItems] RefreshDone dummystart {padding} vnp {_widget.scrollbarArea.verticalNormalizedPosition} lli {"(" + string.Join(", ", details) + ")"}");
+            $"{nameof(Refresh)} padding={padding}" +
+            $" vnp={_widget.scrollbarArea.verticalNormalizedPosition}" +
+            $" lli={"(" + string.Join(", ", details) + ")"}"
+        );
     }
 
     internal void LateUpdate()
@@ -272,7 +276,7 @@ internal class MechLabFixState
         {
             _rowToStartLoading = newIndexCandidate;
             Logging.Debug?.Log(
-                $"[LimitItems] Refresh with: {newIndexCandidate} {scrollRect.verticalNormalizedPosition}");
+                $"Refresh with: {newIndexCandidate} {scrollRect.verticalNormalizedPosition}");
             Refresh();
         }
     }
