@@ -1,0 +1,24 @@
+﻿on: push
+name: CI
+
+jobs:
+  build:
+    uses: BattletechModders/ModTek/.github/workflows/mod-builder.yml@master
+    with:
+      checkout-directory: 'BATTLETECH/Mods/CustomFilters'
+      build-script: |
+        (
+        cd "$MODS_DIR"
+        curl -L -o CustomComponents.zip https://github.com/BattletechModders/CustomComponents/releases/download/latest/CustomComponents.zip
+        unzip CustomComponents.zip
+        )
+        dotnet build --configuration Release -p:BattleTechGameDir="$BATTLETECH_DIR/"
+        (
+        cd ..
+        INCLUDES="-ir!CustomFilters -xr!source -xr!.* -x!*.sln"
+        7z a -tzip -mx9 "$DIST_DIR/CustomFilters.zip" $INCLUDES
+        )
+      release-notes: |
+        Works best with ModTek V3
+        - CustomFilters.zip contains the mod
+    secrets: inherit
