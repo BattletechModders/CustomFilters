@@ -17,7 +17,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net472</TargetFramework>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>11</LangVersion>
     <AssemblySearchPaths>
       $(ReferencePath);
       {HintPathFromItem};
