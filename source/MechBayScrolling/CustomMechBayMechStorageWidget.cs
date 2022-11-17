@@ -163,11 +163,7 @@ internal class CustomMechBayMechStorageWidget
     }
     private ObjectId SetAvailableGetId(IMechLabDraggableItem item)
     {
-        if (_testDuplicationInSkirmish && !_widget.IsSimGame)
-        {
-            return GetId(item);
-        }
-        return new(item.MechDef.GUID);
+        return _widget.IsSimGame ? new(item.MechDef.GUID) : GetId(item);
     }
 
     private void SelectedItemReset()

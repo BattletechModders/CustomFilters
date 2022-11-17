@@ -4,7 +4,7 @@ namespace CustomFilters.MechBayScrolling;
 
 internal readonly struct ObjectId : IEquatable<ObjectId>
 {
-    private readonly object _id;
+    private readonly object? _id;
     internal ObjectId(object id)
     {
         _id = id;
@@ -12,22 +12,22 @@ internal readonly struct ObjectId : IEquatable<ObjectId>
 
     public override string ToString()
     {
-        return $"{_id.GetType().Name}@{GetHashCode()}";
+        return $"{_id?.GetType().Name}@{GetHashCode()}";
     }
 
     public bool Equals(ObjectId other)
     {
-        return _id.Equals(other._id);
+        return Equals(_id, other._id);
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         return obj is ObjectId other && Equals(other);
     }
 
     public override int GetHashCode()
     {
-        return _id.GetHashCode();
+        return _id?.GetHashCode() ?? 0;
     }
 
     public static bool operator ==(ObjectId left, ObjectId right)
