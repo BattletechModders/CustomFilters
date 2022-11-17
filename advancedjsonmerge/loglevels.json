@@ -1,16 +1,13 @@
 {
-	"TargetIDs": [
-		"settings"
-	],
-	"Instructions": [
-		{
-			"JSONPath": "loggerLevels",
-			"Action": "ArrayAdd",
-			"Value":
-			{
-				"k" : "CustomFilters",
-				"v" : "200"
-			}
-		}
-	]
+    "TargetID": "settings",
+    "Instructions": [
+        {
+            "JSONPath": "loggerLevels",
+            "Action": "ArrayConcat",
+            "Value":
+            [
+                { "k" : "CustomFilters", "v" : "200" }
+            ]
+        }
+    ]
 }
