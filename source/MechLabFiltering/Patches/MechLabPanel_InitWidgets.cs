@@ -15,7 +15,7 @@ internal static class MechLabPanel_InitWidgets
     [HarmonyPrefix]
     public static void Prefix(MechLabPanel __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Prefix));
+        Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Prefix));
         try
         {
             UIHandlerTracker.SetInstance(__instance);
@@ -31,14 +31,14 @@ internal static class MechLabPanel_InitWidgets
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
     }
 
     [HarmonyPostfix]
     public static void Postfix(MechLabPanel __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Postfix));
+        Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Postfix));
         try
         {
             if (UIHandlerTracker.GetInstance(__instance, out var handler))
@@ -48,7 +48,7 @@ internal static class MechLabPanel_InitWidgets
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
     }
 }

@@ -13,7 +13,7 @@ internal static class MechLabPanel_PopulateInventory
     [HarmonyPrefix]
     public static bool Prefix(MechLabPanel __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabPanel_PopulateInventory));
+        Log.Main.Trace?.Log(nameof(MechLabPanel_PopulateInventory));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
@@ -24,7 +24,7 @@ internal static class MechLabPanel_PopulateInventory
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

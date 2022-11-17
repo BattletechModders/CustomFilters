@@ -14,14 +14,14 @@ internal static class MechLabPanel_InitWidgets
     [HarmonyPrefix]
     public static void Prefix(MechLabPanel __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets));
+        Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets));
         try
         {
             MechLabFixStateTracker.SetInstance(__instance);
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
     }
 }

@@ -12,7 +12,7 @@ public static class MechBayMechStorageWidget_OnRemoveItem
     [HarmonyPrefix]
     public static bool Prefix(MechBayMechStorageWidget __instance, IMechLabDraggableItem item, ref bool __result)
     {
-        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_OnRemoveItem));
+        Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_OnRemoveItem));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
@@ -23,7 +23,7 @@ public static class MechBayMechStorageWidget_OnRemoveItem
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

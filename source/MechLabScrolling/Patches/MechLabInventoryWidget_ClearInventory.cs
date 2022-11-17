@@ -13,7 +13,7 @@ internal static class MechLabInventoryWidget_ClearInventory
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabInventoryWidget_ClearInventory));
+        Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_ClearInventory));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
@@ -24,7 +24,7 @@ internal static class MechLabInventoryWidget_ClearInventory
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

@@ -12,7 +12,7 @@ internal static class MechLabInventoryWidget_ResetFilters
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabInventoryWidget_ResetFilters));
+        Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_ResetFilters));
         try
         {
             if (UIHandlerTracker.GetInstance(__instance, out var handler))
@@ -23,7 +23,7 @@ internal static class MechLabInventoryWidget_ResetFilters
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

@@ -27,7 +27,7 @@ public static class MainMenu_ReceiveButtonPress
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
             return false;
         }
         return true;

@@ -28,7 +28,7 @@ internal class FilterQueries
             queryString += " WHERE " + string.Join(" AND ", limits);
         }
 
-        Logging.Trace?.Log(queryString);
+        Log.Main.Trace?.Log(queryString);
         return MetadataDatabase.Instance.Query<string>(queryString, null).ToList();
     }
 
@@ -152,13 +152,13 @@ internal class FilterQueries
                 queryString += @$" WHERE {string.Join(" AND ", andCustom)}";
             }
 
-            Logging.Trace?.Log(queryString);
+            Log.Main.Trace?.Log(queryString);
             return _mdd.Query<string>(queryString, null).ToList();
         }
         finally
         {
             sw.Stop();
-            Logging.Trace?.Log($"Query for {_filterSet.Label} in {tableName} took {sw.ElapsedMilliseconds}ms.");
+            Log.Main.Trace?.Log($"Query for {_filterSet.Label} in {tableName} took {sw.ElapsedMilliseconds}ms.");
         }
     }
 

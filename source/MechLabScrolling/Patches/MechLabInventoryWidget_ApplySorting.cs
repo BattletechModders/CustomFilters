@@ -14,7 +14,7 @@ internal static class MechLabInventoryWidget_ApplySorting
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabInventoryWidget_ApplySorting));
+        Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_ApplySorting));
         try
         {
             if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
@@ -25,7 +25,7 @@ internal static class MechLabInventoryWidget_ApplySorting
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

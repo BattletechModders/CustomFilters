@@ -13,7 +13,7 @@ public static class MechBayMechStorageWidget_SetSorting
     [HarmonyPriority(Priority.High)]
     public static bool Prefix(MechBayMechStorageWidget __instance)
     {
-        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_SetSorting));
+        Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_SetSorting));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
@@ -24,7 +24,7 @@ public static class MechBayMechStorageWidget_SetSorting
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

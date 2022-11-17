@@ -12,7 +12,7 @@ public static class MechBayMechStorageWidget_OnAddItem
     [HarmonyPrefix]
     public static bool Prefix(MechBayMechStorageWidget __instance, IMechLabDraggableItem item, bool validate, ref bool __result)
     {
-        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_OnAddItem));
+        Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_OnAddItem));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
@@ -23,7 +23,7 @@ public static class MechBayMechStorageWidget_OnAddItem
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

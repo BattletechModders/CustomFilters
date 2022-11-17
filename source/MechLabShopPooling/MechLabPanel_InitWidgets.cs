@@ -37,14 +37,14 @@ internal static class MechLabPanel_InitWidgets
 
     public static SG_Shop_Screen CreateUIModule(UIManager uiManager, string prefabOverride = "", bool resort = true)
     {
-        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Transpiler) + "." + nameof(CreateUIModule));
+        Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Transpiler) + "." + nameof(CreateUIModule));
         try
         {
             return uiManager.GetOrCreateUIModule<SG_Shop_Screen>(prefabOverride, resort);
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
             throw;
         }
     }
@@ -52,14 +52,14 @@ internal static class MechLabPanel_InitWidgets
     [HarmonyPrefix]
     public static void Prefix(MechLabPanel __instance)
     {
-        Logging.Trace?.Log(nameof(MechLabPanel_InitWidgets));
+        Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets));
         try
         {
             if (__instance.Shop != null) __instance.Shop.Pool();
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
     }
 }

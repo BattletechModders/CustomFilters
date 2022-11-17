@@ -13,7 +13,7 @@ internal static class InventoryItemElement_NotListView_OnDestroy
     [HarmonyPrefix]
     public static bool Prefix(InventoryItemElement_NotListView __instance)
     {
-        Logging.Trace?.Log(nameof(InventoryItemElement_NotListView_OnDestroy));
+        Log.Main.Trace?.Log(nameof(InventoryItemElement_NotListView_OnDestroy));
         if (__instance.iconMech != null) __instance.iconMech.sprite = null;
         return false;
     }

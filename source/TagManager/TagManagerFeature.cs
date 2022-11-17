@@ -63,7 +63,7 @@ internal class TagManagerFeature
                 }
                 else
                 {
-                    Logging.Warning?.Log($"Invalid pilot {id} for skirmish was loaded");
+                    Log.Main.Warning?.Log($"Invalid pilot {id} for skirmish was loaded");
                 }
             }, true);
         }
@@ -79,7 +79,7 @@ internal class TagManagerFeature
                 }
                 catch (Exception e)
                 {
-                    Logging.Warning?.Log($"Mech {id} could not be refreshed", e);
+                    Log.Main.Warning?.Log($"Mech {id} could not be refreshed", e);
                     return;
                 }
 
@@ -89,7 +89,7 @@ internal class TagManagerFeature
                 }
                 else
                 {
-                    Logging.Warning?.Log($"Invalid mech {id} for skirmish was loaded");
+                    Log.Main.Warning?.Log($"Invalid mech {id} for skirmish was loaded");
                 }
             }, true);
         }
@@ -105,7 +105,7 @@ internal class TagManagerFeature
                 }
                 else
                 {
-                    Logging.Warning?.Log($"Invalid lance {id} for skirmish was loaded");
+                    Log.Main.Warning?.Log($"Invalid lance {id} for skirmish was loaded");
                 }
             }, true);
         }
@@ -122,7 +122,7 @@ internal class TagManagerFeature
             && !def.Description.Id.EndsWith("-STOCK")
             && tags.Contains(MechValidationRules.ComponentTag_LosTech))
         {
-            Logging.Trace?.Log($"LostechStockWeaponVariantFix {def.Description.Id}");
+            Log.Main.Trace?.Log($"LostechStockWeaponVariantFix {def.Description.Id}");
 
             tags.Remove(MechValidationRules.ComponentTag_Stock);
             tags.Add(MechValidationRules.ComponentTag_Variant);

@@ -44,9 +44,9 @@ internal class UIHandler
         _currentTab = _settings.Tabs.First();
         _currentButton = _currentTab.Buttons!.First();
 
-        Logging.Debug?.Log("No tabs found - create new");
+        Log.Main.Debug?.Log("No tabs found - create new");
 
-        Logging.Debug?.Log("-- hide old tabs");
+        Log.Main.Debug?.Log("-- hide old tabs");
         _widget.tabAllToggleObj.gameObject.SetActive(false);
         _widget.tabAmmoToggleObj.gameObject.SetActive(false);
         _widget.tabEquipmentToggleObj.gameObject.SetActive(false);
@@ -60,7 +60,7 @@ internal class UIHandler
 
         foreach (var tabInfo in _settings.Tabs)
         {
-            Logging.Debug?.Log($"--- create tab [{tabInfo.Caption}]");
+            Log.Main.Debug?.Log($"--- create tab [{tabInfo.Caption}]");
 
             var tabGo = Object.Instantiate(_widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
             tabGo.transform.position = go.transform.position;
@@ -79,7 +79,7 @@ internal class UIHandler
             _tabRadioSet.RadioButtons.Add(radio);
         }
 
-        Logging.Debug?.Log("-- create small buttons");
+        Log.Main.Debug?.Log("-- create small buttons");
 
         go = _widget.filterBtnAll;
 
@@ -91,7 +91,7 @@ internal class UIHandler
         _widget.filterRadioSet.ClearRadioButtons();
         for (var i = 0; i < 14; i++)
         {
-            Logging.Debug?.Log($"--- Create Button #{i}");
+            Log.Main.Debug?.Log($"--- Create Button #{i}");
             try
             {
                 var info = new CustomButtonInfo(go, i, FilterPressed);
@@ -100,7 +100,7 @@ internal class UIHandler
             }
             catch (Exception e)
             {
-                Logging.Error?.Log(e.Message + " " + e.StackTrace);
+                Log.Main.Error?.Log(e.Message + " " + e.StackTrace);
             }
         }
 
@@ -129,7 +129,7 @@ internal class UIHandler
     // this should never be called unless pooled objects get removed at some point
     internal void Destroy()
     {
-        Logging.Debug?.Log("destroying modifications");
+        Log.Main.Debug?.Log("destroying modifications");
         foreach (var toggle in _tabs)
         {
             if (toggle != null)
@@ -146,7 +146,7 @@ internal class UIHandler
 
     private static void ShowChildren(GameObject go, string prefix)
     {
-        Logging.Debug?.Log(prefix + " " + go.name);
+        Log.Main.Debug?.Log(prefix + " " + go.name);
         foreach (Transform child in go.transform)
         {
             ShowChildren(child.gameObject, prefix + "-");
@@ -155,7 +155,7 @@ internal class UIHandler
 
     private void FilterPressed(int num)
     {
-        Logging.Debug?.Log($"PRESSED [{num}]");
+        Log.Main.Debug?.Log($"PRESSED [{num}]");
 
         if (_currentTab.Buttons.Length <= num)
             return;
@@ -170,7 +170,7 @@ internal class UIHandler
 
     private void TabPressed(TabInfo tabInfo)
     {
-        Logging.Debug?.Log($"PRESSED [{tabInfo.Caption}]");
+        Log.Main.Debug?.Log($"PRESSED [{tabInfo.Caption}]");
         foreach (var buttonInfo in _buttons)
         {
             buttonInfo.Go.SetActive(false);
@@ -183,13 +183,13 @@ internal class UIHandler
 
         for (var i = 0; i < 14 && i < tabInfo.Buttons.Length; i++)
         {
-            Logging.Debug?.Log($"- button {i}");
+            Log.Main.Debug?.Log($"- button {i}");
 
             var buttonInfo = tabInfo.Buttons[i];
             var customButtonInfo = _buttons[i];
             if (!string.IsNullOrEmpty(buttonInfo.Text))
             {
-                Logging.Debug?.Log("-- set text");
+                Log.Main.Debug?.Log("-- set text");
                 customButtonInfo.Text.text = buttonInfo.Text;
                 customButtonInfo.GoText.SetActive(true);
             }
@@ -201,12 +201,12 @@ internal class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Icon))
             {
-                Logging.Debug?.Log("-- set icon");
+                Log.Main.Debug?.Log("-- set icon");
                 customButtonInfo.Icon.vectorGraphics = _iconCache.GetAsset(buttonInfo.Icon);
                 customButtonInfo.GoIcon.SetActive(true);
                 if (customButtonInfo.Icon.vectorGraphics == null)
                 {
-                    Logging.Error?.Log($"Icon {buttonInfo.Icon} not found, replacing with ???");
+                    Log.Main.Error?.Log($"Icon {buttonInfo.Icon} not found, replacing with ???");
                     customButtonInfo.Text.text = "???";
                     customButtonInfo.GoText.SetActive(true);
                 }
@@ -218,7 +218,7 @@ internal class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Tag))
             {
-                Logging.Debug?.Log("- set tag");
+                Log.Main.Debug?.Log("- set tag");
                 customButtonInfo.Tag.text = buttonInfo.Tag;
                 customButtonInfo.GoTag.SetActive(true);
             }
@@ -256,33 +256,33 @@ internal class UIHandler
 
         if (item == null)
         {
-            Logging.Error?.Log("-- ITEM IS NULL!");
+            Log.Main.Error?.Log("-- ITEM IS NULL!");
             return false;
         }
 
-        Logging.Trace?.Log($"ApplyFilter def item={item.Description.Id}");
+        Log.Main.Trace?.Log($"ApplyFilter def item={item.Description.Id}");
 
         if (CustomComponentsFlagsFilter != null && !CustomComponentsFlagsFilter(item))
         {
-            Logging.Trace?.Log($"\tfiltered by CC flags");
+            Log.Main.Trace?.Log($"\tfiltered by CC flags");
             return false;
         }
 
         if (!ApplyFilter(item, _currentTab.Filter))
         {
-            Logging.Trace?.Log($"\tfiltered by current tab {_currentTab}");
+            Log.Main.Trace?.Log($"\tfiltered by current tab {_currentTab}");
             return false;
         }
 
         if (!ApplyFilter(item, _currentButton.Filter))
         {
-            Logging.Trace?.Log($"\tfiltered by current button {_currentButton} in tab {_currentTab}");
+            Log.Main.Trace?.Log($"\tfiltered by current button {_currentButton} in tab {_currentTab}");
             return false;
         }
 
         if (CustomComponentsIMechLabFilter != null && !CustomComponentsIMechLabFilter(_mechLab, item))
         {
-            Logging.Trace?.Log($"\tfiltered by IMechLabFilter");
+            Log.Main.Trace?.Log($"\tfiltered by IMechLabFilter");
             return false;
         }
 
@@ -291,12 +291,12 @@ internal class UIHandler
             var tonnage = _mechLab.activeMechDef.Chassis.Tonnage;
             if (tonnage < jj.MinTonnage || tonnage > jj.MaxTonnage)
             {
-                Logging.Trace?.Log($"\tfiltered by JumpJet tonnage");
+                Log.Main.Trace?.Log($"\tfiltered by JumpJet tonnage");
                 return false;
             }
         }
 
-        Logging.Trace?.Log($"\taccepted by filters and button {_currentButton} in tab {_currentTab}");
+        Log.Main.Trace?.Log($"\taccepted by filters and button {_currentButton} in tab {_currentTab}");
         return true;
     }
 
@@ -304,7 +304,7 @@ internal class UIHandler
     {
         if (item == null)
         {
-            Logging.Error?.Log("-- ITEM IS NULL!");
+            Log.Main.Error?.Log("-- ITEM IS NULL!");
             return false;
         }
 
@@ -314,11 +314,11 @@ internal class UIHandler
             return true;
         }
 
-        Logging.Trace?.Log($"ApplyFilter def+filter item={item.Description.Id}");
+        Log.Main.Trace?.Log($"ApplyFilter def+filter item={item.Description.Id}");
 
         if (filter.ComponentTypes is { Length: > 0 } && !filter.ComponentTypes.Contains(item.ComponentType))
         {
-            Logging.Trace?.Log($"\tfiltered by ComponentType");
+            Log.Main.Trace?.Log($"\tfiltered by ComponentType");
             return false;
         }
 
@@ -326,19 +326,19 @@ internal class UIHandler
         {
             if (item is not WeaponDef weaponDef)
             {
-                Logging.Warning?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(WeaponDef)}");
+                Log.Main.Warning?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(WeaponDef)}");
                 return false;
             }
 
             if (filter.WeaponCategories is { Length: > 0 } && !filter.WeaponCategories.Contains(weaponDef.WeaponCategoryValue.Name))
             {
-                Logging.Trace?.Log($"\tfiltered by WeaponCategory Name");
+                Log.Main.Trace?.Log($"\tfiltered by WeaponCategory Name");
                 return false;
             }
 
             if (filter.UILookAndColorIcons is { Length: > 0 } && !filter.UILookAndColorIcons.Contains(weaponDef.weaponCategoryValue.Icon))
             {
-                Logging.Trace?.Log($"\tfiltered by WeaponCategory Icon");
+                Log.Main.Trace?.Log($"\tfiltered by WeaponCategory Icon");
                 return false;
             }
         }
@@ -347,26 +347,26 @@ internal class UIHandler
         {
             if (item is not AmmunitionBoxDef boxDef)
             {
-                Logging.Warning?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(AmmunitionBoxDef)}");
+                Log.Main.Warning?.Log($"{item.Description.Id} of type {item.ComponentType} is actually not of type {typeof(AmmunitionBoxDef)}");
                 return false;
             }
 
             if (filter.AmmoCategories is { Length: > 0 } && !filter.AmmoCategories.Contains(boxDef.Ammo.AmmoCategoryValue.Name))
             {
-                Logging.Trace?.Log($"\tfiltered by AmmoCategoryValue Name");
+                Log.Main.Trace?.Log($"\tfiltered by AmmoCategoryValue Name");
                 return false;
             }
 
             if (filter.UILookAndColorIcons is { Length: > 0 } && !filter.UILookAndColorIcons.Contains(boxDef.Ammo.AmmoCategoryValue.Icon))
             {
-                Logging.Trace?.Log($"\tfiltered by AmmoCategoryValue Icon");
+                Log.Main.Trace?.Log($"\tfiltered by AmmoCategoryValue Icon");
                 return false;
             }
         }
 
         if (CustomComponentsCategoryFilter != null && !CustomComponentsCategoryFilter(filter, item))
         {
-            Logging.Trace?.Log($"\tfiltered by Category");
+            Log.Main.Trace?.Log($"\tfiltered by Category");
             return false;
         }
 

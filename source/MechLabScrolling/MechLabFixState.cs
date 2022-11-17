@@ -58,11 +58,11 @@ internal class MechLabFixState
         sw.Start();
         _gameObjects.Refresh();
 
-        Logging.Debug?.Log($"StorageInventory contains {_mechLab.storageInventory.Count}");
+        Log.Main.Debug?.Log($"StorageInventory contains {_mechLab.storageInventory.Count}");
 
         if (_mechLab.IsSimGame) _mechLab.originalStorageInventory = _mechLab.storageInventory;
 
-        Logging.Debug?.Log($"Mechbay Patch initialized :simGame? {_mechLab.IsSimGame}");
+        Log.Main.Debug?.Log($"Mechbay Patch initialized :simGame? {_mechLab.IsSimGame}");
 
         _rawInventory = _mechLab.storageInventory.Select<MechComponentRef, ListElementController_BASE_NotListView>(
             componentRef =>
@@ -90,7 +90,7 @@ internal class MechLabFixState
         _rawInventoryChanged = true;
 
         // End
-        Logging.Debug?.Log($"inventory cached in {sw.Elapsed.TotalMilliseconds} ms");
+        Log.Main.Debug?.Log($"inventory cached in {sw.Elapsed.TotalMilliseconds} ms");
 
         FilterChanged();
     }
@@ -123,11 +123,11 @@ internal class MechLabFixState
 
     private void Sort(List<ListElementController_BASE_NotListView> items)
     {
-        Logging.Trace?.Log($"Sorting: {string.Join(",",items.Select(item => GetRef(item).ComponentDefID))}");
+        Log.Main.Trace?.Log($"Sorting: {string.Join(",",items.Select(item => GetRef(item).ComponentDefID))}");
 
         var sw = Stopwatch.StartNew();
         var cs = _widget.currentSort;
-        Logging.Debug?.Log($"Sort using {cs.Method.DeclaringType?.FullName}::{cs.Method}");
+        Log.Main.Debug?.Log($"Sort using {cs.Method.DeclaringType?.FullName}::{cs.Method}");
 
         var iieA = _gameObjects.ElementTmpA;
         var iieB = _gameObjects.ElementTmpB;
@@ -145,13 +145,13 @@ internal class MechLabFixState
             iieB.ItemType = ToDraggableType(r.componentDef);
 
             var res = cs.Invoke(iieA, iieB);
-            Logging.Trace?.Log(
+            Log.Main.Trace?.Log(
                 $"Compare {iieA.ComponentRef.ComponentDefID}({iieA.controller.ItemWidget != null}) & {iieB.ComponentRef.ComponentDefID}({iieB.controller.ItemWidget != null}) -> {res}");
             return res;
         });
 
-        Logging.Info?.Log($"Sorted in {sw.ElapsedMilliseconds} ms");
-        Logging.Trace?.Log($"Sorting: {string.Join(",",items.Select(item => GetRef(item).ComponentDefID))}");
+        Log.Main.Info?.Log($"Sorted in {sw.ElapsedMilliseconds} ms");
+        Log.Main.Trace?.Log($"Sorting: {string.Join(",",items.Select(item => GetRef(item).ComponentDefID))}");
     }
 
     private MechComponentRef GetRef(ListElementController_BASE_NotListView lec)
@@ -163,7 +163,7 @@ internal class MechLabFixState
             case ListElementController_InventoryGear_NotListView lecIg:
                 return lecIg.componentRef;
             default:
-                Logging.Error?.Log("lec is not gear or weapon: " + lec.GetId());
+                Log.Main.Error?.Log("lec is not gear or weapon: " + lec.GetId());
                 throw new ArgumentOutOfRangeException(nameof(lec));
         }
     }
@@ -188,7 +188,7 @@ internal class MechLabFixState
             _rawInventoryChanged = false;
 
             sw.Stop();
-            Logging.Debug?.Log($"sorting raw inventory took {sw.ElapsedMilliseconds} ms");
+            Log.Main.Debug?.Log($"sorting raw inventory took {sw.ElapsedMilliseconds} ms");
         }
 
         filteredInventory = _rawInventory.Where(i => handler.ApplyFilter(i.componentDef)).ToList();
@@ -205,13 +205,13 @@ internal class MechLabFixState
 
     private void Refresh()
     {
-        Logging.Trace?.Log($"{nameof(Refresh)} row={_rowToStartLoading} filteredInventory.Count={filteredInventory.Count} vnp={_widget.scrollbarArea.verticalNormalizedPosition}");
-        Logging.Trace?.Log($"{nameof(Refresh)} inventoryCount={_widget.localInventory.Count}");
+        Log.Main.Trace?.Log($"{nameof(Refresh)} row={_rowToStartLoading} filteredInventory.Count={filteredInventory.Count} vnp={_widget.scrollbarArea.verticalNormalizedPosition}");
+        Log.Main.Trace?.Log($"{nameof(Refresh)} inventoryCount={_widget.localInventory.Count}");
 
         var toShow = filteredInventory.Skip(_rowToStartLoading).Take(ItemLimit).ToList();
         var icc = _widget.localInventory.ToList();
 
-        Logging.Trace?.Log(
+        Log.Main.Trace?.Log(
             toShow
                 .Select(LecToString)
                 .Aggregate("Showing: ", (prev, next) => $"{prev}\n{next}")
@@ -259,7 +259,7 @@ internal class MechLabFixState
         LayoutRebuilder.MarkLayoutForRebuild(vlg.GetComponent<RectTransform>());
 
         _mechLab.RefreshInventorySelectability();
-        Logging.Trace?.Log(
+        Log.Main.Trace?.Log(
             $"{nameof(Refresh)} padding={padding}" +
             $" vnp={_widget.scrollbarArea.verticalNormalizedPosition}" +
             $" lli={"(" + string.Join(", ", details) + ")"}"
@@ -275,7 +275,7 @@ internal class MechLabFixState
         if (_rowToStartLoading != newIndexCandidate)
         {
             _rowToStartLoading = newIndexCandidate;
-            Logging.Debug?.Log(
+            Log.Main.Debug?.Log(
                 $"Refresh with: {newIndexCandidate} {scrollRect.verticalNormalizedPosition}");
             Refresh();
         }
@@ -286,18 +286,18 @@ internal class MechLabFixState
         var nlv = (InventoryItemElement_NotListView)item;
         if (!TryGet(item.ComponentRef, out var lec))
         {
-            Logging.Error?.Log("Existing not found");
+            Log.Main.Error?.Log("Existing not found");
             return;
         }
 
         var quantity = nlv.controller.quantity;
         if (quantity == 0 || lec.quantity == int.MinValue)
         {
-            Logging.Error?.Log("Existing has invalid quantity");
+            Log.Main.Error?.Log("Existing has invalid quantity");
             return;
         }
 
-        Logging.Debug?.Log("Existing quantity change {quantity}");
+        Log.Main.Debug?.Log("Existing quantity change {quantity}");
         lec.ModifyQuantity(-quantity);
         if (lec.quantity < 1)
         {
@@ -330,13 +330,13 @@ internal class MechLabFixState
         var quantity = nlv == null ? 1 : nlv.controller.quantity;
         if (TryGet(item.ComponentRef, out var existing))
         {
-            Logging.Debug?.Log($"OnAddItem existing {quantity}");
+            Log.Main.Debug?.Log($"OnAddItem existing {quantity}");
             if (existing.quantity != int.MinValue) existing.ModifyQuantity(quantity);
             Refresh();
         }
         else
         {
-            Logging.Debug?.Log($"OnAddItem new {quantity}");
+            Log.Main.Debug?.Log($"OnAddItem new {quantity}");
             var controller = nlv == null ? null : nlv.controller;
             if (controller == null)
             {
@@ -368,7 +368,7 @@ internal class MechLabFixState
             return;
         }
 
-        Logging.Debug?.Log($"inventoryCount={_widget.localInventory.Count}");
+        Log.Main.Debug?.Log($"inventoryCount={_widget.localInventory.Count}");
         for (var i = _widget.localInventory.Count - 1; i >= 0; i--)
         {
             var iie = _widget.localInventory[i];

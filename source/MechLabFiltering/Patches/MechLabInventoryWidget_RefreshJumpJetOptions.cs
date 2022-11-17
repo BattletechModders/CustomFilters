@@ -12,7 +12,7 @@ internal static class MechLabInventoryWidget_RefreshJumpJetOptions
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance, float tonnage)
     {
-        Logging.Trace?.Log(nameof(MechLabInventoryWidget_RefreshJumpJetOptions));
+        Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_RefreshJumpJetOptions));
         try
         {
             if (UIHandlerTracker.GetInstance(__instance, out var handler))
@@ -23,7 +23,7 @@ internal static class MechLabInventoryWidget_RefreshJumpJetOptions
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

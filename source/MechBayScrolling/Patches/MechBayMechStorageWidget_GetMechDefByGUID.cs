@@ -12,7 +12,7 @@ public static class MechBayMechStorageWidget_GetMechDefByGUID
     [HarmonyPrefix]
     public static bool Prefix(MechBayMechStorageWidget __instance, string GUID, ref IMechLabDraggableItem __result)
     {
-        Logging.Trace?.Log(nameof(MechBayMechStorageWidget_GetMechDefByGUID));
+        Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_GetMechDefByGUID));
         try
         {
             if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
@@ -23,7 +23,7 @@ public static class MechBayMechStorageWidget_GetMechDefByGUID
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
         }
         return true;
     }

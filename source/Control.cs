@@ -23,7 +23,7 @@ internal static class Control
         {
             MainSettings = LoadSettings(Path.Combine(directory, "Settings.json"), MainSettings, true);
 
-            Logging.Debug?.Log("Starting");
+            Log.Main.Debug?.Log("Starting");
 
             { // tabs
                 MainSettings.MechLab.Tabs
@@ -51,11 +51,11 @@ internal static class Control
             var harmony = HarmonyInstance.Create("io.github.denadan.CustomFilters");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            Logging.Info?.Log("Loaded");
+            Log.Main.Info?.Log("Loaded");
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
             throw;
         }
     }
@@ -70,7 +70,7 @@ internal static class Control
         T settings;
         // current
         {
-            Logging.Info?.Log($"Reading {Path.GetFileName(configPath)}");
+            Log.Main.Info?.Log($"Reading {Path.GetFileName(configPath)}");
             var jsonString = File.ReadAllText(configPath);
             settings = JsonConvert.DeserializeObject<T>(jsonString);
         }
@@ -109,7 +109,7 @@ internal static class Control
         }
         catch (Exception e)
         {
-            Logging.Error?.Log(e);
+            Log.Main.Error?.Log(e);
             throw;
         }
     }

@@ -223,7 +223,7 @@ internal class OptionsPanel
             ? "<color=#F06248FF>Warning too many units!</color>"
             : "";
         _inputTitleText.SetText($"{warningSuffix}\r\n{count} results");
-        Logging.Trace?.Log("Input Tag Search yielded {count} results: " + _searchText);
+        Log.Main.Trace?.Log("Input Tag Search yielded {count} results: " + _searchText);
     }
 
     private string? _searchText;
