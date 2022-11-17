@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System;
+using System.Collections.Generic;
 using BattleTech;
 using BattleTech.UI;
 using UnityEngine;
@@ -32,6 +33,27 @@ internal class FakeItem : IMechLabDraggableItem
     internal bool HasGUID(string GUID)
     {
         return MechDef != null && MechDef.GUID == GUID;
+    }
+
+    public override string ToString()
+    {
+        return string.Join(",", BuildStringParts());
+    }
+
+    private IEnumerable<string> BuildStringParts()
+    {
+        if (MechDef == null)
+        {
+            yield return "ChassisDefId=" + ChassisDef.Description.Id;
+        }
+        else if (MechDef.GUID == null)
+        {
+            yield return "MechDefId=" + MechDef.Description.Id;
+        }
+        else
+        {
+            yield return "GUID=" + MechDef.GUID;
+        }
     }
 
     // interface implementations

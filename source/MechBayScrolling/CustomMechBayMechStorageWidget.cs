@@ -209,12 +209,28 @@ internal class CustomMechBayMechStorageWidget
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal IMechLabDraggableItem? GetMechDefByGUID(string GUID)
     {
-        return _inventory.Where(i => i.HasGUID(GUID)).Select(GetTempMechLabItem).FirstOrDefault();
+        if (string.IsNullOrEmpty(GUID))
+        {
+            return null;
+        }
+
+        return _inventory
+            .Where(i => i.HasGUID(GUID))
+            .Select(GetTempMechLabItem)
+            .FirstOrDefault();
     }
 
     internal IMechLabDraggableItem? GetInventoryItem(string id)
     {
-        return _inventory.Where(i => i.HasId(id)).Select(GetTempMechLabItem).FirstOrDefault();
+        if (string.IsNullOrEmpty(id))
+        {
+            return null;
+        }
+
+        return _inventory
+            .Where(i => i.HasId(id))
+            .Select(GetTempMechLabItem)
+            .FirstOrDefault();
     }
 
     internal void FilterAndSort(bool reset)
@@ -412,7 +428,7 @@ internal class CustomMechBayMechStorageWidget
             return false;
         }
 
-        // add new if existing could not be found
+        Log.Main.Trace?.Log($"Adding new item {item.MechDef.Description.Id}");
         _inventory.Add(new(item.MechDef));
         PoolItem(item);
         _widget.SetSorting();
@@ -459,15 +475,16 @@ internal class CustomMechBayMechStorageWidget
         item = GetTempMechLabItem(item);
     }
 
-    private IMechLabDraggableItem? tmpItem;
+    private IMechLabDraggableItem? _tmpItem;
     private IMechLabDraggableItem GetTempMechLabItem(IMechLabDraggableItem fakeItem)
     {
-        if (tmpItem == null || tmpItem.GameObject.transform.parent != null)
+        if (_tmpItem == null || _tmpItem.GameObject.transform.parent != null)
         {
-            // some content wants to be selected even if outside list parent -> add to radio set
-            tmpItem = PooledInstantiate(fakeItem, false, true);
+            Log.Main.Trace?.Log($"Pooling new tmpItem {fakeItem}");
+            _tmpItem = PooledInstantiate(fakeItem, false, true);
+            SetInventoryItemData(_tmpItem, fakeItem);
         }
-        return tmpItem;
+        return _tmpItem;
     }
 
     // if vanilla used MechDef.GUID -> use MechDef.GUID
