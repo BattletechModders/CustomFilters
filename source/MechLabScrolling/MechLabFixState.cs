@@ -205,8 +205,14 @@ internal class MechLabFixState
 
     private void Refresh()
     {
-        Log.Main.Trace?.Log($"{nameof(Refresh)} row={_rowToStartLoading} filteredInventory.Count={filteredInventory.Count} vnp={_widget.scrollbarArea.verticalNormalizedPosition}");
-        Log.Main.Trace?.Log($"{nameof(Refresh)} inventoryCount={_widget.localInventory.Count}");
+        Log.Main.Trace?.Log($"Refresh row={_rowToStartLoading} filteredInventory.Count={filteredInventory.Count} vnp={_widget.scrollbarArea.verticalNormalizedPosition}");
+        Log.Main.Trace?.Log($"Refresh inventoryCount={_widget.localInventory.Count}");
+
+        // display elements missing -> not yet initialized
+        if (_widget.localInventory.Count == 0)
+        {
+            return;
+        }
 
         var toShow = filteredInventory.Skip(_rowToStartLoading).Take(ItemLimit).ToList();
         var icc = _widget.localInventory.ToList();
@@ -260,7 +266,7 @@ internal class MechLabFixState
 
         _mechLab.RefreshInventorySelectability();
         Log.Main.Trace?.Log(
-            $"{nameof(Refresh)} padding={padding}" +
+            $"Refresh padding={padding}" +
             $" vnp={_widget.scrollbarArea.verticalNormalizedPosition}" +
             $" lli={"(" + string.Join(", ", details) + ")"}"
         );
