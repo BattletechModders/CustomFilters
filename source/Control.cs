@@ -102,9 +102,14 @@ internal static class Control
     {
         try
         {
+            // avoids eager loading references that can't be resolved
             if (loadOrder.Contains("CustomComponents"))
             {
                 CustomComponentsModCompatibility.Setup();
+            }
+            if (loadOrder.Contains("CustomUnits"))
+            {
+                CustomUnityModCompatibility.Setup();
             }
         }
         catch (Exception e)

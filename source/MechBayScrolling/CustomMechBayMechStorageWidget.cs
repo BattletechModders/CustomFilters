@@ -476,13 +476,13 @@ internal class CustomMechBayMechStorageWidget
     }
 
     private IMechLabDraggableItem? _tmpItem;
-    private IMechLabDraggableItem GetTempMechLabItem(IMechLabDraggableItem fakeItem)
+    private IMechLabDraggableItem GetTempMechLabItem(IMechLabDraggableItem baseItem)
     {
         if (_tmpItem == null || _tmpItem.GameObject.transform.parent != null)
         {
-            Log.Main.Trace?.Log($"Pooling new tmpItem {fakeItem}");
-            _tmpItem = PooledInstantiate(fakeItem, false, true);
-            SetInventoryItemData(_tmpItem, fakeItem);
+            Log.Main.Trace?.Log($"Pooling new tmpItem based on {baseItem}");
+            _tmpItem = PooledInstantiate(baseItem, false, true);
+            SetInventoryItemData(_tmpItem, baseItem);
         }
         return _tmpItem;
     }
