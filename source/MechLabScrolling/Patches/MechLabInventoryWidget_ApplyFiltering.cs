@@ -10,7 +10,6 @@ namespace CustomFilters.MechLabScrolling.Patches;
 [HarmonyPatch(typeof(MechLabInventoryWidget), nameof(MechLabInventoryWidget.ApplyFiltering))]
 internal static class MechLabInventoryWidget_ApplyFiltering
 {
-    [HarmonyPriority(Priority.First + 1)]
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance, bool refreshPositioning)
     {

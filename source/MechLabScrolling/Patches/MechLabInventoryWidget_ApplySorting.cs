@@ -7,10 +7,10 @@ using Harmony;
 namespace CustomFilters.MechLabScrolling.Patches;
 
 [HarmonyBefore(Mods.BattleTechPerformanceFix)]
+[HarmonyAfter(Mods.CustomComponents)]
 [HarmonyPatch(typeof(MechLabInventoryWidget), nameof(MechLabInventoryWidget.ApplySorting))]
 internal static class MechLabInventoryWidget_ApplySorting
 {
-    [HarmonyPriority(Priority.First + 1)]
     [HarmonyPrefix]
     public static bool Prefix(MechLabInventoryWidget __instance)
     {
