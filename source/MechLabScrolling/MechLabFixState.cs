@@ -150,7 +150,7 @@ internal class MechLabFixState
             return res;
         });
 
-        Log.Main.Info?.Log($"Sorted in {sw.ElapsedMilliseconds} ms");
+        Log.Main.Debug?.Log($"Sorted in {sw.ElapsedMilliseconds} ms");
         Log.Main.Trace?.Log($"Sorting: {string.Join(",",items.Select(item => GetRef(item).ComponentDefID))}");
     }
 
@@ -374,7 +374,7 @@ internal class MechLabFixState
             return;
         }
 
-        Log.Main.Debug?.Log($"inventoryCount={_widget.localInventory.Count}");
+        Log.Main.Debug?.Log($"ClearInventory with inventoryCount={_widget.localInventory.Count}");
         for (var i = _widget.localInventory.Count - 1; i >= 0; i--)
         {
             var iie = _widget.localInventory[i];

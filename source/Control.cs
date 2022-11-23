@@ -51,7 +51,7 @@ internal static class Control
             var harmony = HarmonyInstance.Create("io.github.denadan.CustomFilters");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            Log.Main.Info?.Log("Loaded");
+            Log.Main.Info?.Log("initialized");
         }
         catch (Exception e)
         {

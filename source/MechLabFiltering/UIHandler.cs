@@ -46,7 +46,7 @@ internal class UIHandler
 
         Log.Main.Debug?.Log("No tabs found - create new");
 
-        Log.Main.Debug?.Log("-- hide old tabs");
+        Log.Main.Trace?.Log("-- hide old tabs");
         _widget.tabAllToggleObj.gameObject.SetActive(false);
         _widget.tabAmmoToggleObj.gameObject.SetActive(false);
         _widget.tabEquipmentToggleObj.gameObject.SetActive(false);
@@ -60,7 +60,7 @@ internal class UIHandler
 
         foreach (var tabInfo in _settings.Tabs)
         {
-            Log.Main.Debug?.Log($"--- create tab [{tabInfo.Caption}]");
+            Log.Main.Trace?.Log($"--- create tab [{tabInfo.Caption}]");
 
             var tabGo = Object.Instantiate(_widget.tabWeaponsToggleObj.gameObject, go.transform.parent);
             tabGo.transform.position = go.transform.position;
@@ -79,7 +79,7 @@ internal class UIHandler
             _tabRadioSet.RadioButtons.Add(radio);
         }
 
-        Log.Main.Debug?.Log("-- create small buttons");
+        Log.Main.Trace?.Log("-- create small buttons");
 
         go = _widget.filterBtnAll;
 
@@ -91,7 +91,7 @@ internal class UIHandler
         _widget.filterRadioSet.ClearRadioButtons();
         for (var i = 0; i < 14; i++)
         {
-            Log.Main.Debug?.Log($"--- Create Button #{i}");
+            Log.Main.Trace?.Log($"--- Create Button #{i}");
             try
             {
                 var info = new CustomButtonInfo(go, i, FilterPressed);
@@ -100,7 +100,7 @@ internal class UIHandler
             }
             catch (Exception e)
             {
-                Log.Main.Error?.Log(e.Message + " " + e.StackTrace);
+                Log.Main.Error?.Log(e);
             }
         }
 
@@ -155,12 +155,14 @@ internal class UIHandler
 
     private void FilterPressed(int num)
     {
-        Log.Main.Debug?.Log($"PRESSED [{num}]");
+        Log.Main.Trace?.Log($"PRESSED [{num}]");
 
         if (_currentTab.Buttons.Length <= num)
             return;
 
         _currentButton = _currentTab.Buttons[num];
+
+        Log.Main.Info?.Log($"PRESSED button {_currentButton}");
 
         if (MechLabFixStateTracker.GetInstance(_widget, out var state))
         {
@@ -170,7 +172,7 @@ internal class UIHandler
 
     private void TabPressed(TabInfo tabInfo)
     {
-        Log.Main.Debug?.Log($"PRESSED [{tabInfo.Caption}]");
+        Log.Main.Info?.Log($"PRESSED tab {tabInfo}");
         foreach (var buttonInfo in _buttons)
         {
             buttonInfo.Go.SetActive(false);
@@ -183,13 +185,13 @@ internal class UIHandler
 
         for (var i = 0; i < 14 && i < tabInfo.Buttons.Length; i++)
         {
-            Log.Main.Debug?.Log($"- button {i}");
+            Log.Main.Trace?.Log($"- button {i}");
 
             var buttonInfo = tabInfo.Buttons[i];
             var customButtonInfo = _buttons[i];
             if (!string.IsNullOrEmpty(buttonInfo.Text))
             {
-                Log.Main.Debug?.Log("-- set text");
+                Log.Main.Trace?.Log("-- set text");
                 customButtonInfo.Text.text = buttonInfo.Text;
                 customButtonInfo.GoText.SetActive(true);
             }
@@ -201,12 +203,12 @@ internal class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Icon))
             {
-                Log.Main.Debug?.Log("-- set icon");
+                Log.Main.Trace?.Log("-- set icon");
                 customButtonInfo.Icon.vectorGraphics = _iconCache.GetAsset(buttonInfo.Icon);
                 customButtonInfo.GoIcon.SetActive(true);
                 if (customButtonInfo.Icon.vectorGraphics == null)
                 {
-                    Log.Main.Error?.Log($"Icon {buttonInfo.Icon} not found, replacing with ???");
+                    Log.Main.Warning?.Log($"Icon {buttonInfo.Icon} not found, replacing with ???");
                     customButtonInfo.Text.text = "???";
                     customButtonInfo.GoText.SetActive(true);
                 }
@@ -218,7 +220,7 @@ internal class UIHandler
 
             if (!string.IsNullOrEmpty(buttonInfo.Tag))
             {
-                Log.Main.Debug?.Log("- set tag");
+                Log.Main.Trace?.Log("- set tag");
                 customButtonInfo.Tag.text = buttonInfo.Tag;
                 customButtonInfo.GoTag.SetActive(true);
             }
@@ -256,7 +258,7 @@ internal class UIHandler
 
         if (item == null)
         {
-            Log.Main.Error?.Log("-- ITEM IS NULL!");
+            Log.Main.Warning?.Log("-- ITEM IS NULL!");
             return false;
         }
 
