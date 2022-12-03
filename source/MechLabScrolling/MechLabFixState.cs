@@ -102,6 +102,13 @@ internal class MechLabFixState
         return nullableLec != null;
     }
 
+    private bool TryGet(MechComponentDef mcd, out ListElementController_BASE_NotListView lec)
+    {
+        var nullableLec = _rawInventory.FirstOrDefault(ri => ri.componentDef == mcd);
+        lec = nullableLec!;
+        return nullableLec != null;
+    }
+
     private MechLabDraggableItemType ToDraggableType(MechComponentDef def)
     {
         switch (def.ComponentType)
@@ -287,24 +294,38 @@ internal class MechLabFixState
         }
     }
 
-    internal void OnRemoveItem(IMechLabDraggableItem item)
+    internal void RemoveItemData(ListElementController_BASE_NotListView otherLec)
     {
-        var nlv = (InventoryItemElement_NotListView)item;
-        if (!TryGet(item.ComponentRef, out var lec))
+        if (!TryGet(otherLec.componentDef, out var lec))
         {
-            Log.Main.Error?.Log("Existing not found");
+            Log.Main.Error?.Log($"RemoveItemData {otherLec.GetId()} not found");
             return;
         }
 
-        var quantity = nlv.controller.quantity;
-        if (quantity == 0 || lec.quantity == int.MinValue)
+        RemoveItem(lec);
+    }
+
+    internal void OnRemoveItem(IMechLabDraggableItem item)
+    {
+        if (!TryGet(item.ComponentRef, out var lec))
         {
-            Log.Main.Error?.Log("Existing has invalid quantity");
+            Log.Main.Error?.Log($"OnRemoveItem {item.ComponentRef.ComponentDefID} not found");
+            return;
+        }
+
+        RemoveItem(lec);
+    }
+
+    private void RemoveItem(ListElementController_BASE_NotListView lec)
+    {
+        if (lec.quantity <= 0)
+        {
+            Log.Main.Error?.Log($"RemoveItem {lec.GetId()} has invalid quantity {lec.quantity}");
             return;
         }
 
         const int change = -1;
-        Log.Main.Debug?.Log($"OnRemoveItem id={item.ComponentRef.ComponentDefID} quantity={lec.quantity} change={change}");
+        Log.Main.Debug?.Log($"RemoveItem id={lec.GetId()} quantity={lec.quantity} change={change}");
         lec.ModifyQuantity(change);
         if (lec.quantity < 1)
         {
@@ -334,31 +355,47 @@ internal class MechLabFixState
     internal void OnAddItem(IMechLabDraggableItem item)
     {
         var nlv = item as InventoryItemElement_NotListView;
-        var quantity = nlv == null ? 1 : nlv.controller.quantity;
+
+        var controller = nlv == null ? null : nlv.controller;
+        if (controller != null)
+        {
+            if (controller.ItemWidget != _gameObjects.ElementTmpG)
+            {
+                controller.Pool();
+            }
+        }
+        else if (nlv != null)
+        {
+            _widget.dataManager.PoolGameObject(MechLabInventoryWidget.INVENTORY_ITEM_PREFAB, nlv.gameObject);
+        }
+
+        const int change = 1;
         if (TryGet(item.ComponentRef, out var existing))
         {
-            Log.Main.Debug?.Log($"OnAddItem existing {quantity}");
-            if (existing.quantity != int.MinValue) existing.ModifyQuantity(quantity);
+            Log.Main.Debug?.Log($"OnAddItem id={item.ComponentRef.ComponentDefID} quantity={existing.quantity} change={change}");
+
+            if (existing.quantity != int.MinValue)
+            {
+                existing.ModifyQuantity(change);
+            }
             Refresh();
         }
         else
         {
-            Log.Main.Debug?.Log($"OnAddItem new {quantity}");
-            var controller = nlv == null ? null : nlv.controller;
+            Log.Main.Debug?.Log($"OnAddItem id={item.ComponentRef.ComponentDefID} quantity=0 change={change}");
+
             if (controller == null)
             {
                 if (item.ComponentRef.ComponentDefType == ComponentType.Weapon)
                 {
                     var ncontroller = new ListElementController_InventoryWeapon_NotListView();
-                    ncontroller.InitAndCreate(item.ComponentRef, _mechLab.dataManager,
-                        _widget, quantity);
+                    ncontroller.InitAndCreate(item.ComponentRef, _mechLab.dataManager, _widget, change);
                     controller = ncontroller;
                 }
                 else
                 {
                     var ncontroller = new ListElementController_InventoryGear_NotListView();
-                    ncontroller.InitAndCreate(item.ComponentRef, _mechLab.dataManager,
-                        _widget, quantity);
+                    ncontroller.InitAndCreate(item.ComponentRef, _mechLab.dataManager, _widget, change);
                     controller = ncontroller;
                 }
             }
