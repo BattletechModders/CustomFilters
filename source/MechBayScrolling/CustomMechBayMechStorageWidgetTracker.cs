@@ -11,7 +11,14 @@ internal static class CustomMechBayMechStorageWidgetTracker
 
     internal static bool TryGet(MechBayMechStorageWidget widget, out CustomMechBayMechStorageWidget customWidget)
     {
-        if (CustomUnitsDisablesSupportForLanceConfiguratorPanelInSimGame && widget.IsSimGame && widget.ParentDropTarget is LanceConfiguratorPanel)
+        if (CustomUnitsDisablesSupportForLanceConfiguratorPanelInSimGame && widget is { IsSimGame: true, ParentDropTarget: LanceConfiguratorPanel })
+        {
+            customWidget = default!;
+            return false;
+        }
+
+        // TODO fix SimGame storageMechUnit selection bug
+        if (widget is { IsSimGame: true, itemPrefabName: MechBayPanel.storageListPrefabName })
         {
             customWidget = default!;
             return false;
