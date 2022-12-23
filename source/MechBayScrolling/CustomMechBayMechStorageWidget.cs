@@ -195,13 +195,17 @@ internal class CustomMechBayMechStorageWidget
     {
         if (_widget.itemPrefabName == MechBayPanel.storageListPrefabName)
         {
-            if (selectedCloneFixForMechBay == null)
-            {
-                selectedCloneFixForMechBay = PooledInstantiate(item, false, false);
-                selectedCloneFixForMechBay.GameObject.transform.SetParent(SharedGameObjects.ContainerTransform);
-            }
+            var previousSelection = selectedCloneFixForMechBay;
+            selectedCloneFixForMechBay = PooledInstantiate(item, false, false);
+            selectedCloneFixForMechBay.GameObject.transform.SetParent(SharedGameObjects.ContainerTransform);
 
             item = selectedCloneFixForMechBay;
+
+            // pooling afterwards allows a vanilla == check to properly detect selection changes
+            if (previousSelection != null)
+            {
+                _widget.dataManager.PoolGameObject(_widget.itemPrefabName, previousSelection.GameObject);
+            }
         }
         _selectedItemObjectId = GetId(item);
     }

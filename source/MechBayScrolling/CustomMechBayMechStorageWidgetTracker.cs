@@ -17,13 +17,6 @@ internal static class CustomMechBayMechStorageWidgetTracker
             return false;
         }
 
-        // TODO fix SimGame storageMechUnit selection bug
-        if (widget is { IsSimGame: true, itemPrefabName: MechBayPanel.storageListPrefabName })
-        {
-            customWidget = default!;
-            return false;
-        }
-
         // SimGame MechBayPanel "uixPrfPanl_storageMechUnit-Element"
         // SimGame&Skirmish LanceConfigurationPanel "uixPrfPanl_LC_MechSlot"
         // Skirmish SkirmishMechBay "uixPrfPanl_LC_mechUnit-Element"
