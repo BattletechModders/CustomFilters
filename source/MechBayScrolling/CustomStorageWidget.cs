@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace CustomFilters.MechBayScrolling;
 
-internal class CustomMechBayMechStorageWidget
+internal class CustomStorageWidget
 {
     private readonly int _screenRowCount;
     private readonly int _rowCellCount;
@@ -25,7 +25,7 @@ internal class CustomMechBayMechStorageWidget
     private readonly GridLayoutGroup _grid;
     private readonly MechBayMechStorageWidget _widget;
 
-    internal CustomMechBayMechStorageWidget(MechBayMechStorageWidget widget)
+    internal CustomStorageWidget(MechBayMechStorageWidget widget)
     {
         _widget = widget;
         _scrollRect = _widget.GetComponentInChildren<ScrollRect>();

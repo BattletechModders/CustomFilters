@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_ClearInventory
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_ClearInventory));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 customWidget.ClearInventory();
                 return false;

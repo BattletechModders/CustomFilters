@@ -107,10 +107,6 @@ internal static class Control
             {
                 CustomComponentsModCompatibility.Setup();
             }
-            if (loadOrder.Contains("CustomUnits"))
-            {
-                CustomUnityModCompatibility.Setup();
-            }
         }
         catch (Exception e)
         {

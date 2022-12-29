@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_OnButtonClicked
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_OnButtonClicked));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 customWidget.OnButtonClicked(ref item);
             }

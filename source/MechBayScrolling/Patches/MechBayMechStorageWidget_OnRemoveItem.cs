@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_OnRemoveItem
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_OnRemoveItem));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 __result = customWidget.OnRemoveItem(item);
                 return false;

@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_OnItemGrab
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_OnItemGrab));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 customWidget.OnItemGrab(ref item);
             }

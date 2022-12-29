@@ -18,7 +18,7 @@ public static class MechBayMechStorageWidget_InitInventory_MechDefs
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_InitInventory_MechDefs));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 customWidget.InitInventory(mechDefs, resetFilters);
                 return false;

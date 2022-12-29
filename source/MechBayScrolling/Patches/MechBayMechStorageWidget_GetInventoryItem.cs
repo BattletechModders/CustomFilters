@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_GetInventoryItem
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_GetInventoryItem));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 __result = customWidget.GetInventoryItem(id);
                 return false;

@@ -13,7 +13,7 @@ public static class ScrollRect_LateUpdate
     {
         try
         {
-            CustomMechBayMechStorageWidgetTracker.Get(__instance)?.ScrollRectLateUpdate();
+            CustomStorageWidgetTracker.Get(__instance)?.ScrollRectLateUpdate();
         }
         catch (Exception e)
         {

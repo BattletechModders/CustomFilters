@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_OnAddItem
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_OnAddItem));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 __result = customWidget.OnAddItem(item, validate);
                 return false;

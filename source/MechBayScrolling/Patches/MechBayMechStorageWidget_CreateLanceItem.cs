@@ -16,7 +16,7 @@ public static class MechBayMechStorageWidget_CreateLanceItem
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_CreateLanceItem));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 __result = customWidget.CreateLanceItem(def);
                 return false;

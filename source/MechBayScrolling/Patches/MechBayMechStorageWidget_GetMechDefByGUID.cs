@@ -15,7 +15,7 @@ public static class MechBayMechStorageWidget_GetMechDefByGUID
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_GetMechDefByGUID));
         try
         {
-            if (CustomMechBayMechStorageWidgetTracker.TryGet(__instance, out var customWidget))
+            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
             {
                 __result = customWidget.GetMechDefByGUID(GUID);
                 return false;
