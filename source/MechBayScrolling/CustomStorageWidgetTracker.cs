@@ -10,6 +10,12 @@ internal static class CustomStorageWidgetTracker
 
     internal static bool TryGet(MechBayMechStorageWidget widget, out CustomStorageWidget customWidget)
     {
+        if (widget.ParentDropTarget == null)
+        {
+            customWidget = default!;
+            return false;
+        }
+
         // SimGame MechBayPanel "uixPrfPanl_storageMechUnit-Element"
         // SimGame&Skirmish LanceConfigurationPanel "uixPrfPanl_LC_MechSlot"
         // Skirmish SkirmishMechBay "uixPrfPanl_LC_mechUnit-Element"
