@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BattleTech.UI;
+using CustomFilters.Shared;
 
 namespace CustomFilters.MechLabFiltering;
 
 internal static class UIHandlerTracker
 {
-    // TODO fix once BTPF uses the same tracker, so we don't need a static Instance for Filtering
-    internal static UIHandler Instance = null!;
-
     private static readonly Dictionary<MechLabInventoryWidget, UIHandler> Widgets = new();
     private static readonly Dictionary<MechLabPanel, UIHandler> Panels = new();
     internal static void SetInstance(MechLabPanel panel)
@@ -21,8 +19,6 @@ internal static class UIHandlerTracker
             Panels[panel] = handler;
             Widgets[panel.inventoryWidget] = handler;
         }
-
-        Instance = handler;
     }
 
     internal static bool GetInstance(MechLabInventoryWidget widget, out UIHandler handler)
@@ -39,14 +35,14 @@ internal static class UIHandlerTracker
     {
         foreach (var panel in Panels.Keys.ToList())
         {
-            if (panel.gameObject == null)
+            if (panel.IsGameObjectNull())
             {
                 Panels.Remove(panel);
             }
         }
         foreach (var widget in Widgets.Keys.ToList())
         {
-            if (widget.gameObject == null)
+            if (widget.IsGameObjectNull())
             {
                 Widgets.Remove(widget);
             }

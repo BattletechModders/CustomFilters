@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BattleTech.UI;
-using UnityEngine;
+using CustomFilters.Shared;
 using UnityEngine.UI;
 
 namespace CustomFilters.MechLabScrolling;
@@ -44,36 +43,24 @@ internal static class MechLabFixStateTracker
     {
         foreach (var panel in Panels.Keys.ToList())
         {
-            if (IsGameObjectNull(panel))
+            if (panel.IsGameObjectNull())
             {
                 Panels.Remove(panel);
             }
         }
         foreach (var widget in Widgets.Keys.ToList())
         {
-            if (IsGameObjectNull(widget))
+            if (widget.IsGameObjectNull())
             {
                 Widgets.Remove(widget);
             }
         }
         foreach (var scrollRect in ScrollRects.Keys.ToList())
         {
-            if (IsGameObjectNull(scrollRect))
+            if (scrollRect.IsGameObjectNull())
             {
                 ScrollRects.Remove(scrollRect);
             }
-        }
-    }
-
-    private static bool IsGameObjectNull(Component component)
-    {
-        try
-        {
-            return component.gameObject == null;
-        }
-        catch (NullReferenceException)
-        {
-            return true;
         }
     }
 }
