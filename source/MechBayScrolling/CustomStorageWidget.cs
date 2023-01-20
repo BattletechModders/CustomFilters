@@ -486,8 +486,8 @@ internal class CustomStorageWidget
         {
             Log.Main.Trace?.Log($"Pooling new tmpItem based on {baseItem}");
             _tmpItem = PooledInstantiate(baseItem, false, true);
-            SetInventoryItemData(_tmpItem, baseItem);
         }
+        SetInventoryItemData(_tmpItem, baseItem);
         return _tmpItem;
     }
 
