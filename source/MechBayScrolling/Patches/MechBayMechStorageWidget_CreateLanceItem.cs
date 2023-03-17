@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech;
 using BattleTech.UI;
 
@@ -10,21 +9,20 @@ namespace CustomFilters.MechBayScrolling.Patches;
 public static class MechBayMechStorageWidget_CreateLanceItem
 {
     [HarmonyPrefix]
-    public static bool Prefix(MechBayMechStorageWidget __instance, MechDef def, ref LanceLoadoutMechItem __result)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechBayMechStorageWidget __instance, MechDef def, ref LanceLoadoutMechItem __result)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_CreateLanceItem));
-        try
+
+        if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
         {
-            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
-            {
-                __result = customWidget.CreateLanceItem(def);
-                return false;
-            }
+            __result = customWidget.CreateLanceItem(def);
+            __runOriginal = false;
         }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
-        }
-        return true;
     }
 }

@@ -9,17 +9,22 @@ namespace CustomFilters.MechLabFiltering.Patches;
 internal static class MechLabInventoryWidget_SetFilterWeapons
 {
     [HarmonyPrefix]
-    public static bool Prefix(MechLabInventoryWidget __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabInventoryWidget __instance)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_SetFilterWeapons));
         try
         {
-            return !UIHandlerTracker.GetInstance(__instance, out _);
+            __runOriginal = !UIHandlerTracker.GetInstance(__instance, out _);
         }
         catch (Exception e)
         {
             Log.Main.Error?.Log(e);
         }
-        return true;
     }
 }

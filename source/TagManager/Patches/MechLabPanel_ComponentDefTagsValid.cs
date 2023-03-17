@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech;
 using BattleTech.UI;
 
@@ -15,18 +14,15 @@ public static class MechLabPanel_ComponentDefTagsValid
     }
 
     [HarmonyPrefix]
-    public static bool Prefix(MechLabPanel __instance, MechComponentDef def, bool ___isDebugLab, ref bool __result)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabPanel __instance, MechComponentDef def, bool ___isDebugLab, ref bool __result)
     {
-        try
+        if (!__runOriginal)
         {
-            __result = __instance.IsSimGame || TagManagerFeature.Shared.ComponentIsValidForSkirmish(def, ___isDebugLab);
-            return false;
-        }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
+            return;
         }
 
-        return true;
+        __result = __instance.IsSimGame || TagManagerFeature.Shared.ComponentIsValidForSkirmish(def, ___isDebugLab);
+        __runOriginal = false;
     }
 }

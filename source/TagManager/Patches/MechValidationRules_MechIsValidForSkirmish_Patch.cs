@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech;
 
 namespace CustomFilters.TagManager.Patches;
@@ -14,17 +13,15 @@ public static class MechValidationRules_MechIsValidForSkirmish_Patch
     }
 
     [HarmonyPrefix]
-    public static bool Prefix(MechDef def, bool includeCustomMechs, ref bool __result)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechDef def, bool includeCustomMechs, ref bool __result)
     {
-        try
+        if (!__runOriginal)
         {
-            __result = def != null && TagManagerFeature.Shared.MechIsValidForSkirmish(def, includeCustomMechs);
-            return false;
+            return;
         }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
-        }
-        return true;
+
+        __result = def != null && TagManagerFeature.Shared.MechIsValidForSkirmish(def, includeCustomMechs);
+        __runOriginal = false;
     }
 }

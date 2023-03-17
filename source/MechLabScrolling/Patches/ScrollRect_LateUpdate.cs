@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using UnityEngine.UI;
 
 namespace CustomFilters.MechLabScrolling.Patches;
@@ -10,18 +9,17 @@ internal static class ScrollRect_LateUpdate
 {
     [HarmonyBefore(Mods.BattleTechPerformanceFix)]
     [HarmonyPrefix]
-    public static void Prefix(ScrollRect __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, ScrollRect __instance)
     {
-        try
+        if (!__runOriginal)
         {
-            if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
-            {
-                mechLabFixState.LateUpdate();
-            }
+            return;
         }
-        catch (Exception e)
+
+        if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
         {
-            Log.Main.Error?.Log(e);
+            mechLabFixState.LateUpdate();
         }
     }
 }

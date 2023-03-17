@@ -10,10 +10,16 @@ internal static class InventoryItemElement_NotListView_OnDestroy
 {
     [HarmonyBefore(Mods.BattleTechPerformanceFix)]
     [HarmonyPrefix]
-    public static bool Prefix(InventoryItemElement_NotListView __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, InventoryItemElement_NotListView __instance)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(InventoryItemElement_NotListView_OnDestroy));
         if (__instance.iconMech != null) __instance.iconMech.sprite = null;
-        return false;
+        __runOriginal = false;
     }
 }

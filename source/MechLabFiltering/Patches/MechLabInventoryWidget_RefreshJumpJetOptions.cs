@@ -9,21 +9,26 @@ namespace CustomFilters.MechLabFiltering.Patches;
 internal static class MechLabInventoryWidget_RefreshJumpJetOptions
 {
     [HarmonyPrefix]
-    public static bool Prefix(MechLabInventoryWidget __instance, float tonnage)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabInventoryWidget __instance, float tonnage)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_RefreshJumpJetOptions));
         try
         {
             if (UIHandlerTracker.GetInstance(__instance, out var handler))
             {
                 handler.RefreshJumpJetOptions(tonnage);
-                return false;
+                __runOriginal = false;
             }
         }
         catch (Exception e)
         {
             Log.Main.Error?.Log(e);
         }
-        return true;
     }
 }

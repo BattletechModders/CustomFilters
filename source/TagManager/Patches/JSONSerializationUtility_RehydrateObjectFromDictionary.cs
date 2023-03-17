@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using System.Reflection;
 using BattleTech;
 using HBS.Util;
@@ -22,30 +21,24 @@ public static class JSONSerializationUtility_RehydrateObjectFromDictionary
 
     [HarmonyPriority(Priority.High)]
     [HarmonyPostfix]
+    [HarmonyWrapSafe]
     public static void Postfix(object target)
     {
-        try
+        if (target is MechComponentDef componentDef)
         {
-            if (target is MechComponentDef componentDef)
-            {
-                TagManagerFeature.Shared.ManageComponentTags(componentDef);
-            }
-            else if (target is MechDef mechDef)
-            {
-                TagManagerFeature.Shared.ManageMechTags(mechDef);
-            }
-            else if (target is PilotDef pilotDef)
-            {
-                TagManagerFeature.Shared.ManagePilotTags(pilotDef);
-            }
-            else if (target is LanceDef lanceDef)
-            {
-                TagManagerFeature.Shared.ManageLanceTags(lanceDef);
-            }
+            TagManagerFeature.Shared.ManageComponentTags(componentDef);
         }
-        catch (Exception e)
+        else if (target is MechDef mechDef)
         {
-            Log.Main.Error?.Log(e);
+            TagManagerFeature.Shared.ManageMechTags(mechDef);
+        }
+        else if (target is PilotDef pilotDef)
+        {
+            TagManagerFeature.Shared.ManagePilotTags(pilotDef);
+        }
+        else if (target is LanceDef lanceDef)
+        {
+            TagManagerFeature.Shared.ManageLanceTags(lanceDef);
         }
     }
 }

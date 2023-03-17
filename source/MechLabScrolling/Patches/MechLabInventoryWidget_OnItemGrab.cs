@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech.UI;
 
 namespace CustomFilters.MechLabScrolling.Patches;
@@ -10,19 +9,19 @@ namespace CustomFilters.MechLabScrolling.Patches;
 internal static class MechLabInventoryWidget_OnItemGrab
 {
     [HarmonyPrefix]
-    public static void Prefix(MechLabInventoryWidget __instance, ref IMechLabDraggableItem item)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabInventoryWidget __instance, ref IMechLabDraggableItem item)
     {
-        Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_OnItemGrab));
-        try
+        if (!__runOriginal)
         {
-            if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
-            {
-                mechLabFixState.OnItemGrab(ref item);
-            }
+            return;
         }
-        catch (Exception e)
+
+        Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_OnItemGrab));
+
+        if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
         {
-            Log.Main.Error?.Log(e);
+            mechLabFixState.OnItemGrab(ref item);
         }
     }
 }

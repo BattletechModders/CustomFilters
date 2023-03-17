@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech;
 using HBS.Data;
 
@@ -15,54 +14,28 @@ public static class SimGameState_GetAllInventoryStrings_Patch
     }
 
     [HarmonyPrefix]
-    public static void Prefix(SimGameState __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, SimGameState __instance)
     {
-        try
+        if (!__runOriginal)
         {
-            var feature = TagManagerFeature.Shared;
-            var state = __instance;
-            var minCount = TagManagerFeature.Settings.SimGameItemsMinCount;
+            return;
+        }
 
-            void AddApplicable<T>(DictionaryStore<T> store) where T : MechComponentDef, new()
+        var feature = TagManagerFeature.Shared;
+        var state = __instance;
+        var minCount = TagManagerFeature.Settings.SimGameItemsMinCount;
+
+        void AddApplicable<T>(DictionaryStore<T> store) where T : MechComponentDef, new()
+        {
+            foreach (var def in store.items.Values)
             {
-                foreach (var def in store.items.Values)
-                {
-                    if (!feature.ComponentIsValidForSkirmish(def, false))
-                    {
-                        continue;
-                    }
-
-                    var id = state.GetItemStatID(def.Description.Id, SimGameState.GetTypeFromComponent(def.ComponentType));
-                    if (state.companyStats.ContainsStatistic(id))
-                    {
-                        var count = state.companyStats.GetValue<int>(id);
-                        if (count < minCount)
-                        {
-                            state.companyStats.ModifyStat("SimGameState", 0, id, StatCollection.StatOperation.Set, minCount);
-                        }
-                    }
-                    else
-                    {
-                        state.companyStats.AddStatistic(id, minCount);
-                    }
-                }
-            }
-
-            var dataManager = UnityGameInstance.BattleTechGame.DataManager;
-            AddApplicable(dataManager.ammoBoxDefs);
-            AddApplicable(dataManager.heatSinkDefs);
-            AddApplicable(dataManager.jumpJetDefs);
-            AddApplicable(dataManager.upgradeDefs);
-            AddApplicable(dataManager.weaponDefs);
-
-            foreach (var def in dataManager.mechDefs.items.Values)
-            {
-                if (!feature.MechIsValidForSkirmish(def, false))
+                if (!feature.ComponentIsValidForSkirmish(def, false))
                 {
                     continue;
                 }
 
-                var id = state.GetItemStatID(def.Description.Id, "MECHPART");
+                var id = state.GetItemStatID(def.Description.Id, SimGameState.GetTypeFromComponent(def.ComponentType));
                 if (state.companyStats.ContainsStatistic(id))
                 {
                     var count = state.companyStats.GetValue<int>(id);
@@ -77,9 +50,34 @@ public static class SimGameState_GetAllInventoryStrings_Patch
                 }
             }
         }
-        catch (Exception e)
+
+        var dataManager = UnityGameInstance.BattleTechGame.DataManager;
+        AddApplicable(dataManager.ammoBoxDefs);
+        AddApplicable(dataManager.heatSinkDefs);
+        AddApplicable(dataManager.jumpJetDefs);
+        AddApplicable(dataManager.upgradeDefs);
+        AddApplicable(dataManager.weaponDefs);
+
+        foreach (var def in dataManager.mechDefs.items.Values)
         {
-            Log.Main.Error?.Log(e);
+            if (!feature.MechIsValidForSkirmish(def, false))
+            {
+                continue;
+            }
+
+            var id = state.GetItemStatID(def.Description.Id, "MECHPART");
+            if (state.companyStats.ContainsStatistic(id))
+            {
+                var count = state.companyStats.GetValue<int>(id);
+                if (count < minCount)
+                {
+                    state.companyStats.ModifyStat("SimGameState", 0, id, StatCollection.StatOperation.Set, minCount);
+                }
+            }
+            else
+            {
+                state.companyStats.AddStatistic(id, minCount);
+            }
         }
     }
 }

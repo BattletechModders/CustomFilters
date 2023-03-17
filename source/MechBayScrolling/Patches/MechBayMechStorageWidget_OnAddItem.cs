@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech.UI;
 
 namespace CustomFilters.MechBayScrolling.Patches;
@@ -9,21 +8,20 @@ namespace CustomFilters.MechBayScrolling.Patches;
 public static class MechBayMechStorageWidget_OnAddItem
 {
     [HarmonyPrefix]
-    public static bool Prefix(MechBayMechStorageWidget __instance, IMechLabDraggableItem item, bool validate, ref bool __result)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechBayMechStorageWidget __instance, IMechLabDraggableItem item, bool validate, ref bool __result)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_OnAddItem));
-        try
+
+        if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
         {
-            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
-            {
-                __result = customWidget.OnAddItem(item, validate);
-                return false;
-            }
+            __result = customWidget.OnAddItem(item, validate);
+            __runOriginal = false;
         }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
-        }
-        return true;
     }
 }

@@ -47,8 +47,7 @@ internal static class Control
 
             MechBayDynamicSorting.SetSortOrder(MainSettings.MechBay.DefaultSortOrder);
 
-            var harmony = HarmonyInstance.Create("io.github.denadan.CustomFilters");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "io.github.denadan.CustomFilters");
 
             Log.Main.Info?.Log("initialized");
         }

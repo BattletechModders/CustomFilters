@@ -12,8 +12,14 @@ namespace CustomFilters.MechLabFiltering.Patches;
 internal static class MechLabPanel_InitWidgets
 {
     [HarmonyPrefix]
-    public static void Prefix(MechLabPanel __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabPanel __instance)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Prefix));
         try
         {
@@ -35,6 +41,7 @@ internal static class MechLabPanel_InitWidgets
     }
 
     [HarmonyPostfix]
+    [HarmonyWrapSafe]
     public static void Postfix(MechLabPanel __instance)
     {
         Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets) + "." + nameof(Postfix));

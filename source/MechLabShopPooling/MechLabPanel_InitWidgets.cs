@@ -49,16 +49,16 @@ internal static class MechLabPanel_InitWidgets
     }
 
     [HarmonyPrefix]
-    public static void Prefix(MechLabPanel __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabPanel __instance)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechLabPanel_InitWidgets));
-        try
-        {
-            if (__instance.Shop != null) __instance.Shop.Pool();
-        }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
-        }
+
+        if (__instance.Shop != null) __instance.Shop.Pool();
     }
 }

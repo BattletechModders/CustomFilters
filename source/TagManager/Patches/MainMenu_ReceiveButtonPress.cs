@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech.UI;
 
 namespace CustomFilters.TagManager.Patches;
@@ -14,21 +13,18 @@ public static class MainMenu_ReceiveButtonPress
     }
 
     [HarmonyPrefix]
-    public static bool Prefix(MainMenu __instance, string button)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MainMenu __instance, string button)
     {
-        try
+        if (!__runOriginal)
         {
-            if (button == "MechBay")
-            {
-                TagManagerFeature.Shared.ShowOptions(__instance);
-                return false;
-            }
+            return;
         }
-        catch (Exception e)
+
+        if (button == "MechBay")
         {
-            Log.Main.Error?.Log(e);
-            return false;
+            __runOriginal = false; // if original code runs in RT it takes a lot of time, so better to die early
+            TagManagerFeature.Shared.ShowOptions(__instance);
         }
-        return true;
     }
 }

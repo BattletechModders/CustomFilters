@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using System.Collections.Generic;
 using BattleTech;
 using BattleTech.UI;
@@ -12,21 +11,20 @@ public static class MechBayMechStorageWidget_InitInventory_MechDefs
 {
 
     [HarmonyPrefix]
-    public static bool Prefix(MechBayMechStorageWidget __instance, List<MechDef> mechDefs, bool resetFilters)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechBayMechStorageWidget __instance, List<MechDef> mechDefs, bool resetFilters)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_InitInventory_MechDefs));
-        try
+
+        if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
         {
-            if (CustomStorageWidgetTracker.TryGet(__instance, out var customWidget))
-            {
-                customWidget.InitInventory(mechDefs, resetFilters);
-                return false;
-            }
+            customWidget.InitInventory(mechDefs, resetFilters);
+            __runOriginal = false;
         }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
-        }
-        return true;
     }
 }

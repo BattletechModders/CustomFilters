@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech.UI;
 
 namespace CustomFilters.MechLabScrolling.Patches;
@@ -10,21 +9,20 @@ namespace CustomFilters.MechLabScrolling.Patches;
 internal static class MechLabPanel_PopulateInventory
 {
     [HarmonyPrefix]
-    public static bool Prefix(MechLabPanel __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabPanel __instance)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechLabPanel_PopulateInventory));
-        try
+
+        if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
         {
-            if (MechLabFixStateTracker.GetInstance(__instance, out var mechLabFixState))
-            {
-                mechLabFixState.PopulateInventory();
-                return false;
-            }
+            mechLabFixState.PopulateInventory();
+            __runOriginal = false;
         }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
-        }
-        return true;
     }
 }

@@ -8,9 +8,14 @@ namespace CustomFilters.MechBayScrolling.Patches;
 public static class MechBayMechStorageWidget_SetData
 {
     [HarmonyPrefix]
-    public static bool Prefix()
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechBayMechStorageWidget_SetData));
-        return true;
     }
 }

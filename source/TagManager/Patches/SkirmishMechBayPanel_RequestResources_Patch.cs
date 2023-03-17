@@ -1,6 +1,5 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
-using System;
 using BattleTech.UI;
 
 namespace CustomFilters.TagManager.Patches;
@@ -15,17 +14,15 @@ public static class SkirmishMechBayPanel_RequestResources_Patch
 
     [HarmonyPriority(Priority.High)]
     [HarmonyPrefix]
-    public static bool Prefix(SkirmishMechBayPanel __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, SkirmishMechBayPanel __instance)
     {
-        try
+        if (!__runOriginal)
         {
-            TagManagerFeature.Shared.RequestResources(__instance);
-            return false;
+            return;
         }
-        catch (Exception e)
-        {
-            Log.Main.Error?.Log(e);
-        }
-        return true;
+
+        TagManagerFeature.Shared.RequestResources(__instance);
+        __runOriginal = false;
     }
 }

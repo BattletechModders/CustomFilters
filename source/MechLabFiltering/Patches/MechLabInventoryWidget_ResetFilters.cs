@@ -9,21 +9,26 @@ namespace CustomFilters.MechLabFiltering.Patches;
 internal static class MechLabInventoryWidget_ResetFilters
 {
     [HarmonyPrefix]
-    public static bool Prefix(MechLabInventoryWidget __instance)
+    [HarmonyWrapSafe]
+    public static void Prefix(ref bool __runOriginal, MechLabInventoryWidget __instance)
     {
+        if (!__runOriginal)
+        {
+            return;
+        }
+
         Log.Main.Trace?.Log(nameof(MechLabInventoryWidget_ResetFilters));
         try
         {
             if (UIHandlerTracker.GetInstance(__instance, out var handler))
             {
                 handler.ResetFilters();
-                return false;
+                __runOriginal = false;
             }
         }
         catch (Exception e)
         {
             Log.Main.Error?.Log(e);
         }
-        return true;
     }
 }
