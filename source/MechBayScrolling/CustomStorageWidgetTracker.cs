@@ -37,8 +37,8 @@ internal static class CustomStorageWidgetTracker
         }
         return true;
     }
-    internal static CustomStorageWidget Get(UnityEngine.UI.ScrollRect scrollRect)
+    internal static CustomStorageWidget? Get(UnityEngine.UI.ScrollRect scrollRect)
     {
-        return ScrollRects.TryGetValue(scrollRect, out var customWidget) ? customWidget : null!;
+        return ScrollRects.TryGetValue(scrollRect, out var customWidget) ? customWidget : null;
     }
 }
