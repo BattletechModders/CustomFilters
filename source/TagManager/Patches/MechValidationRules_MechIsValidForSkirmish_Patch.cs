@@ -2,7 +2,6 @@
 // ReSharper disable InconsistentNaming
 using System;
 using BattleTech;
-using Harmony;
 
 namespace CustomFilters.TagManager.Patches;
 

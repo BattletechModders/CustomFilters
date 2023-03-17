@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using BattleTech;
 using BattleTech.Save;
-using Harmony;
 using Localize;
 
 namespace CustomFilters.TagManager.Patches;

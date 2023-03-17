@@ -1,7 +1,6 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
 using BattleTech.UI;
-using Harmony;
 
 namespace CustomFilters.MechLabScrolling.Patches;
 

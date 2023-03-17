@@ -3,7 +3,6 @@
 using System;
 using BattleTech;
 using BattleTech.UI;
-using Harmony;
 
 namespace CustomFilters.TagManager.Patches;
 

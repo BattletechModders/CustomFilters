@@ -1,7 +1,6 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
 using System;
-using Harmony;
 
 namespace CustomFilters.MechBayScrolling.Patches;
 

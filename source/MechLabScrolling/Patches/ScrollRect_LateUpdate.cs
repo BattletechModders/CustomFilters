@@ -1,7 +1,6 @@
 ﻿#nullable disable
 // ReSharper disable InconsistentNaming
 using System;
-using Harmony;
 using UnityEngine.UI;
 
 namespace CustomFilters.MechLabScrolling.Patches;

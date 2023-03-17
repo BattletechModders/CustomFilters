@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using BattleTech;
 using BattleTech.UI;
-using Harmony;
 using SVGImporter;
 
 namespace CustomFilters.MechLabFiltering.Patches;
