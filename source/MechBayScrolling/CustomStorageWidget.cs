@@ -13,6 +13,10 @@ namespace CustomFilters.MechBayScrolling;
 
 internal class CustomStorageWidget
 {
+    private readonly bool _mechUnitValidationEnabled = Control.MainSettings.MechBay.MechUnitValidationEnabled;
+    private readonly MechValidationLevel? _mechUnitValidationLevel = Control.MainSettings.MechBay.MechUnitValidationLevel;
+    private readonly MechValidationType[] _mechUnitValidationWarnings = Control.MainSettings.MechBay.MechUnitValidationWarnings;
+
     private readonly int _screenRowCount;
     private readonly int _rowCellCount;
     private const int RowCountToPreloadAsBuffer = 1;
@@ -399,15 +403,7 @@ internal class CustomStorageWidget
         }
         else if (inventoryItem is MechBayMechUnitElement mechUnitElement)
         {
-            // from MechBayMechInfoWidget.SetDescriptions
-            var hasFieldableWarnings = MechValidationRules.GetMechFieldableWarnings(_widget.dataManager, fakeItem.MechDef).Count > 0;
-            var isFieldable = MechValidationRules.ValidateMechCanBeFielded(_widget.Sim, fakeItem.MechDef)
-                && MechValidationRules.ValidateSimGameMechNotInMaintenance(_widget.Sim, fakeItem.MechDef);
-
-            mechUnitElement.SetData(_widget, _widget.dataManager, 0, fakeItem.MechDef, false, isFieldable, hasFieldableWarnings, true, true);
-            var shouldShow = !fakeItem.MechDef.MechTags.Contains(MechValidationRules.MechTag_Custom);
-            mechUnitElement.SetFrameColor(shouldShow ? UIColor.StockMech : UIColor.White);
-            mechUnitElement.ShowStockIcon(shouldShow);
+            SetDataForMechUnitElement(mechUnitElement, fakeItem);
         }
         else if (inventoryItem is MechBayChassisUnitElement chassisUnitElement)
         {
@@ -419,6 +415,44 @@ internal class CustomStorageWidget
         {
             throw new ArgumentOutOfRangeException();
         }
+    }
+
+    private void SetDataForMechUnitElement(MechBayMechUnitElement mechUnitElement, IMechLabDraggableItem fakeItem)
+    {
+        bool hasFieldableWarnings, isMaintenance, isFieldable;
+        if (_mechUnitValidationEnabled)
+        {
+            isMaintenance = !MechValidationRules.ValidateSimGameMechNotInMaintenance(_widget.Sim, fakeItem.MechDef);
+
+            if (_mechUnitValidationLevel == null)
+            {
+                // partially from MechBayMechInfoWidget.SetDescriptions
+                hasFieldableWarnings = MechValidationRules.GetMechFieldableWarnings(_widget.dataManager, fakeItem.MechDef).Count > 0;
+                isFieldable = MechValidationRules.ValidateMechCanBeFielded(_widget.Sim, fakeItem.MechDef);
+            }
+            else
+            {
+                var validations = MechValidationRules.ValidateMechDef(_mechUnitValidationLevel.Value, _widget.dataManager, fakeItem.MechDef, null)
+                    .Where(kv => kv.Value.Count > 0)
+                    .Select(kv => kv.Key)
+                    .ToList();
+                hasFieldableWarnings = validations.Any(errorType => _mechUnitValidationWarnings.Contains(errorType));
+                isFieldable = validations.All(errorType => _mechUnitValidationWarnings.Contains(errorType));
+            }
+        }
+        else
+        {
+            hasFieldableWarnings = false;
+            isMaintenance = false;
+            isFieldable = true;
+        }
+
+        mechUnitElement.SetData(_widget, _widget.dataManager, 0, fakeItem.MechDef, isMaintenance, isFieldable, hasFieldableWarnings, true, true);
+
+        // from SkirmishMechBayPanel.RefreshMechList
+        var shouldShow = !fakeItem.MechDef.MechTags.Contains(MechValidationRules.MechTag_Custom);
+        mechUnitElement.SetFrameColor(shouldShow ? UIColor.StockMech : UIColor.White);
+        mechUnitElement.ShowStockIcon(shouldShow);
     }
 
     // (?) used by MechBayPanel SwapMechUnitElements -> OnRemoveItem + OnAddItem | this could be another OnAddItem

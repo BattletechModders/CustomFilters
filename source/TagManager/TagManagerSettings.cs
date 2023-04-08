@@ -17,7 +17,7 @@ internal class TagManagerSettings
     internal bool Enabled = true;
 
     [JsonProperty]
-    internal const string SimGameItemsMinCountDescription = $"Set the owned minimum count of each mech component in SimGame.";
+    internal const string SimGameItemsMinCountDescription = "Set the owned minimum count of each mech component in SimGame.";
     [JsonProperty]
     internal int SimGameItemsMinCount = 0;
 
