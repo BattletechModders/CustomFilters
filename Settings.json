@@ -23,7 +23,12 @@
 					"component_type_variant",
 					"component_type_lostech"
 				]
-			}
+			},
+            "Mechs" : {
+                "NotContainsAny" : [
+                    "unit_unlocked"
+                ]
+            }
 		},
 		"disabled_SkirmishOptionsShow": true,
 		"Components" : {
