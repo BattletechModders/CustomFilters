@@ -432,12 +432,20 @@ internal class CustomStorageWidget
             }
             else
             {
-                var validations = MechValidationRules.ValidateMechDef(_mechUnitValidationLevel.Value, _widget.dataManager, fakeItem.MechDef, null)
+                var errors = MechValidationRules.ValidateMechDef(_mechUnitValidationLevel.Value, _widget.dataManager, fakeItem.MechDef, null);
+                var validations = errors
                     .Where(kv => kv.Value.Count > 0)
                     .Select(kv => kv.Key)
                     .ToList();
                 hasFieldableWarnings = validations.Any(errorType => _mechUnitValidationWarnings.Contains(errorType));
                 isFieldable = validations.All(errorType => _mechUnitValidationWarnings.Contains(errorType));
+                if (hasFieldableWarnings || !isFieldable)
+                {
+                    Log.Main.Debug?.Log(
+                        $"mech={fakeItem.MechDef.Description.Id} hasFieldableWarnings={hasFieldableWarnings} isFieldable={isFieldable} errors:"
+                        + errors.Aggregate("", (prev, kv) => $"{prev}\n{kv.Key}: {kv.Value.JoinAsString()}")
+                    );
+                }
             }
         }
         else
