@@ -399,7 +399,15 @@ internal class CustomStorageWidget
         }
         else if (inventoryItem is MechBayMechUnitElement mechUnitElement)
         {
-            mechUnitElement.SetData(_widget, _widget.dataManager, 0, fakeItem.MechDef, false, true, false, true, true);
+            // from MechBayMechInfoWidget.SetDescriptions
+            var hasFieldableWarnings = MechValidationRules.GetMechFieldableWarnings(_widget.dataManager, fakeItem.MechDef).Count > 0;
+            var isFieldable = MechValidationRules.ValidateMechCanBeFielded(_widget.Sim, fakeItem.MechDef)
+                && MechValidationRules.ValidateSimGameMechNotInMaintenance(_widget.Sim, fakeItem.MechDef);
+
+            mechUnitElement.SetData(_widget, _widget.dataManager, 0, fakeItem.MechDef, false, isFieldable, hasFieldableWarnings, true, true);
+            var shouldShow = !fakeItem.MechDef.MechTags.Contains(MechValidationRules.MechTag_Custom);
+            mechUnitElement.SetFrameColor(shouldShow ? UIColor.StockMech : UIColor.White);
+            mechUnitElement.ShowStockIcon(shouldShow);
         }
         else if (inventoryItem is MechBayChassisUnitElement chassisUnitElement)
         {
