@@ -9,7 +9,7 @@ internal static class CustomComponentsModCompatibility
 {
     internal static void Setup()
     {
-        UIHandler.CustomComponentsFlagsFilter = item => !item.Flags<CCFlags>().HideFromInv;
+        UIHandler.CustomComponentsFlagsFilter = item => !item.CCFlags().HideFromInv;
 
         UIHandler.CustomComponentsIMechLabFilter = (mechLab, item) =>
         {
