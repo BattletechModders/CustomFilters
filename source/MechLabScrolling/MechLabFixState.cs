@@ -318,9 +318,25 @@ internal class MechLabFixState
 
     private void RemoveItem(ListElementController_BASE_NotListView lec)
     {
-        if (lec.quantity <= 0)
+        void logWrongQuantity()
         {
-            Log.Main.Error?.Log($"RemoveItem {lec.GetId()} has invalid quantity {lec.quantity}");
+            Log.Main.Error?.Log($"RemoveItem id={lec.GetId()} has invalid quantity {lec.quantity}");
+        }
+
+        if (_mechLab.IsSimGame)
+        {
+            if (lec.quantity < 1)
+            {
+                logWrongQuantity();
+                return;
+            }
+        }
+        else
+        {
+            if (lec.quantity != int.MinValue)
+            {
+                logWrongQuantity();
+            }
             return;
         }
 
