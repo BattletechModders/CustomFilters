@@ -42,7 +42,8 @@ internal class FilterQueries
 
     internal List<string> MechIds()
     {
-        return QueryItems("UnitDefID", "UnitDef", _filterSet.Mechs, MechValidationRules.MechTag_Custom, "d.UnitTypeID = 1");
+        var customFilter = TagManagerFeature.Settings.SkirmishMechDefQueryFilter;
+        return QueryItems("UnitDefID", "UnitDef", _filterSet.Mechs, MechValidationRules.MechTag_Custom, customFilter);
     }
 
     internal List<string> PilotIds()

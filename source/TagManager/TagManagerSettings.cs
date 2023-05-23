@@ -27,6 +27,14 @@ internal class TagManagerSettings
     internal bool LostechStockWeaponVariantFix = false;
 
     [JsonProperty]
+    internal const string SkirmishMechDefQueryFilterDescription =
+        "UnitDef filter when searching for MechDefs by tags via MDDB." +
+        " CustomUnits converts VehicleDefs (2) to MechDefs (1) but does not add them to the MDDB" +
+        ", set the filter to \"(d.UnitTypeID = 1 OR d.UnitTypeID = 2)\" in that case.";
+    [JsonProperty]
+    internal string SkirmishMechDefQueryFilter = "(d.UnitTypeID = 1)";
+
+    [JsonProperty]
     internal const string SkirmishOverloadWarningDescription = "Warn the user before loading into the SkirmishMechBay if too many 'Mech will be loaded.";
     [JsonProperty]
     internal int SkirmishOverloadWarningCount = 500;
