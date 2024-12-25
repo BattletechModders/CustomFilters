@@ -23,6 +23,6 @@ jobs:
             -xr!source "-xr!.*"
         )
       release-notes: |
-        Requires ModTek V4 or later
-        - CustomFilters.zip contains the mod
+        CustomFilters.zip contains the mod
+        Requires ModTek v4.3 or later.
     secrets: inherit
