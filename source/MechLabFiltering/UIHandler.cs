@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BattleTech;
 using BattleTech.Data;
@@ -9,6 +10,7 @@ using CustomFilters.MechLabFiltering.TabConfig;
 using CustomFilters.MechLabScrolling;
 using CustomFilters.Settings;
 using FluffyUnderware.DevTools.Extensions;
+using SVGImporter;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -79,6 +81,8 @@ internal class UIHandler
                 text.SetText(tabInfo.Caption);
             _tabRadioSet.RadioButtons.Add(radio);
             maxButtons = Math.Max(maxButtons, tabInfo.Buttons.Length);
+
+            PreloadIconsCache(tabInfo);
         }
 
         Log.Main.Trace?.Log("-- create small buttons");
@@ -108,6 +112,51 @@ internal class UIHandler
 
         _widget.filterRadioSet.defaultButton = _buttons.FirstOrDefault()?.Toggle;
         _widget.filterRadioSet.Reset();
+    }
+
+    private void PreloadIconsCache(TabInfo tabInfo)
+    {
+        foreach (ButtonInfo buttonInfo in tabInfo.Buttons)
+        {
+            string? buttonInfoIcon = buttonInfo.Icon;
+            if (!string.IsNullOrEmpty(buttonInfoIcon))
+            {
+                loadIcon(buttonInfoIcon);
+            }
+        }
+    }
+
+    private void loadIcon(string? buttonInfoIcon)
+    {
+        try
+        {
+            VersionManifestEntry entry = _mechLab.dataManager.ResourceLocator.EntryByID(buttonInfoIcon, BattleTechResourceType.SVGAsset);
+            if (entry == null)
+            {
+                Log.Main.Warning?.Log(buttonInfoIcon + " not found in SVG manifest");
+                return;
+            }
+
+            string entryFilePath = entry.FilePath;
+            if (!File.Exists(entryFilePath))
+            {
+                return;
+            }
+
+            SVGAsset svg = SVGAsset.Load(File.ReadAllText(entryFilePath));
+            if (svg != null)
+            {
+                _iconCache.AddSVGAsset(buttonInfoIcon, svg);
+            }
+            else
+            {
+                Log.Main.Warning?.Log("Failed to load SVG:" + buttonInfoIcon + " " + entry.FilePath);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Main.Error?.Log("Unable to load icon", e);
+        }
     }
 
     public void ResetFilters()
